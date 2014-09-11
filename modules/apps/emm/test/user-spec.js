@@ -1,21 +1,3 @@
-/*
- * *
- *  *  Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
- *  *
- *  *  Licensed under the Apache License, Version 2.0 (the "License");
- *  *  you may not use this file except in compliance with the License.
- *  *  You may obtain a copy of the License at
- *  *
- *  *        http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  *  Unless required by applicable law or agreed to in writing, software
- *  *  distributed under the License is distributed on an "AS IS" BASIS,
- *  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  *  See the License for the specific language governing permissions and
- *  *  limitations under the License.
- *
- */
-
 describe('User Module',function(){
     describe('Password Generator - User Module', function () {
 
@@ -80,7 +62,8 @@ describe('User Module',function(){
         }
         var user_module = require('/modules/user.js').user;
         var user, db;
-        var ctx = {"first_name": "Firstname", "last_name": "Lastname", "mobile_no": "0123456789", "groups": [], "type": ""};
+        var ctx = {"first_name": "Firstname", "last_name": "Lastname", "mobile_no": "0123456789",
+            "groups": [], "type": ""};
         var userRole;
 
         function initModule() {
@@ -117,7 +100,8 @@ describe('User Module',function(){
         it('Test addUser with partial data', function () {
             try {
                 initModule();
-                var userOp = user.addUser({"first_name": "Firstname", "last_name": "Lastname", "mobile_no": "0123456789"});
+                var userOp = user.addUser({"first_name": "Firstname", "last_name": "Lastname",
+                    "mobile_no": "0123456789"});
                 expect(userOp.status).toEqual("BAD_REQUEST");
             } catch (e) {
                 log.error(e);
@@ -135,7 +119,8 @@ describe('User Module',function(){
         }
         var user_module = require('/modules/user.js').user;
         var user, db;
-        var ctx = {"first_name": "Firstname", "last_name": "Lastname", "mobile_no": "0123456789", "groups": [], "type": ""};
+        var ctx = {"first_name": "Firstname", "last_name": "Lastname", "mobile_no": "0123456789",
+            "groups": [], "type": ""};
         var userRole;
 
         function initModule() {
@@ -190,7 +175,8 @@ describe('User Module',function(){
         }
         var user_module = require('/modules/user.js').user;
         var user, db;
-        var ctx = {"first_name": "Firstname", "last_name": "Lastname", "mobile_no": "0123456789", "groups": [], "type": ""};
+        var ctx = {"first_name": "Firstname", "last_name": "Lastname", "mobile_no": "0123456789",
+            "groups": [], "type": ""};
         var userRole;
 
         function initModule() {
@@ -246,7 +232,8 @@ describe('User Module',function(){
         }
         var user_module = require('/modules/user.js').user;
         var user, db;
-        var ctx = {"first_name": "Firstname", "last_name": "Lastname", "mobile_no": "0123456789", "groups": [], "type": ""};
+        var ctx = {"first_name": "Firstname", "last_name": "Lastname", "mobile_no": "0123456789",
+            "groups": [], "type": ""};
         var userRole;
 
         function initModule() {
@@ -289,7 +276,8 @@ describe('User Module',function(){
         }
         var user_module = require('/modules/user.js').user;
         var user, db;
-        var ctx = {"first_name": "Firstname", "last_name": "Lastname", "mobile_no": "0123456789", "groups": [], "type": ""};
+        var ctx = {"first_name": "Firstname", "last_name": "Lastname", "mobile_no": "0123456789",
+            "groups": [], "type": ""};
         var userRole;
 
         function initModule() {

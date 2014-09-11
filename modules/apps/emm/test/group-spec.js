@@ -1,21 +1,3 @@
-/*
- * *
- *  *  Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
- *  *
- *  *  Licensed under the Apache License, Version 2.0 (the "License");
- *  *  you may not use this file except in compliance with the License.
- *  *  You may obtain a copy of the License at
- *  *
- *  *        http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  *  Unless required by applicable law or agreed to in writing, software
- *  *  distributed under the License is distributed on an "AS IS" BASIS,
- *  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  *  See the License for the specific language governing permissions and
- *  *  limitations under the License.
- *
- */
-
 describe('Group Module',function(){
     describe('Add Group Operation - Group Module', function () {
         var db, group,ctx;
@@ -175,7 +157,8 @@ describe('Group Module',function(){
         var user_module = require('/modules/user.js').user;
         var role = 'test_role';
         var username =  "user@test.com";
-        var userObj = {"first_name": "Firstname", "last_name": "Lastname", "mobile_no": "0123456789", "groups": ['subscriber'], "type": "user" ,"username": username,"userid":"user@test.com"};
+        var userObj = {"first_name": "Firstname", "last_name": "Lastname", "mobile_no": "0123456789",
+            "groups": ['subscriber'], "type": "user" ,"username": username,"userid":"user@test.com"};
 
         function initModule() {
             try {
@@ -264,11 +247,8 @@ describe('Group Module',function(){
 
         it('Test roleExists function with non-existing groups', function () {
             initModule();
-            ctx = {'name':role,'users':[]};
-            group.addGroup(ctx);
-            var result = group.addGroup(ctx);
-            expect(result.status).toBe("ALLREADY_EXIST");
-            group.deleteGroup({'groupid':role});
+            var result = group.roleExists({'groupid':role});
+            expect(result).toBe(false);
             closeDB();
         });
     });
@@ -279,7 +259,8 @@ describe('Group Module',function(){
         var user_module = require('/modules/user.js').user;
         var role = 'test_role';
         var username =  "user@test.com";
-        var userObj = {"first_name": "Firstname", "last_name": "Lastname", "mobile_no": "0123456789", "groups": ['subscriber'], "type": "user" ,"username": username,"userid":"user@test.com"};
+        var userObj = {"first_name": "Firstname", "last_name": "Lastname", "mobile_no": "0123456789",
+            "groups": ['subscriber'], "type": "user" ,"username": username,"userid":"user@test.com"};
 
         function initModule() {
             try {
@@ -369,10 +350,17 @@ describe('Group Module',function(){
             closeDB();
         });
 
-        it('Test getGroupsByType function by not having roles of selected type', function () {
+        it('Test getGroupsByType function by querying for emmadmin roles', function () {
             initModule();
-            var roleList = group.getGroupsByType({'type':'user'});
-            expect(roleList.length).not.toBe(0);
+            var roleList = group.getGroupsByType({'type':'emmadmin'});
+            var roleExists = false ;
+            for(var i=0;i<roleList.length;i++){
+                if("emmadmin"==roleList[i].type){
+                    roleExists = true;
+                    break;
+                }
+            }
+            expect(roleExists).toBe(true);
             closeDB();
         });
     });
@@ -383,7 +371,8 @@ describe('Group Module',function(){
         var user_module = require('/modules/user.js').user;
         var role = 'test_role';
         var username =  "user@test.com";
-        var userObj = {"first_name": "Firstname", "last_name": "Lastname", "mobile_no": "0123456789", "groups": ['subscriber'], "type": "user" ,"username": username,"userid":"user@test.com"};
+        var userObj = {"first_name": "Firstname", "last_name": "Lastname", "mobile_no": "0123456789",
+            "groups": ['subscriber'], "type": "user" ,"username": username,"userid":"user@test.com"};
 
         function initModule() {
             try {
