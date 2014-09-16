@@ -163,7 +163,38 @@ var device = (function () {
                 var content = device.registerIOS(ctx);
 		    }
 		});
-		
+        /* 
+            {
+                "auth": "token",
+                "auth_params": {
+                    "username": "dulithaz@gmail.com",
+                    "password": "sdfjdslfk",
+                    "client-id": "abc.com"
+                },
+                "auth_params": {
+                    "token": "2423fdfdsfwerwer"
+                },
+                "challenge": "248209dsvsdkfudof"
+            }
+        */
+        router.post('devices/iot/register', function(ctx){
+            /*
+                Store the device to the database. Return an  
+            */
+            var payload ={
+                "status": "200",
+                "payload" : {
+                    "tokens":{
+                        "access_token": "dfsdfsd",
+                        "refresh_token" : "dsfsdjflk"
+                    },
+                    "topics":{
+                        "device": "dfjslkdfj"
+                    }
+                }
+            };
+            print(payload);
+        });
 		router.post('devices/iostokenregister', function(ctx){
 		    device.registerIOS(ctx);
 		});
