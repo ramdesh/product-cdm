@@ -13,7 +13,7 @@ public class App
     public static void main( String[] args )
     {
         //Generate PEM
-        Invoker i=new Invoker();
+        APKGenerator invoker=new APKGenerator();
         String json="{\"workingDir\":\"/home/inoshp/Documents/BKS/\","+
         "\"countryCA\":\"SL\", \"stateCA\":\"WP\",\"localityCA\":\"Colombo\", \"organizationCA\":\"WSO2\", \"organizationUCA\":\"Mobile\","+
         "\"daysCA\":\"365\", \"commonNameCA\":\"kasun\",\"countryRA\":\"SL\", \"stateRA\":\"WP\",\"localityRA\":\"Colombo\", \"organizationRA\":\"WSO2\","+
@@ -21,7 +21,7 @@ public class App
         "\"organizationSSL\":\"WSO2\", \"organizationUSSL\":\"Mobile\",\"daysSSL\":\"365\", \"serverIp\":\"10.10.10.3\",\"password\":\"wso2carbon\"," +
         "\"usersname\":\"Kasun\",\"company\":\"WSO2\",\"zipPath\":\"/home/inoshp/Documents/BKS/\"}";
         
-       String path=i.generateApk(json);
+       String path=invoker.generateApk(json);
     		  
        System.out.println(path);
     }

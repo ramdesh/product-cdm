@@ -9,12 +9,16 @@ import java.security.Provider;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.wso2.apkgenerator.data.ObjectReader;
 import org.wso2.apkgenerator.util.Constants;
-import org.wso2.apkgenerator.util.StackLogger;
 
 public class BksGenerator {
-	public static void generateBKS(X509Certificate caCert){		
+	private static Log log = LogFactory.getLog(BksGenerator.class);
+	
+	public static boolean generateBKS(X509Certificate caCert){		
 	    KeyStore keystore;
         try {
         	
@@ -23,29 +27,26 @@ public class BksGenerator {
     	    keystore.load(null);
     	    keystore.setCertificateEntry("cert-alias", caCert);
     	    
-    	    FileOutputStream fos = new FileOutputStream(Constants.WORKING_DIR+Constants.BKS_File);
-            keystore.store(fos, Constants.TRUSTSTORE_PASS.toCharArray());
+    	    FileOutputStream fos = new FileOutputStream(APKGenerator.workingDir+Constants.BKS_File);
+            keystore.store(fos, APKGenerator.truststorePassword.toCharArray());
             fos.close();
-        } catch (NoSuchAlgorithmException e1) {
-        	StackLogger.log("cryptographic algorithm is requested but" +
-        			" it is not available in the environment", e1.getStackTrace().toString());
-        }
-		catch (CertificateException e2) {
-        	StackLogger.log("Error building certificate", 
-       	             e2.getStackTrace().toString());
-        }
-		catch (IOException e3) {
-        	StackLogger.log("file error while working with "+Constants.WORKING_DIR +Constants.BKS_File, 
-           	             e3.getStackTrace().toString());
-		}
-		catch (KeyStoreException e4) {
-			StackLogger.log("generic KeyStore exception working with BKS "+Constants.BKS_File, 
-	       	             e4.getStackTrace().toString());
-		}
+            return true;
+        } 
+	 catch (NoSuchAlgorithmException e1) {
+		log.error("cryptographic algorithm is requested but"
+				+ " it is not available in the environment", e1);
+	} catch (CertificateException e2) {
+		log.error("Error building certificate", e2);
+	} catch (IOException e3) {
+		log.error("file error while working with files", e3);
+	} catch (KeyStoreException e4) {
+		log.error("generic KeyStore exception working with BKS ", e4);
+	}
+        
         catch (Exception e4) {
-			StackLogger.log("General error "+Constants.BKS_File, 
-	       	             e4.getStackTrace().toString());
+        	log.error("Error while generating BKS ", e4);
 		}
+		return false;
        
 
 	   // return context.getSocketFactory();

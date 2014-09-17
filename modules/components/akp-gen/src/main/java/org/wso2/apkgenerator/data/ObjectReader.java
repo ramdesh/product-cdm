@@ -1,31 +1,37 @@
 package org.wso2.apkgenerator.data;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.wso2.apkgenerator.util.StackLogger;
-
+/*
+ * This is used to convert a json string to a Json object and read the values 
+ * from the created json obkect
+ */
 public class ObjectReader {
-	public static JSONObject res;
-	public ObjectReader(String jsObj){
-		try {
-	        res=new JSONObject(jsObj);
-        } catch (JSONException e) {
-	        StackLogger.log("Error in converting String to JSONObject", e.getStackTrace().toString());
-        }
-	}
-	
-	public String read(String strName){
+	public JSONObject json = null;
+	private static Log log = LogFactory.getLog(ObjectReader.class);
 
+	public ObjectReader(String jsObj) {
 		try {
-	        return res.getString(strName);
-        } catch (JSONException e) {
-        	StackLogger.log("Error in getting String "+strName+" from JSONObject", e.getStackTrace().toString());
-        }
-		catch (Exception e) {
-        	StackLogger.log("Exception ", e.getStackTrace().toString());
-        }
+			json = new JSONObject(jsObj);
+		} catch (JSONException e) {
+			log.error("Error in converting String to JSONObject", e);
+		}
+	}
+
+	//read a json object when the key is provided
+	public String read(String key) {
+		try {
+			return json.getString(key);
+		} catch (JSONException e) {
+			log.error(
+					"Error in getting String " + key + " from JSONObject",
+					e);
+		} catch (Exception e) {
+			log.error("error while reading parameter " + key, e);
+		}
 		return null;
 	}
-	
-	
+
 }

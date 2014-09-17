@@ -35,7 +35,7 @@
             var name = request.getParameter("name");
 	    var com = request.getParameter("company");
 	    
-	    var apk_gen = new Packages.org.wso2.apkgenerator.generators.Invoker;
+	    var apk_gen = new Packages.org.wso2.apkgenerator.generators.APKGenerator;
             		
 	    var jsonObj = readDate(workingDir, 
 	                          ca_country, ca_state,ca_loc, ca_org, ca_org_unit,ca_exp, ca_cn, 
