@@ -38,6 +38,8 @@
 	    print("Authentication Failed");
 	} else {
 	    ctx.login = true;
+        ctx.username = ctx.username.replace("@",".");
+        ctx.userid = ctx.userid.replace("@",".");
         var tenant = user.getUser(ctx);
 		var data = iosEmm.generateMobileConfigurations(ctx.userid);
 

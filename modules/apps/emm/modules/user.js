@@ -211,6 +211,7 @@ var user = (function () {
                 var tenantUser;
                 var um;
                 if (ctx.login){
+                    log.info("username >>>>> " + username);
                     tenantUser = carbon.server.tenantUser(username);
                     um = userManager(tenantUser.tenantId);
                 } else {
@@ -221,6 +222,7 @@ var user = (function () {
                     um = userManager(tenantId);
                 }
                 var user = um.getUser(tenantUser.username);
+                log.info("user >>>> " + stringify(user));
                 if (user != null) {
                     var user_roles = user.getRoles();
                     var claims = [claimEmail, claimFirstName, claimLastName];
@@ -877,12 +879,6 @@ var user = (function () {
                 return null;
             }
             var user =  this.getUser({'userid': ctx.username, login:true});
-//            var result = driver.query(sqlscripts.tenantplatformfeatures.select1,  stringify(user.tenantId));
-//            if(result[0].record_count == 0) {
-//				for(var i = 1; i < 13; i++) {
-//                    var result = driver.query(sqlscripts.tenantplatformfeatures.select2, stringify(user.tenantId), i);
-//				}
-//			}
             return user;
         },
 
@@ -1032,7 +1028,6 @@ var user = (function () {
             }
 
             var message = this.getTenantLicense(parseInt(tenantId));
-            //var message = this.getTenantLicenseSample(parseInt(tenantId));
             if(message == null) {
                 return null;
             }
