@@ -2,6 +2,7 @@ var device = (function () {
     var sqlscripts = require('/sqlscripts/db.js');
     var userModule = require('user.js').user;
     var common = require("/modules/common.js");
+    var constants = require('/modules/constants.js');
     var user;
     var driver;
     var module = function (db,router) {
@@ -10,38 +11,37 @@ var device = (function () {
 		user = new userModule(db);
         var Handle = require("/modules/handlebars.js").Handlebars;
         driver = require('driver').driver(db);
+
         var validateDevice = function() {
 
             //Allow Android version 4.0.3 and above
             //Allow iOS (iPhone and iPad) version 5.0 and above
-
-            var userOS; //will either be iOS, Android or unknown
-            var userOSversion;  //will be a string, use Number(userOSversion) to convert
-
+            var userOS;
+            var userOSversion;
             var useragent = arguments[0];
             var uaindex;
 
             //determine the OS
             if(useragent.match(/iPad/i) || useragent.match(/iPhone/i)) {
-                userOS = 'iOS';
+                userOS = constants.IOS;
                 uaindex = useragent.indexOf('OS ');
             } else if (useragent.match(/Android/i)) {
-                userOS = 'Android';
-                uaindex = useragent.indexOf('Android ');
+                userOS = constants.ANDROID;
+                uaindex = useragent.indexOf(constants.ANDROID);
             } else {
-                userOS = 'unknown';
+                userOS = constants.UNKNOWN;
             }
 
             //determine version
-            if (userOS == 'iOS' && uaindex > -1) {
+            if (userOS == constants.IOS && uaindex > -1) {
                 userOSversion = useragent.substr(uaindex + 3, 3).replace('_', '.');
-            } else if (userOS == 'Android' && uaindex > -1) {
+            } else if (userOS == constants.ANDROID && uaindex > -1) {
                 userOSversion = useragent.substr(uaindex + 8, 3);
             } else {
-                userOSversion = 'unknown';
+                userOSversion = constants.UNKNOWN;
             }
 
-            if (userOS == 'Android' && userOSversion.substr(0, 4) == '4.0.') {
+            if (userOS == constants.ANDROID && userOSversion.substr(0, 4) == constants.ANDROID_MIN_VERSION) {
                 if(Number(userOSversion.charAt(4)) >= 3 ) {
                     //Allow device
                     return true;
@@ -49,10 +49,10 @@ var device = (function () {
                     //Android version not allowed
                     return false;
                 }
-            } else if (userOS == 'Android' && Number(userOSversion.substr(0,3)) >= 4.1) {
+            } else if (userOS == constants.ANDROID && Number(userOSversion.substr(0,3)) >= 4.1) {
                 //Allow device
                 return true;
-            } else if(userOS == 'iOS' && Number(userOSversion.charAt(0)) >= 5) {
+            } else if(userOS == constants.IOS && Number(userOSversion.charAt(0)) >= constants.IOS_MIN_VERSION) {
                 //Allow device
                 return true;
             } else {
@@ -78,16 +78,17 @@ var device = (function () {
             return cont;
         }
 
-        var compileTemplate = function(templatePath, context){
+        var compileTemplate = function(templatePath, context) {
             var template = Handle.compile(getResource(templatePath));
             return template(context);
         }
 
-        var checkOwnership = function(deviceID,username){
+        var checkOwnership = function(deviceID,username) {
             log.debug("Device ID :"+deviceID);
             var result =  driver.query(sqlscripts.devices.select1,deviceID);
             log.debug("Result :"+stringify(result));
-            if(typeof result != 'undefined' && result!= null && typeof result[0] != 'undefined' && result[0]!= null && result[0].user_id == username ){
+            if(typeof result != 'undefined' && result!= null && typeof result[0] != 'undefined' && result[0]!= null &&
+                result[0].user_id == username ){
                 return true;
             }else{
                 return false;
@@ -96,7 +97,9 @@ var device = (function () {
 
         router.get('devices/ios/download', function(ctx) {
             config = require('/config/emm.js').config();
-            var iosManifest = compileTemplate("/ios_utils/plisttemplate.hbs", {url:config.device.ios.location, bundleid: config.device.ios.bundleid, bundleversion: config.device.ios.version,  appname: config.device.ios.appname});
+            var iosManifest = compileTemplate("/ios_utils/plisttemplate.hbs", {url:config.device.ios.location,
+                bundleid: config.device.ios.bundleid, bundleversion: config.device.ios.version,
+                appname: config.device.ios.appname});
             response.contentType = "application/xml";
             print(iosManifest);
         });
@@ -189,7 +192,8 @@ var device = (function () {
             var devices = driver.query(sqlscripts.devices.select20, ctx.udid);
             if (devices != null && devices != undefined && devices[0] != null && devices[0] != undefined) {
                 if (devices[0].id != null) {
-                    var result = device.sendMessageToIOSDevice({"data" : null, "operation" : "ENTERPRISEWIPE", "deviceid" : devices[0].id});
+                    var result = device.sendMessageToIOSDevice({"data" : null, "operation" : constants.OPERATION_ENTERPRISEWIPE,
+                        "deviceid" : devices[0].id});
                 }
             }
 		});
@@ -198,7 +202,8 @@ var device = (function () {
                  ctx.operation = "INSTALLAPP";
                 for (var i = ctx['data'].length - 1; i >= 0; i--){
                     var operation =  ctx['data'][i];
-                    var result = device.sendToDevice({data:operation, operation: ctx.operation, platform_id: operation.platform_id, deviceid: String(operation.deviceid)});
+                    var result = device.sendToDevice({data:operation, operation: ctx.operation,
+                        platform_id: operation.platform_id, deviceid: String(operation.deviceid)});
                 };
             }
 		});
@@ -208,12 +213,13 @@ var device = (function () {
                 ctx.operation = "UNINSTALLAPP";
                 for (var i = ctx['data'].length - 1; i >= 0; i--){
                     var operation =  ctx['data'][i];
-                    var result = device.sendToDevice({data:operation, operation: ctx.operation, platform_id: operation.platform_id, deviceid: String(operation.deviceid)});
+                    var result = device.sendToDevice({data:operation, operation: ctx.operation,
+                        platform_id: operation.platform_id, deviceid: String(operation.deviceid)});
                 };
             }
 		});
 
-		router.post('devices/{deviceid}/operations/{operation}', function(ctx){
+		router.post('devices/{deviceid}/operations/{operation}', function(ctx) {
     		log.debug("Device id = "+ctx.deviceid);
     		var username = common.getCurrentLoginUser();
     		if(username==null){
@@ -223,7 +229,7 @@ var device = (function () {
     		log.debug(isAdmin(username));
     		log.debug(checkOwnership(ctx.deviceid,username));
     		if(isAdmin(username)||checkOwnership(ctx.deviceid,username)){
-        		if(ctx.operation == "INSTALLAPP" || ctx.operation == "UNINSTALLAPP"){
+        		if(ctx.operation == "INSTALLAPP" || ctx.operation == "UNINSTALLAPP") {
             			var state = device.getCurrentDeviceState();
             			if(state == "A"){
                 			device.sendToDevice(ctx);
@@ -250,7 +256,7 @@ var device = (function () {
 
 		router.get('devices/{deviceid}/features', function(ctx){
 		    var result = device.getFeaturesFromDevice(ctx);
-		    if(result!= null && result != undefined && result[0] != null && result[0] != undefined){
+		    if(result!= null && result != undefined && result[0] != null && result[0] != undefined) {
 		        response.content = result;
 		        response.status = 200;
 		    }else{
@@ -263,7 +269,6 @@ var device = (function () {
 		});
 
         router.get('devices/license/1.0.0', function(ctx){
-            //log.debug("Request >>>>> " + stringify(ctx));
             var result = device.getLicenseAgreement(ctx);
             if (result == null) {
                 response.status = 404;
@@ -273,13 +278,13 @@ var device = (function () {
             }
         });
 
-        router.get('devices/sender_id/1.0.0', function(ctx){
+        router.get('devices/sender_id/1.0.0', function(ctx) {
             var result = device.getSenderId(ctx);
             print(result);
             response.status = 200;
         });
 
-		router.get('pending/devices/{udid}/operations', function(ctx){
+		router.get('pending/devices/{udid}/operations', function(ctx) {
 		    var result = device.getPendingOperationsFromDevice(ctx);
 		    if(result!= null && result != undefined){
 		        response.content = result;
@@ -289,20 +294,20 @@ var device = (function () {
 		    }
 		});
 		
-        router.post('devices/{deviceid}/WEBCLIP', function(ctx){
+        router.post('devices/{deviceid}/WEBCLIP', function(ctx) {
             if(common.checkAuth(ctx)){
                 ctx.operation = "WEBCLIP";
                 var result = device.sendToDevice(ctx);
             }
         });
-		router.post('devices/{deviceid}/AppInstall', function(ctx){
+		router.post('devices/{deviceid}/AppInstall', function(ctx) {
             if(common.checkAuth(ctx)){
                 ctx.operation = "INSTALLAPP";
                 var result = device.sendToDevice(ctx);
             }
 		});
 
-		router.post('devices/{deviceid}/AppUNInstall', function(ctx){
+		router.post('devices/{deviceid}/AppUNInstall', function(ctx) {
             if(common.checkAuth(ctx)){
                 ctx.operation = "UNINSTALLAPP";
                 var result = device.sendToDevice(ctx);
@@ -313,6 +318,5 @@ var device = (function () {
     module.prototype = {
         constructor: module
     };
-    // return module
     return module;
 })();

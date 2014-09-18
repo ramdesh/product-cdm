@@ -11,8 +11,8 @@ var device = (function () {
     var groupModule = require('group.js').group;
     var group = '';
     var sqlscripts = require('/sqlscripts/db.js');
+    var constants = require('/modules/constants.js');
     var tenantID = common.getTenantID();
-
 
     var configs = {
         CONTEXT: "/"
@@ -22,7 +22,6 @@ var device = (function () {
     var server = function(){
         return application.get("SERVER");
     }
-
     var log = new Log();
     var gcm = require('gcm').gcm;
 
@@ -34,6 +33,7 @@ var device = (function () {
         }
         return config[tenantId] || (config[tenantId] = {});
     };
+
     /**
 	 * Returns the user manager of the given tenant.
 	 * 
@@ -43,9 +43,7 @@ var device = (function () {
     var userManager = function (tenantId) {
 
         var config = configs(tenantId);
-
         if (!config || !config[USER_MANAGER]) {
-
             var um = new carbon.user.UserManager(server, tenantId);
             config[USER_MANAGER] = um;
             return um;
@@ -73,8 +71,7 @@ var device = (function () {
                     obj1[p] = obj2[p];
                 }
             } catch (e) {
-                // Property in destination object not set; create it and set its
-				// value.
+                // Property in destination object not set; create it and set its value.
                 obj1[p] = obj2[p];
             }
         }
@@ -91,20 +88,18 @@ var device = (function () {
 
         var username = devices[0].user_id;// username for pull policy payLoad
 		var tenantID = devices[0].tenant_id;
-
         var platforms = driver.query(sqlscripts.devices.select5, deviceId);
         var platformName = platforms[0].type_name;// platform name for pull
-
         var roleList = user.getUserRoles({'username':username});
-        var removeRoles = new Array("Internal/everyone", "wso2.anonymous.role", "Internal/reviewer","Internal/store","Internal/publisher");
+        var removeRoles = new Array("Internal/everyone", "wso2.anonymous.role", "Internal/reviewer","Internal/store",
+            "Internal/publisher");
         var roles = common.removeNecessaryElements(roleList,removeRoles);
         var role = roles[0];// role name for pull policy payLoad
 
-        log.debug("Roles >>> " + role);
-
+        log.debug("Roles : " + role);
         var obj = {};
         var upresult = driver.query(sqlscripts.policies.select15, category,String(username), tenantID);
-        if(upresult!=undefined && upresult != null && upresult[0] != undefined && upresult[0] != null ){
+        if (upresult!=undefined && upresult != null && upresult[0] != undefined && upresult[0] != null ) {
             var policyPayLoad;
             var mdmPolicy = parse(upresult[0].data);
             var mamPolicy = parse(upresult[0].mam_data);
@@ -125,7 +120,7 @@ var device = (function () {
         }
 
         var ppresult = driver.query(sqlscripts.policies.select2, category, platformName, tenantID );
-        if(ppresult!=undefined && ppresult != null && ppresult[0] != undefined && ppresult[0] != null ){
+        if (ppresult!=undefined && ppresult != null && ppresult[0] != undefined && ppresult[0] != null ) {
             var policyPayLoad;
             var mdmPolicy = parse(ppresult[0].data);
             var mamPolicy = parse(ppresult[0].mam_data);
@@ -146,7 +141,7 @@ var device = (function () {
         }
 
         var gpresult = driver.query(sqlscripts.policies.select3, category,role, tenantID);
-        if(gpresult != undefined && gpresult != null && gpresult[0] != undefined && gpresult[0] != null){
+        if (gpresult != undefined && gpresult != null && gpresult[0] != undefined && gpresult[0] != null) {
             var policyPayLoad;
             var mdmPolicy = parse(gpresult[0].data);
             var mamPolicy = parse(gpresult[0].mam_data);
@@ -180,7 +175,8 @@ var device = (function () {
         }
 
         var devicePolicy = driver.query(sqlscripts.policies.select16, deviceId, devices[0].tenant_id);
-        if (devicePolicy != null && devicePolicy != undefined && devicePolicy[0] != null && devicePolicy[0] != undefined) {
+        if (devicePolicy != null && devicePolicy != undefined && devicePolicy[0] != null &&
+            devicePolicy[0] != undefined) {
             var policyPayLoad;
             var mdmPolicy = parse(devicePolicy[0].data);
             var mamPolicy = parse(devicePolicy[0].mam_data);
@@ -213,7 +209,7 @@ var device = (function () {
             for (var i=0; i<mamData.length; ++i) {
                 var newPolicyFormat = {};
                 if (mamPolicy[j].code == "509B") {
-                    newPolicyFormat.code = "509A";
+                    newPolicyFormat.code = constants.INSTALLAPP;
                 } else {
                     newPolicyFormat.code = mamPolicy[j].code;
                 }
@@ -265,8 +261,8 @@ var device = (function () {
 
         var result;
         try {
-            result = driver.query("SELECT content FROM permissions where role in " + whereRoles + " AND tenant_id = ?", common.getTenantID());
-            //result = driver.query("SELECT content FROM permissions where role in ? AND tenant_id = ?", whereRoles, common.getTenantID());
+            result = driver.query("SELECT content FROM permissions where role in " + whereRoles + " AND tenant_id = ?",
+                common.getTenantID());
             for(var i=0;i<result.length;i++) {
                 var resultString = result[i].content.replace(/"/g,"");
                 var newArray = (resultString.substring(1, resultString.length -1)).split(",");
@@ -285,7 +281,7 @@ var device = (function () {
 
     function policyByOsType(jsonData,os){
         for(var n=0;n<jsonData.length;n++){
-            if(jsonData[n].code == '509B'||jsonData[n].code == '528B'){
+            if(jsonData[n].code == '509B'||jsonData[n].code == constants.BLACKLISTAPPS){
                 var apps = jsonData[n].data;
                 var appsByOs = new Array();
                 for(var k=0;k<apps.length;k++){
@@ -337,16 +333,19 @@ var device = (function () {
             var datetime = common.getCurrentDateTime();
             if (revokepolicyid == null) {
                 // Revoke the policy specificed
-                device_policy = driver.query(sqlscripts.device_policy.select1, deviceid, tenantID, policypriority[0].priority);
+                device_policy = driver.query(sqlscripts.device_policy.select1, deviceid, tenantID,
+                    policypriority[0].priority);
             } else {
                 // Revoke the policy using the revoke policy id
-                device_policy = driver.query(sqlscripts.device_policy.select2, deviceid, tenantID, revokepolicyid, policypriority[0].priority);
+                device_policy = driver.query(sqlscripts.device_policy.select2, deviceid, tenantID, revokepolicyid,
+                    policypriority[0].priority);
             }
 
             // Check if device already has a policy if so then revoke it
             if (device_policy != null && device_policy[0] != null) {
                 if (devices[0].platform_type == "iOS") {
-                    sendMessageToIOSDevice({'deviceid':deviceid, 'operation':'REVOKEPOLICY', 'data':parse(device_policy[0].payload_uids), 'policyid':revokepolicyid});
+                    sendMessageToIOSDevice({'deviceid':deviceid, 'operation':'REVOKEPOLICY',
+                        'data':parse(device_policy[0].payload_uids), 'policyid':revokepolicyid});
                 } else if (devices[0].platform_type == "Android"){
                     var revokepolicy = {};
                     revokepolicy.policyid = revokepolicyid;
@@ -382,12 +381,15 @@ var device = (function () {
                 if (policypriority[0].priority <= existDevicePolicy[0].priority){
                     // Remove and apply new policy
                     if (devices[0].platform_type == "iOS") {
-                        sendMessageToIOSDevice({'deviceid':deviceid, 'operation':'REVOKEPOLICY', 'data':parse(existDevicePolicy[0].payload_uids), 'policyid':existDevicePolicy[0].policy_id, 'newdatetime': datetime});
+                        sendMessageToIOSDevice({'deviceid':deviceid, 'operation':'REVOKEPOLICY',
+                            'data':parse(existDevicePolicy[0].payload_uids), 'policyid':existDevicePolicy[0].policy_id,
+                            'newdatetime': datetime});
                     } else {
                         var revokepolicy = {};
                         revokepolicy.policyid = existDevicePolicy[0].policy_id;
 
-                        sendMessageToAndroidDevice({'deviceid':deviceid, 'operation':'REVOKEPOLICY', 'data':revokepolicy, 'newdatetime': datetime});
+                        sendMessageToAndroidDevice({'deviceid':deviceid, 'operation':'REVOKEPOLICY',
+                            'data':revokepolicy, 'newdatetime': datetime});
                     }
 
                     driver.query(sqlscripts.device_policy.update1, existDevicePolicy[0].id);
@@ -409,7 +411,7 @@ var device = (function () {
                             if (features != null && features[0] != null) {
                                 var message = {};
                                 if (payloadIdentifiers[features[0].name]) {
-                                    message.code = "502P";
+                                    message.code = constants.POLICY_REVOKE;
                                     var payloadUid = {};
                                     payloadUid.fname = features[0].name;
                                     payloadUid.uuid = payloadIdentifiers[features[0].name];
@@ -419,11 +421,13 @@ var device = (function () {
                             }
                         }
 
-                        driver.query(sqlscripts.device_policy.insert1, deviceid, tenantID, policyid, policypriority[0].id, stringify(payloadUidArray), datetime);
+                        driver.query(sqlscripts.device_policy.insert1, deviceid, tenantID, policyid,
+                            policypriority[0].id, stringify(payloadUidArray), datetime);
 
                     } else if (devices[0].platform_type == "Android") {
 
-                        driver.query(sqlscripts.device_policy.insert2, deviceid, tenantID, policyid, policypriority[0].id, datetime);
+                        driver.query(sqlscripts.device_policy.insert2, deviceid, tenantID, policyid,
+                            policypriority[0].id, datetime);
                     }
                 }
             }
@@ -441,7 +445,7 @@ var device = (function () {
 
         var devices = driver.query(sqlscripts.devices.select6, deviceId);
 
-        if(devices == undefined || devices == null || devices[0]== undefined || devices[0] == null ){
+        if (devices == undefined || devices == null || devices[0]== undefined || devices[0] == null ) {
             return false;
         }
         var userID = devices[0].user_id;
@@ -453,14 +457,14 @@ var device = (function () {
         var regId = devices[0].reg_id;
 
         var features = driver.query(sqlscripts.features.select1, ctx.operation);
-        if(features == undefined || features == null || features[0]== undefined || features[0] == null ){
+        if (features == undefined || features == null || features[0]== undefined || features[0] == null ) {
             return false;
         }
         var featureCode = features[0].code;
         var featureId = features[0].id;
         var featureDescription = features[0].description;
             
-        if (featureCode == "500P") {
+        if (featureCode == constants.POLICY_ENFORCE) {
             // Revoke policy and save to device_policy
             saveDevicePolicy(ctx);
         }
@@ -472,16 +476,19 @@ var device = (function () {
             currentDate = common.getCurrentDateTime();
         }
         var insertMessage = true;
-        if (featureCode == "501P" || featureCode == "500A" || featureCode == "502A" ) {
+        if (featureCode == constants.POLICY_MONTORING || featureCode == constants.DEVICE_INFO ||
+            featureCode == constants.APP_INFO ) {
             var pendingCount = driver.query(sqlscripts.notifications.select14, deviceId, featureCode);
-            if(pendingCount != null && pendingCount != undefined && pendingCount[0] != null && pendingCount[0] != undefined) {
+            if(pendingCount != null && pendingCount != undefined && pendingCount[0] != null &&
+                pendingCount[0] != undefined) {
                 if(pendingCount[0].count > 0) {
                     insertMessage = false;
                 }
             }
         }
         if (insertMessage) {
-            driver.query(sqlscripts.notifications.insert1, deviceId, -1, payLoad, currentDate, featureCode, userID,featureDescription, tenantID);
+            driver.query(sqlscripts.notifications.insert1, deviceId, -1, payLoad, currentDate, featureCode,
+                userID,featureDescription, tenantID);
         }
 
         // SQL Check
@@ -501,17 +508,18 @@ var device = (function () {
         }
 
         if(AndroidNotifierType == "GCM") {
-            if(featureCode=="500P" || featureCode=="502P"){
-                var gcmMSG = gcm.sendViaGCMtoMobile(androidGCMKeys.APIKeys[0], regId, featureCode, token, "CONTACT SERVER", 30240, "POLICY");
+            if(featureCode==constants.POLICY_ENFORCE || featureCode==constants.POLICY_REVOKE){
+                var gcmMSG = gcm.sendViaGCMtoMobile(androidGCMKeys.APIKeys[0], regId, featureCode, token,
+                    "CONTACT SERVER", 30240, "POLICY");
             }else{
                 log.debug("Sending");
-                var gcmMSG = gcm.sendViaGCMtoMobile(androidGCMKeys.APIKeys[0], regId, featureCode, "CONTACT SERVER", payLoad, 3);
+                var gcmMSG = gcm.sendViaGCMtoMobile(androidGCMKeys.APIKeys[0], regId, featureCode, "CONTACT SERVER",
+                    payLoad, 3);
             }
             log.debug(gcmMSG);
         }
         return true;
     }
-
 
     <!-- iOs specific functions-->
     function invokeInitialFunctions(ctx) {
@@ -527,30 +535,32 @@ var device = (function () {
         var mdmPolicy = getPolicyPayLoad(deviceID,1);
         if(mdmPolicy != undefined && mdmPolicy != null){
             if(mdmPolicy.payLoad != undefined && mdmPolicy.payLoad != null){
-                sendMessageToIOSDevice({'deviceid':deviceID, 'operation': "POLICY", 'data': mdmPolicy.payLoad, 'policyid':mdmPolicy.policyid, 'policypriority': mdmPolicy.policypriority});
+                sendMessageToIOSDevice({'deviceid':deviceID, 'operation': "POLICY", 'data': mdmPolicy.payLoad,
+                    'policyid':mdmPolicy.policyid, 'policypriority': mdmPolicy.policypriority});
             }
         }
 
     }
 
     function sendMessageToIOSDevice(ctx){
-        log.debug("CTX >>>>>"+stringify(ctx));
         var deviceID = ctx.deviceid;
         var tenantID = common.getTenantIDFromDevice(deviceID);
         var message = stringify(ctx.data);
 
         // Filter the policy depending on Device
         if (ctx.operation == 'MONITORING') {
-            var filterMessage = policyFiltering({'deviceid': ctx.deviceid, 'operation':ctx.operation, 'data': ctx.data.policies});
+            var filterMessage = policyFiltering({'deviceid': ctx.deviceid, 'operation':ctx.operation,
+                'data': ctx.data.policies});
             if (filterMessage != null) {
                 ctx.data.policies = filterMessage;
                 message = stringify(ctx.data);
-                log.debug("MONITORING Message >>>>> " + message);
+                log.debug("MONITORING Message : " + message);
             }
         } else if (ctx.operation == "POLICY") {
-            var filterMessage = policyFiltering({'deviceid': ctx.deviceid, 'operation':ctx.operation, 'data': ctx.data});
+            var filterMessage = policyFiltering({'deviceid': ctx.deviceid, 'operation':ctx.operation,
+                'data': ctx.data});
             if (filterMessage != null) {
-                log.debug("POLICY Message >>>>> " + stringify(filterMessage));
+                log.debug("POLICY Message : " + stringify(filterMessage));
                 message = stringify(filterMessage);
 
                 // Revoke policy and save to device_policy
@@ -607,7 +617,7 @@ var device = (function () {
 
         var featureCode = features[0].code;
         var featureDescription = features[0].description;
-        if(featureCode == "501P"){
+        if(featureCode == constants.POLICY_MONTORING){
             try{
                 driver.query(sqlscripts.notifications.delete1, ctx.deviceid,featureCode);
             }catch (e){
@@ -645,16 +655,18 @@ var device = (function () {
 
         var tenantID = common.getTenantIDFromDevice(ctx.deviceid);
 
-        log.debug("notifyExists >>>>> " + stringify(notifyExists[0]));
+        log.debug("notifyExists : " + stringify(notifyExists[0]));
         if (notifyExists[0].count == 0) {
             log.debug("Notification inserted!");
-            driver.query(sqlscripts.notifications.insert2, ctx.deviceid, message, datetime, featureCode, userId, featureDescription, tenantID);
+            driver.query(sqlscripts.notifications.insert2, ctx.deviceid, message, datetime, featureCode, userId,
+                featureDescription, tenantID);
         }
 
         var sendToAPNS = null;
         var lastApnsTime = driver.query(sqlscripts.device_awake.select1, ctx.deviceid);
         log.debug("lastApnsTime >> " + stringify(lastApnsTime[0]));
-        if (lastApnsTime != null && lastApnsTime[0] != null && lastApnsTime != undefined && lastApnsTime[0] != undefined) {
+        if (lastApnsTime != null && lastApnsTime[0] != null && lastApnsTime != undefined &&
+            lastApnsTime[0] != undefined) {
             // 1 hr = 60 * 60 = 3600 seconds
             if (lastApnsTime[0].seconds != null && lastApnsTime[0].seconds != undefined) {
                 if (lastApnsTime[0].seconds >= 1) {
@@ -727,8 +739,8 @@ var device = (function () {
     var sendIOSPushNotifications = function(token, message) {
     	
         log.debug("Send IOS Push Notifications");
-        log.debug("token: >>>>>> " + token);
-        log.debug("message: >>>>>> " + message);
+        log.debug("token: : " + token);
+        log.debug("message: " + message);
         
     	if(token == null || token == null || 
     			message == undefined || message == undefined) {
@@ -758,8 +770,6 @@ var device = (function () {
     function policyFiltering(ctx) {
         // This function is used to filter policy based on the platform
         var tenantID = common.getTenantID();
-        log.debug("Policy Filter based on Device type");
-
         var device_id = String(ctx.deviceid);
         var deviceFeature;
         var messageArray
@@ -768,11 +778,8 @@ var device = (function () {
         // Filter and remove Policies which are not valid for platform
         messageArray = parse(stringify(ctx.data));
         while (i < messageArray.length) {
-
-            if(messageArray[i].code == "509A" || messageArray[i].code == "528B") {
-
+            if(messageArray[i].code == constants.INSTALLAPP || messageArray[i].code == constants.BLACKLISTAPPS) {
                 var appInstallInfo = messageArray[i].data;
-                // log.debug("appInstallInfo >>>>>>> " + appInstallInfo);
                 var platforms = driver.query(sqlscripts.platforms.select4, device_id, appInstallInfo.os);
                 if(platforms[0].count == 0) {
                     // This app is not compatible with this device
@@ -782,8 +789,6 @@ var device = (function () {
                 }
             } else {
                 deviceFeature = driver.query(sqlscripts.platformfeatures.select2, device_id, messageArray[i].code);
-
-                // log.debug("Device Feature: " + deviceFeature[0].count);
                 if (deviceFeature[0].count == 0) {
                     // feature not available for the platform
                     messageArray.splice(i,1);
@@ -807,11 +812,14 @@ var device = (function () {
             if (userAgent.indexOf("Android") > 0) {
                 return (configFile.device.android_location);
             } else if (userAgent.indexOf("iPhone") > 0) {
-                 return("itms-services://?action=download-manifest&url=itms-services://?action=download-manifest&url=" + configFile.HTTPS_URL + "/emm/api/devices/ios/download");
+                return("itms-services://?action=download-manifest&url=itms-services://?action=download-manifest&url=" +
+                    configFile.HTTPS_URL + "/emm/api/devices/ios/download");
             } else if (userAgent.indexOf("iPad") > 0){
-                 return("itms-services://?action=download-manifest&url=itms-services://?action=download-manifest&url=" + configFile.HTTPS_URL + "/emm/api/devices/ios/download");
+                return("itms-services://?action=download-manifest&url=itms-services://?action=download-manifest&url=" +
+                    configFile.HTTPS_URL + "/emm/api/devices/ios/download");
             } else if (userAgent.indexOf("iPod") > 0){
-                 return("itms-services://?action=download-manifest&url=itms-services://?action=download-manifest&url=" + configFile.HTTPS_URL + "/emm/api/devices/ios/download");
+                return("itms-services://?action=download-manifest&url=itms-services://?action=download-manifest&url=" +
+                    configFile.HTTPS_URL + "/emm/api/devices/ios/download");
             }
         },
 
@@ -951,7 +959,8 @@ var device = (function () {
             var succeeded="";
             var failed="";
             for(var i=0; i<device_list.length; i++){
-                var status = this.sendToDevice({'deviceid':device_list[i].id, 'operation': ctx.operation, 'data' : ctx.data});
+                var status = this.sendToDevice({'deviceid':device_list[i].id, 'operation': ctx.operation,
+                    'data' : ctx.data});
                 if(status == true){
                     succeeded += device_list[i].id+",";
                 }else{
@@ -973,7 +982,8 @@ var device = (function () {
 
                 for(var j = 0; j < result.length; j++) {
 
-                    var status = this.sendToDevice({'deviceid':result[i].id, 'operation': ctx.operation, 'data' : ctx.data});
+                    var status = this.sendToDevice({'deviceid':result[i].id, 'operation': ctx.operation,
+                        'data' : ctx.data});
                     if(status == true){
                         succeeded += result[i].id+",";
                     }else{
@@ -1008,7 +1018,8 @@ var device = (function () {
                 var mdmPolicy = getPolicyMonitoringPayLoad(deviceId,1);
 
                 if(mdmPolicy != undefined && mdmPolicy != null){
-                    if(mdmPolicy.payLoad != undefined && mdmPolicy.payLoad != null && mdmPolicy.type != undefined && mdmPolicy.type != null){
+                    if(mdmPolicy.payLoad != undefined && mdmPolicy.payLoad != null && mdmPolicy.type != undefined &&
+                        mdmPolicy.type != null){
                         var obj = {};
                         obj.type = mdmPolicy.type;
                         obj.policies = mdmPolicy.payLoad;
@@ -1076,7 +1087,8 @@ var device = (function () {
 				 */
                 if(result[0]==null){
                     var roleList = user.getUserRoles({'username':userId});
-                    var removeRoles = new Array("Internal/everyone", "portal", "wso2.anonymous.role", "reviewer","private_kasun:wso2mobile.com");
+                    var removeRoles = new Array("Internal/everyone", "portal", "wso2.anonymous.role",
+                        "reviewer","private_kasun:wso2mobile.com");
                     var roles = common.removeNecessaryElements(roleList,removeRoles);
                     var role = roles[0];
                     var byod = 0;
@@ -1087,7 +1099,8 @@ var device = (function () {
                         //Type = COPE
                         byod = 0;
                     }
-                    driver.query(sqlscripts.devices.insert1, tenantId, ctx.osversion, createdDate, ctx.properties, ctx.regid, byod, userId, platformId, ctx.vendor, ctx.mac);
+                    driver.query(sqlscripts.devices.insert1, tenantId, ctx.osversion, createdDate, ctx.properties,
+                        ctx.regid, byod, userId, platformId, ctx.vendor, ctx.mac);
                     var devices = driver.query(sqlscripts.devices.select19, ctx.regid);
                     var deviceID = devices[0].id;
                     log.debug("Android Device has been registered "+ctx.regid);
@@ -1095,10 +1108,12 @@ var device = (function () {
                     sendMessageToAndroidDevice({'deviceid':deviceID, 'operation': "APPLIST", 'data': "null"});
 
                     var mdmPolicy = getPolicyPayLoad(deviceID,1);
-                    log.debug("PayLoad >>> " + mdmPolicy);
+                    log.debug("PayLoad : " + mdmPolicy);
                     if(mdmPolicy != undefined && mdmPolicy != null){
                         if(mdmPolicy.payLoad != undefined && mdmPolicy.payLoad != null){
-                            sendMessageToAndroidDevice({'deviceid':deviceID, 'operation': "POLICY", 'data': mdmPolicy.payLoad, 'policyid':mdmPolicy.policyid, 'policypriority': mdmPolicy.policypriority});
+                            sendMessageToAndroidDevice({'deviceid':deviceID, 'operation': "POLICY",
+                                'data': mdmPolicy.payLoad, 'policyid':mdmPolicy.policyid,
+                                'policypriority': mdmPolicy.policypriority});
                         }
                     }
                     return true;
@@ -1165,12 +1180,15 @@ var device = (function () {
             var devicesCheckUDID = driver.query(sqlscripts.device_pending.select1, ctx.auth_token);
 
             // Save device data into temporary table
-            if(devicesCheckUDID != undefined && devicesCheckUDID != null && devicesCheckUDID[0] != undefined && devicesCheckUDID[0] != null){
+            if(devicesCheckUDID != undefined && devicesCheckUDID != null && devicesCheckUDID[0] != undefined &&
+                devicesCheckUDID[0] != null){
 
-                driver.query(sqlscripts.device_pending.update1, tenantId, userId, platformId, stringify(ctx.properties), createdDate, ctx.vendor, ctx.udid, ctx.auth_token);
+                driver.query(sqlscripts.device_pending.update1, tenantId, userId, platformId, stringify(ctx.properties),
+                    createdDate, ctx.vendor, ctx.udid, ctx.auth_token);
             } else {
 
-                driver.query(sqlscripts.device_pending.insert1, tenantId, userId, platformId, stringify(ctx.properties), createdDate, ctx.vendor, ctx.udid, ctx.auth_token);
+                driver.query(sqlscripts.device_pending.insert1, tenantId, userId, platformId, stringify(ctx.properties),
+                    createdDate, ctx.vendor, ctx.udid, ctx.auth_token);
             }
 
             return true;
@@ -1180,29 +1198,26 @@ var device = (function () {
             if(deviceList[0]!=null) {
                 var deviceID = String(deviceList[0].id);
 
-                log.debug("deviceID >>>>> " + deviceID);
-                log.debug("Device List >>>> " + stringify(deviceList));
+                log.debug("deviceID : " + deviceID);
+                log.debug("Device List : " + stringify(deviceList));
 
                 var pendingFeatureCodeList=driver.query(sqlscripts.notifications.select3, deviceID);
 
-                log.debug("Pending >>>> " + stringify(pendingFeatureCodeList));
+                log.debug("Pending : " + stringify(pendingFeatureCodeList));
 
-                if(pendingFeatureCodeList!=undefined && pendingFeatureCodeList != null && pendingFeatureCodeList[0]!= undefined && pendingFeatureCodeList[0]!= null){
+                if(pendingFeatureCodeList!=undefined && pendingFeatureCodeList != null &&
+                    pendingFeatureCodeList[0]!= undefined && pendingFeatureCodeList[0]!= null){
                     var id = pendingFeatureCodeList[0].id;
                     var feature_code = pendingFeatureCodeList[0].feature_code;
 
-                    if(feature_code == "500P" || feature_code == "502P") {
+                    if(feature_code == constants.POLICY_ENFORCE || feature_code == constants.POLICY_REVOKE) {
 
                         var message = parse(pendingFeatureCodeList[0].message);
-
-                            log.debug("message >>>>> " + stringify(message));
-
+                        log.debug("message : " + stringify(message));
                         var received_data = pendingFeatureCodeList[0].received_data;
-
                         if(received_data == null || received_data == '') {
 
                             var arrEmptyReceivedData = new Array();
-
                             for(var i = 0; i < message.length; i++) {
                                 var receivedObject = {};
                                 receivedObject.status = "pending";
@@ -1214,7 +1229,7 @@ var device = (function () {
                             driver.query(sqlscripts.notifications.update2, stringify(arrEmptyReceivedData), id);
                             received_data = parse(stringify(arrEmptyReceivedData));
 
-                            log.debug("received message >>>>> " +stringify(received_data));
+                            log.debug("received message : " +stringify(received_data));
                         } else {
                             received_data = parse(received_data);
                         }
@@ -1229,13 +1244,11 @@ var device = (function () {
                                 objResponse.feature_code = received_data[i].message.code + "";
                                 objResponse.message = stringify(received_data[i].message.data);
                                 objResponse.id = id + "-" + i;
-
                                 received_data[i].counter = ++counter + "";
 
                                 if(counter > 3) {
                                     received_data[i].status = "skipped";
                                 }
-
                                 driver.query(sqlscripts.notifications.update2, stringify(received_data), id);
 
                                 if(counter > 3) {
@@ -1284,43 +1297,40 @@ var device = (function () {
                 properties["model"] = platform;
 
                 var userResultExist = driver.query(sqlscripts.devices.select21, ctx.deviceid);
-                if(userResultExist != null && userResultExist != undefined && userResultExist[0] != null && userResultExist[0] != undefined) {
+                if(userResultExist != null && userResultExist != undefined && userResultExist[0] != null &&
+                    userResultExist[0] != undefined) {
                 	
                 	var devicePendingResult = driver.query(sqlscripts.device_pending.select3, ctx.deviceid);
 	                   
-	                if(devicePendingResult != null && devicePendingResult != undefined && devicePendingResult[0] != null && devicePendingResult[0] != undefined) {
+	                if(devicePendingResult != null && devicePendingResult != undefined &&
+                        devicePendingResult[0] != null && devicePendingResult[0] != undefined) {
 	                	devicePendingResult = devicePendingResult[0];
 
-                        updateResult = driver.query(sqlscripts.devices.update3, devicePendingResult.tenant_id, devicePendingResult.user_id, devicePendingResult.platform_id, stringify(tokenProperties), stringify(properties), devicePendingResult.status,
-                            devicePendingResult.byod, devicePendingResult.vendor, devicePendingResult.udid, ctx.deviceid);
+                        updateResult = driver.query(sqlscripts.devices.update3, devicePendingResult.tenant_id,
+                            devicePendingResult.user_id, devicePendingResult.platform_id, stringify(tokenProperties),
+                            stringify(properties), devicePendingResult.status, devicePendingResult.byod,
+                            devicePendingResult.vendor, devicePendingResult.udid, ctx.deviceid);
 
                         var getDevice = driver.query(sqlscripts.devices.select20, ctx.deviceid);
-                        if (getDevice != null && getDevice != undefined && getDevice[0] != null && getDevice != undefined) {
-                            // Update from notifications, device_awake for this
-							// device id
+                        if (getDevice != null && getDevice != undefined && getDevice[0] != null &&
+                            getDevice != undefined) {
+                            // Update from notifications, device_awake for this device id
                             driver.query(sqlscripts.device_awake.update5, getDevice[0].id);
                             driver.query(sqlscripts.notifications.update7, getDevice[0].id);
-
                         }
-
 	                }
 	                
 	                driver.query(sqlscripts.device_pending.update2, devicePendingResult.user_id);
 
                 } else {
-                	// Copy record from temporary table into device table and
-					// delete the record from the temporary table
-                    updateResult = driver.query(sqlscripts.devices.insert2, stringify(tokenProperties), stringify(properties), ctx.deviceid);
+                	//Copy record from temporary table into device table and delete the record from the temporary table
+                    updateResult = driver.query(sqlscripts.devices.insert2, stringify(tokenProperties),
+                        stringify(properties), ctx.deviceid);
 	                driver.query(sqlscripts.device_pending.update3, ctx.deviceid);
                 }
                 if(updateResult != null && updateResult != undefined && updateResult == 1) {
 
                     setTimeout(function(){invokeInitialFunctions(ctx)}, 2000);
-// var devices = driver.query(sqlscripts.devices.select7 ,ctx.deviceid);
-// var deviceID = devices[0].id;
-// sendMessageToIOSDevice({'deviceid':deviceID, 'operation': "INFO", 'data':
-// "hi"});
-
                     return true;
                 }
 
@@ -1340,13 +1350,14 @@ var device = (function () {
                     }
                     properties["model"] = platform;
 
-                    updateResult = driver.query(sqlscripts.devices.update8, stringify(properties), stringify(tokenProperties), ctx.deviceid);
+                    updateResult = driver.query(sqlscripts.devices.update8, stringify(properties),
+                        stringify(tokenProperties), ctx.deviceid);
 
                     if(updateResult != null && updateResult != undefined && updateResult == 1) {
                         var getDevice = driver.query(sqlscripts.devices.select20, ctx.deviceid);
-                        if (getDevice != null && getDevice != undefined && getDevice[0] != null && getDevice != undefined) {
-                            // Update from notifications, device_awake for this
-							// device id
+                        if (getDevice != null && getDevice != undefined && getDevice[0] != null &&
+                            getDevice != undefined) {
+                            // Update from notifications, device_awake for this device id
                             driver.query(sqlscripts.device_awake.update5, getDevice[0].id);
                         }
                         setTimeout(function(){invokeInitialFunctions(ctx)}, 2000);

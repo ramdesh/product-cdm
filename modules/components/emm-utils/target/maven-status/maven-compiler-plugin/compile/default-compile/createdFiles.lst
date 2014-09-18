@@ -1,0 +1,6 @@
+org/wso2/mobile/utils/utilities/AndroidXMLParsing.class
+org/wso2/mobile/utils/Activator.class
+org/wso2/mobile/utils/persistence/JDBCPersistenceManager.class
+org/wso2/mobile/utils/utilities/ZipFileReading.class
+org/wso2/mobile/utils/internal/EMMUtilsServiceComponent.class
+org/wso2/mobile/utils/persistence/EMMDBInitializer.class

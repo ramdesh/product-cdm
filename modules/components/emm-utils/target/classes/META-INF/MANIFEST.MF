@@ -1,0 +1,29 @@
+Manifest-Version: 1.0
+Export-Package: org.wso2.mobile.utils.persistence;uses:="org.apache.co
+ mmons.logging,javax.sql,org.wso2.carbon.ndatasource.core";version="1.
+ 1.0",org.wso2.mobile.utils;uses:="org.apache.commons.logging,org.osgi
+ .framework";version="1.1.0",org.wso2.mobile.utils.utilities;uses:="co
+ m.dd.plist,javax.xml.parsers,org.apache.commons.io,org.json.simple,or
+ g.w3c.dom,org.xml.sax";version="1.1.0",org.wso2.mobile.utils.internal
+ ;uses:="org.wso2.mobile.utils.persistence,org.apache.commons.logging,
+ org.wso2.carbon.ndatasource.core,org.osgi.service.component";version=
+ "1.1.0"
+Service-Component: OSGI-INF/serviceComponents.xml
+Built-By: nira
+Tool: Bnd-1.43.0
+Bundle-Name: org.wso2.emm.utils
+Created-By: Apache Maven Bundle Plugin
+Build-Jdk: 1.6.0_45
+Bundle-Version: 1.1.0
+Bnd-LastModified: 1410865195048
+Bundle-ManifestVersion: 2
+Bundle-Activator: org.wso2.mobile.utils.Activator
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0
+Bundle-Description: WSO2 Enterprise Mobility Manager (EMM)
+Import-Package: com.dd.plist;version="[1.8,2)",javax.sql,javax.xml.par
+ sers,org.apache.commons.io;version="[2.0,3)",org.apache.commons.loggi
+ ng;version="[1.1,2)",org.json.simple,org.osgi.framework;version="[1.7
+ ,2)",org.osgi.service.component;version="[1.0,2)",org.w3c.dom,org.wso
+ 2.carbon.ndatasource.core;version="[4.2,5)",org.xml.sax
+Bundle-SymbolicName: org.wso2.emm.utils
+
