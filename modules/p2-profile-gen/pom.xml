@@ -341,15 +341,18 @@
 								<featureArtifactDef>
 									org.wso2.carbon:org.wso2.carbon.cassandra-jdbc-1.1.1.server.feature:4.0.1
 								</featureArtifactDef>
+								
+								<featureArtifactDef>
+									org.wso2.carbon:org.wso2.carbon.databridge.datareceiver.feature:${carbon.platform.version}
+								</featureArtifactDef>
+
 								<featureArtifactDef>
 									org.wso2.carbon:org.wso2.carbon.databridge.datapublisher.feature:4.2.1
 								</featureArtifactDef>
 								<featureArtifactDef>
-									org.wso2.carbon:org.wso2.carbon.databridge.datareceiver.feature:${carbon.platform.version}
-								</featureArtifactDef>
-								<featureArtifactDef>
 									org.wso2.carbon:org.wso2.carbon.databridge.commons.server.feature:4.2.1
-								</featureArtifactDef>-->
+								</featureArtifactDef>
+-->
 								<featureArtifactDef>
 									org.wso2.carbon:org.wso2.carbon.databridge.cassandra.feature:${carbon.platform.version}
 								</featureArtifactDef>
@@ -589,6 +592,10 @@
 									<id>org.wso2.carbon.user.mgt.feature.group</id>
 									<version>4.2.1</version>
 								</feature>
+
+								
+
+
 								<!-- BAM features -->
 <!--
 								<feature>
