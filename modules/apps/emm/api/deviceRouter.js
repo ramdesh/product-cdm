@@ -197,6 +197,7 @@ var device = (function () {
                 }
             }
 		});
+
 		router.post('devices/AppInstall', function(ctx){
             if(common.checkAuth(ctx)){
                  ctx.operation = "INSTALLAPP";
@@ -300,6 +301,7 @@ var device = (function () {
                 var result = device.sendToDevice(ctx);
             }
         });
+
 		router.post('devices/{deviceid}/AppInstall', function(ctx) {
             if(common.checkAuth(ctx)){
                 ctx.operation = "INSTALLAPP";

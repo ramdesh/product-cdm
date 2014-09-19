@@ -72,10 +72,6 @@ public class TaskServiceComponent {
 
     }
 
-    protected void deactivate(ComponentContext ctxt) {
-        log.debug("Task Schedule bundle is deactivated ");
-    }
-
     protected void setTaskService(TaskService taskService) {
         if (log.isDebugEnabled()) {
             log.debug("Setting the Task Service");
@@ -92,5 +88,9 @@ public class TaskServiceComponent {
 
     public static TaskService getTaskService() {
         return TaskServiceComponent.taskService;
+    }
+
+    protected void deactivate(ComponentContext ctxt) {
+        log.debug("Task Schedule bundle is deactivated ");
     }
 }
