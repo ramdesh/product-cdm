@@ -55,6 +55,7 @@ var user = (function () {
         }
         return configs[tenantId] || (configs[tenantId] = {});
     };
+
     /**
      * Returns the user manager of the given tenant.
      * @param tenantId
@@ -92,6 +93,7 @@ var user = (function () {
             um.authorizeRole(private_role, arrPermission);
         }
     }
+
     var getUserType = function(user_roles){
         for (var i = user_roles.length - 1; i >= 0; i--) {
             var role = user_roles[i].toUpperCase();
@@ -129,9 +131,11 @@ var user = (function () {
         }
         return retVal;
     }
+
     // prototype
     module.prototype = {
         constructor: module,
+
         /*User CRUD Operations (Create, Retrieve, Update, Delete)*/
         generatePassword : generatePassword,
         addUser: function(ctx){
@@ -177,6 +181,7 @@ var user = (function () {
             }
             return proxy_user;
         },
+
         getUser: function(ctx){
             try {
                 var proxy_user = {};
@@ -217,6 +222,7 @@ var user = (function () {
                 return error;
             }
         },
+
         //Deprecated
         getAllUsers: function(ctx){
             var tenantId = common.getTenantID();
@@ -246,6 +252,7 @@ var user = (function () {
             log.debug("LLLLLLLLLLLLLLLLLLLL"+stringify(users_list));
             return users_list;
         },
+
         getAllUserNames: function(filter){
             var tenantId = common.getTenantID();
             var users_list = [];
@@ -264,6 +271,7 @@ var user = (function () {
             }
             return users_list;
         },
+
         getAllUserNamesByRole: function(ctx) {
             var tenantId = common.getTenantID();
             var users_list = [];
@@ -278,10 +286,12 @@ var user = (function () {
             }
             return users_list;
         },
+
         deleteUser: function(ctx){
             var result = driver.query(sqlscripts.devices.select36, ctx.userid);
             log.debug("Result :"+result);
-            if(result != undefined && result != null && result != '' && result[0].length != undefined && result[0].length != null && result[0].length > 0){
+            if(result != undefined && result != null && result != '' && result[0].length != undefined &&
+                result[0].length != null && result[0].length > 0){
                 return 404;
             }else{
                 var um = userManager(common.getTenantID());
@@ -298,11 +308,11 @@ var user = (function () {
 
         /*Get list of roles belongs to particular user*/
         getUserRoles: function(ctx){
-            log.debug("User Name >>>>>>>>>"+ctx.username);
+            log.debug("User Name: " + ctx.username);
             var username = ctx.username;
 
             if(username.indexOf("@")<1){
-                username = username+"@carbon.super";
+                username = username + "@carbon.super";
             }
             var tenantUser = carbon.server.tenantUser(username);
             var um = userManager(common.getTenantID());
@@ -310,6 +320,7 @@ var user = (function () {
             var roleList = common.removePrivateRole(roles);
             return roleList;
         },
+
         updateRoleListOfUser:function(ctx){
             var existingRoles = this.getUserRoles(ctx);
             var addedRoles = ctx.added_groups;
@@ -347,6 +358,7 @@ var user = (function () {
             var um = userManager(common.getTenantID());
             um.updateRoleListOfUser(ctx.username, deletedRoles, newRoles);
         },
+
         getUsersByType:function(ctx){//types are administrator,mam,user
             var type = ctx.type;
             var usersByType = new Array();
@@ -356,11 +368,12 @@ var user = (function () {
                 var flag = 0;
                 for(var j=0 ;j<roles.length;j++){
                     var role = roles[j].toUpperCase();
-                    log.debug("Test iteration2"+role);
-                    if((role=='ADMIN')||(role=='INTERNAL/EMMADMIN')){
+                    if((role== constants.ROLE_ADMIN)||(role == constants.ROLE_INTERNAL_EMMADMIN)){
                         flag = 1;
                         break;
-                    }else if((role=='INTERNAL/PUBLISHER')||(role=='INTERNAL/REVIEWER')||(role=='INTERNAL/STORE')|| (role=='INTERNAL/MAMADMIN')){
+                    }else if ((role == constants.ROLE_INTERNAL_PUBLISHER)
+                        || (role == constants.ROLE_INTERNAL_REVIEWER) || (role== constants.ROLE_INTERNAL_STORE) ||
+                        (role == constants.ROLE_INTERNAL_MAMADMIN)){
                         flag = 2;
                         break;
                     }else{
@@ -368,21 +381,21 @@ var user = (function () {
                     }
                 }
                 if(flag == 1){
-                    users[i].type = 'administrator';
-                    if(type == 'admin'){
+                    users[i].type = constants.TYPE_ADMINISTRATOR;
+                    if(type == constants.TYPE_ADMIN){
                         usersByType.push( users[i]);
                     }
                 }else if(flag == 2) {
-                    users[i].type = 'mam';
+                    users[i].type = constants.TYPE_MAM;
                     usersByType.push( users[i]);
                 }else{
-                    users[i].type = 'user';
+                    users[i].type = constants.POLICY_USER;
                     usersByType.push( users[i]);
                 }
-                //print(stringify(users[i]));
             }
             return usersByType;
         },
+
         hasDevicesenrolled: function(ctx){
             //Check if user has any devices enrolled
             try {
@@ -411,24 +424,22 @@ var user = (function () {
         defaultTenantConfiguration: function(tenantId) {
             var properties = this.getTenantCopyRight(tenantId);
             if(properties == null) {
-
                 var defaultData = '{'
-                    + '"emailSmtpHost" : "' + config.DEFAULT.EMAIL.SMTPHOST + '", '
-                    + '"emailSmtpPort" : "' + config.DEFAULT.EMAIL.SMTPPORT + '", '
-                    + '"emailUsername" : "' + config.DEFAULT.EMAIL.USERNAME + '", '
-                    + '"emailPassword" : "' + config.DEFAULT.EMAIL.PASSWORD + '", '
-                    + '"emailSenderAddress" : "' + config.DEFAULT.EMAIL.SENDERADDRESS + '", '
-                    + '"emailTemplate" : "' + config.DEFAULT.EMAIL.TEMPLATE + '", '
-                    + '"uiTitle" : "' + config.DEFAULT.UITITLE + '", '
-                    + '"uiCopyright" : "' + config.DEFAULT.UICOPYRIGHT + '", '
-                    + '"uiLicence" : "' + config.DEFAULT.UILICENSE + '", '
-                    + '"companyName" : "' + config.DEFAULT.COMPANYNAME + '", '
-                    + '"androidNotifier" : "' + config.DEFAULT.ANDROID.NOTIFIER + '", '
-                    + '"androidNotifierFreq" : "' + config.DEFAULT.ANDROID.NOTIFIER_INTERVAL + '", '
-                    + '"androidApiKeys" : "' + config.DEFAULT.ANDROID.APIKEY + '", '
-                    + '"androidSenderIds" : "' + config.DEFAULT.ANDROID.SENDERID + '"'
+                    + constants.EMAIL_SMTP_HOST + ' : "' + config.DEFAULT.EMAIL.SMTPHOST + '", '
+                    + constants.EMAIL_SMTP_PORT + ' : "' + config.DEFAULT.EMAIL.SMTPPORT + '", '
+                    + constants.EMAIL_USERNAME + ' : "' + config.DEFAULT.EMAIL.USERNAME + '", '
+                    + constants.EMAIL_PASSWORD + ' : "' + config.DEFAULT.EMAIL.PASSWORD + '", '
+                    + constants.EMAIL_SENDER_ADDRESS + ' : "' + config.DEFAULT.EMAIL.SENDERADDRESS + '", '
+                    + constants.EMAIL_TEMPLATE + ' : "' + config.DEFAULT.EMAIL.TEMPLATE + '", '
+                    + constants.UI_TITLE + ' : "' + config.DEFAULT.UITITLE + '", '
+                    + constants.UI_COPYRIGHT + ' : "' + config.DEFAULT.UICOPYRIGHT + '", '
+                    + constants.UI_LICENSE + ' : "' + config.DEFAULT.UILICENSE + '", '
+                    + constants.COMPANY_NAME + ' : "' + config.DEFAULT.COMPANYNAME + '", '
+                    + constants.ANDROID_NOTIFIER + ' : "' + config.DEFAULT.ANDROID.NOTIFIER + '", '
+                    + constants.ANDROID_NOTIFIER_FREQUENCY + ' : "' + config.DEFAULT.ANDROID.NOTIFIER_INTERVAL + '", '
+                    + constants.ANDROID_API_KEYS + ' : "' + config.DEFAULT.ANDROID.APIKEY + '", '
+                    + constants.ANDROID_SENDER_IDS + ' : "' + config.DEFAULT.ANDROID.SENDERID + '"'
                     + '}';
-
                 this.saveTenantConfiguration(parse(defaultData), null, null, tenantId, "true");
             }
         },
@@ -464,18 +475,18 @@ var user = (function () {
                             var iOSAPNSPassword = ctx.iosAPNSPass;
                             var iOSMDMProduction, iOSAPNSProduction;
                             var iOSMDMStream = "", iOSAPNSStream = "";
-                            if(ctx.iosAPNSMode == "production") {
-                                iOSAPNSProduction = "true";
+                            if(ctx.iosAPNSMode == constants.PRODUCTION) {
+                                iOSAPNSProduction = constants.BOOL_TRUE;
                             } else {
-                                iOSAPNSProduction = "false";
+                                iOSAPNSProduction = constants.BOOL_FALSE;
                             }
-                            if(ctx.iosMDMMode == "production") {
-                                iOSMDMProduction = "true";
+                            if(ctx.iosMDMMode == constants.PRODUCTION) {
+                                iOSMDMProduction = constants.BOOL_TRUE;
                             } else {
-                                iOSMDMProduction = "false";
+                                iOSMDMProduction = constants.BOOL_FALSE;
                             }
 
-                            if(ctx.iosMDMCertModified == "true") {
+                            if(ctx.iosMDMCertModified == constants.BOOL_TRUE) {
                                 if (iOSMDMFile == null) {
                                     registry.remove(config.registry.iOSMDMCertificate);
                                 } else {
@@ -483,13 +494,14 @@ var user = (function () {
                                     iOSMDMStream = iOSMDMFile.getStream();
                                     registry.put(config.registry.iOSMDMCertificate, {
                                         content: iOSMDMStream,
-                                        properties: {TopicID: iosMDMTopic, Password: iOSMDMPassword, Production: iOSMDMProduction, Filename: iOSMDMFile.getName()}
+                                        properties: {TopicID: iosMDMTopic, Password: iOSMDMPassword,
+                                            Production: iOSMDMProduction, Filename: iOSMDMFile.getName()}
                                     });
                                     iOSMDMFile.close();
                                 }
                             }
 
-                            if(ctx.iosAPNSCertModified == "true") {
+                            if(ctx.iosAPNSCertModified == constants.BOOL_TRUE) {
                                 if (iOSAPNSFile == null || iOSAPNSPassword == null || iOSAPNSProduction == null) {
                                     registry.remove(config.registry.iOSAppCertificate);
                                 }else {
@@ -497,7 +509,8 @@ var user = (function () {
                                     iOSAPNSStream = iOSAPNSFile.getStream();
                                     registry.put(config.registry.iOSAppCertificate, {
                                         content: iOSAPNSStream,
-                                        properties: {Password: iOSAPNSPassword, Production: iOSAPNSProduction, Filename: iOSAPNSFile.getName()}
+                                        properties: {Password: iOSAPNSPassword, Production: iOSAPNSProduction,
+                                            Filename: iOSAPNSFile.getName()}
                                     });
                                     iOSAPNSFile.close();
                                 }
@@ -507,7 +520,8 @@ var user = (function () {
                                 //C="COUNTRY" ST="STATE" L="LOCALITY" O="ORGANISATION" OU="ORGANISATIONUNIT" E="Email"
                                 registry.put(config.registry.scepConfiguration, {
                                     content: config.registry.scepConfiguration,
-                                    properties: {E: ctx.iosSCEPEmail.trim(), C: ctx.iosSCEPCountry.trim(), ST: ctx.iosSCEPState.trim(), L: ctx.iosSCEPLocality.trim(),
+                                    properties: {E: ctx.iosSCEPEmail.trim(), C: ctx.iosSCEPCountry.trim(),
+                                        ST: ctx.iosSCEPState.trim(), L: ctx.iosSCEPLocality.trim(),
                                         O: ctx.iosSCEPOrganisation.trim(), OU: ctx.iosSCEPOrganisationUnit.trim()}
                                 });
                             }
@@ -520,7 +534,8 @@ var user = (function () {
                                 content: config.registry.emailConfiguration,
                                 properties: {SMTP: ctx.emailSmtpHost.trim(), Port: ctx.emailSmtpPort.trim(),
                                     UserName: ctx.emailUsername.trim(), Password: ctx.emailPassword.trim(),
-                                    SenderAddress: ctx.emailSenderAddress.trim(), EmailTemplate: ctx.emailTemplate.trim()}
+                                    SenderAddress: ctx.emailSenderAddress.trim(),
+                                    EmailTemplate: ctx.emailTemplate.trim()}
                             });
                         }
 
@@ -535,7 +550,8 @@ var user = (function () {
                         //Android GCM keys
                         registry.put(config.registry.androidGCMKeys, {
                             content: config.registry.androidGCMKeys,
-                            properties: {APIKeys: ctx.androidApiKeys.trim(), SenderIds: ctx.androidSenderIds.trim(), AndroidMonitorType:ctx.androidNotifier.trim(),
+                            properties: {APIKeys: ctx.androidApiKeys.trim(), SenderIds: ctx.androidSenderIds.trim(),
+                                AndroidMonitorType:ctx.androidNotifier.trim(),
                                 AndroidNotifierFreq: ctx.androidNotifierFreq}
                         });
 
@@ -548,7 +564,8 @@ var user = (function () {
                         }
                         registry.put(config.registry.copyright, {
                             content: config.registry.copyright,
-                            properties: {CompanyName: ctx.companyName.trim(), Title: ctx.uiTitle.trim(), Footer: ctx.uiCopyright.trim(), default: defaultConfig}
+                            properties: {CompanyName: ctx.companyName.trim(), Title: ctx.uiTitle.trim(),
+                                Footer: ctx.uiCopyright.trim(), default: defaultConfig}
                         });
 
                         return true;
@@ -591,7 +608,7 @@ var user = (function () {
             } else {
                 jsonBuilder.androidApiKeys = "";
                 jsonBuilder.androidSenderIds = "";
-                jsonBuilder.androidNotifier = "LOCAL";
+                jsonBuilder.androidNotifier = contants.NOTIFIER_LOCAL;
                 jsonBuilder.androidNotifierFreq = "0";
             }
 
@@ -599,28 +616,28 @@ var user = (function () {
                 jsonBuilder.iosMDMPass = iOSMDMConfigurations.properties.Password[0];
                 jsonBuilder.iosMDMCertFileName = iOSMDMConfigurations.properties.Filename[0];
                 jsonBuilder.iosMDMTopic = iOSMDMConfigurations.properties.TopicID[0];
-                if(iOSMDMConfigurations.properties.Production[0] = "true") {
-                    jsonBuilder.iosMDMMode = "production";
+                if(iOSMDMConfigurations.properties.Production[0] = constants.BOOL_TRUE) {
+                    jsonBuilder.iosMDMMode = constants.PRODUCTION;
                 } else {
-                    jsonBuilder.iosMDMMode = "developer";
+                    jsonBuilder.iosMDMMode = constants.PRODUCTION;
                 }
             } else {
                 jsonBuilder.iosMDMPass = "";
                 jsonBuilder.iosMDMTopic = "";
-                jsonBuilder.iosMDMMode = "production";
+                jsonBuilder.iosMDMMode = constants.PRODUCTION;
             }
 
             if(iOSAPNSConfigurations != null) {
                 jsonBuilder.iosAPNSPass = iOSAPNSConfigurations.properties.Password[0];
                 jsonBuilder.iosAPNSCertFileName = iOSAPNSConfigurations.properties.Filename[0];
-                if(iOSAPNSConfigurations.properties.Production[0] = "true") {
-                    jsonBuilder.iosAPNSMode = "production";
+                if(iOSAPNSConfigurations.properties.Production[0] = constants.BOOL_TRUE) {
+                    jsonBuilder.iosAPNSMode = constants.PRODUCTION;
                 } else {
-                    jsonBuilder.iosAPNSMode = "developer";
+                    jsonBuilder.iosAPNSMode = constants.DEVELOPER;
                 }
             } else {
                 jsonBuilder.iosAPNSPass = "";
-                jsonBuilder.iosAPNSMode = "production";
+                jsonBuilder.iosAPNSMode = constants.PRODUCTION;
             }
 
             if(emailConfigurations != null) {
@@ -660,16 +677,6 @@ var user = (function () {
                 jsonBuilder.uiTitle = "";
                 jsonBuilder.uiCopyright = "";
             }
-
-            /*
-            if(oauthClientKey != null) {
-                jsonBuilder.clientkey = oauthClientKey.ClientKey;
-                jsonBuilder.clientsecret = oauthClientKey.ClientSecret;
-            } else {
-                jsonBuilder.clientkey = "";
-                jsonBuilder.clientsecret = "";
-            }
-            */
 
             return jsonBuilder;
         },
@@ -844,12 +851,6 @@ var user = (function () {
                 return null;
             }
             var user =  this.getUser({'userid': ctx.username, login:true});
-//            var result = driver.query(sqlscripts.tenantplatformfeatures.select1,  stringify(user.tenantId));
-//            if(result[0].record_count == 0) {
-//				for(var i = 1; i < 13; i++) {
-//                    var result = driver.query(sqlscripts.tenantplatformfeatures.select2, stringify(user.tenantId), i);
-//				}
-//			}
             return user;
         },
 
@@ -875,7 +876,7 @@ var user = (function () {
                                                   String(emailConfigurations.UserName[0]), String(emailConfigurations.Password[0]), "tls");
                     sender.from = String(emailConfigurations.SenderAddress[0]);
 
-                    log.info("Email sent to -> " + ctx.email);
+                    log.debug("Email sent to -> " + ctx.email);
                     sender.to = stringify(ctx.email);
                     sender.subject = subject;
                     sender.text = content;
@@ -928,13 +929,13 @@ var user = (function () {
         //To get the tenant name using the tenant domain
         getTenantNameByUser: function() {
             var carbon = require('carbon');
-            log.debug("Username >>>>> " + arguments[0]);
+            log.debug("Username : " + arguments[0]);
             var tenantUser = carbon.server.tenantUser(arguments[0]);
             var tenantDomain = tenantUser.domain;
-            log.debug("Domain >>>>>>> " + tenantDomain);
+            log.debug("Domain : " + tenantDomain);
 
-            if (tenantDomain == "carbon.super") {
-                return this.getTenantName("carbon.super");
+            if (tenantDomain == constants.CARBON_SUPER) {
+                return this.getTenantName(constants.CARBON_SUPER);
             }
 
             return this.getTenantName(tenantDomain);
@@ -942,8 +943,8 @@ var user = (function () {
 
         getTenantNameFromID: function (){
             var tenantId;
-            if (arguments[0] == "-1234") {
-                return this.getTenantName("carbon.super");
+            if (arguments[0] == constants.CARBONSUPER_TENANTID) {
+                return this.getTenantName(constants.CARBON_SUPER);
             }
 
             var tenantId = parseInt(arguments[0]);
@@ -965,7 +966,7 @@ var user = (function () {
                 options.domain = arguments[0];
                 var tenantId = carbon.server.tenantId(options);
                 if (tenantId == null){
-                    tenantId = "-1234";
+                    tenantId = constants.CARBONSUPER_TENANTID;
                 }
                 var tenantCopyRight = this.getTenantCopyRight(tenantId);
                 if(tenantCopyRight != null) {
@@ -984,7 +985,7 @@ var user = (function () {
         getLicenseByDomain: function() {
             var options = {};
             if (!(arguments[0]) || (arguments[0].trim() == "")) {
-                options.domain = "carbon.super";
+                options.domain = constants.CARBON_SUPER;
             } else {
                 options.domain = arguments[0];
             }
@@ -992,10 +993,10 @@ var user = (function () {
             try {
                 var tenantId = carbon.server.tenantId(options);
                 if (tenantId == null){
-                    tenantId = "-1234";
+                    tenantId = constants.CARBONSUPER_TENANTID;
                 }
             } catch (e) {
-                tenantId = "-1234";
+                tenantId = constants.CARBONSUPER_TENANTID;
             }
 
             var message = this.getTenantLicense(parseInt(tenantId));
@@ -1007,8 +1008,8 @@ var user = (function () {
         },
 
         getTenantDomainFromID: function() {
-            if (arguments[0] == "-1234") {
-                return "carbon.super";
+            if (arguments[0] == constants.CARBONSUPER_TENANTID) {
+                return constants.CARBON_SUPER;
             }
             var carbon = require('carbon');
             var ctx = {};
@@ -1016,19 +1017,20 @@ var user = (function () {
             try {
                 var tenantDomain = carbon.server.tenantDomain(ctx);
                 if (tenantDomain == null){
-                    tenantDomain = "default";
+                    tenantDomain = constants.DEFAULT;
                 }
             } catch (e) {
-                tenantDomain = "default";
+                tenantDomain = constants.DEFAULT;
             }
 
             var file = new File('/config/tenants/' + tenantDomain + '/config.json');
             if (!file.isExists()){
-                tenantDomain = "default";
+                tenantDomain = constants.DEFAULT;
             }
 
             return tenantDomain;
         },
+
         getTouchDownConfig: function(ctx) {
             var data = {};
             var domain = this.getTenantDomainFromID(ctx.tenant_id);
@@ -1044,6 +1046,7 @@ var user = (function () {
 
             return data;
         },
+
         changePassword: function(ctx){
             var new_password = ctx.new_password;
             var old_password = ctx.old_password;
