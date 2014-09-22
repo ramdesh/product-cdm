@@ -396,6 +396,39 @@ function loadGeneralInformation(tabId, deviceId) {
 
 }
 
+$(".btn-enroll").click(function() {
+    var enrollURL = $(this).data('url') +  "/emm/api/device_enroll";
+         
+	noty({
+                       text : '<u>Enroll URL</u>:<br><span style="word-wrap:break-word;">' + enrollURL + '</span><div  id="qrcode" style="width:200px; padding-left:45px"></div>',
+                        buttons : [{
+                            addClass : 'btn btn-orange',
+                            text : 'OK',
+                            onClick : function($noty) {
+                                $noty.close();
+                            }
+
+
+                        }]
+                    });
+     updateQRCode(enrollURL);    
+
+}); 
+
+function updateQRCode(text) {
+
+    var element = document.getElementById("qrcode");
+
+
+
+    var bodyElement = document.body;
+    if(element.lastChild)
+        element.replaceChild(showQRCode(text), element.lastChild);
+    else
+        element.appendChild(showQRCode(text));
+
+}
+
 function loadNotifications(tabId, deviceId) {
 
 	jQuery.ajax({

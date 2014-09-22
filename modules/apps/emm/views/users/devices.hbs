@@ -12,11 +12,13 @@
 						{{firstName}} {{lastName}}'s Devices <span style="font-size: x-small"> ({{username}})</span>
 						{{/data.user}}
 					</div>
-
+					<div class="pull-right">
+                            <a class="btn btn-orange btn-enroll" data-url="{{data.url}}" href="#">Enroll Mobile Device</a>
+                            <a class="btn btn-orange" href="/emm/users/tokens">Enroll IoT Device</a>
+					</div>
 				</div>
 
 				<div class="block-body container-fluid raw-fluid well-small">
-
 					<ul class="nav nav-tabs" id="devicesTab">
 						{{#if data.noDevices}}
 							<div class="well text-center">

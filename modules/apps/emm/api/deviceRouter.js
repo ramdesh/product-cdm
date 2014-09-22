@@ -174,6 +174,11 @@ var device = (function () {
                 "auth_params": {
                     "token": "2423fdfdsfwerwer"
                 },
+                "properties": {
+                    "platform" : "sdfsdf",
+                    "version" : "sdfsdf",
+                    "mac": "dsfsdf"
+                },
                 "challenge": "248209dsvsdkfudof"
             }
         */
@@ -181,18 +186,28 @@ var device = (function () {
             /*
                 Store the device to the database. Return an  
             */
-            var payload ={
-                "status": "200",
-                "payload" : {
-                    "tokens":{
-                        "access_token": "dfsdfsd",
-                        "refresh_token" : "dsfsdjflk"
-                    },
-                    "topics":{
-                        "device": "dfjslkdfj"
+            var token = user.validateToken(ctx.auth_params.token);
+            var payload;
+            if(token){
+                user.invalidateToken(token.token);
+                ctx.auth_params.username = token.username;
+                ctx.auth_params.tenant_id = token.tenant_id;
+                device.registerIoT(ctx);
+                payload ={
+                    "status": "200",
+                    "payload" : {
+                        "tokens":{
+                            "access_token": "dfsdfsd",
+                            "refresh_token" : "dsfsdjflk"
+                        },
+                        "topics":{
+                            "device": "dfjslkdfj"
+                        }
                     }
-                }
-            };
+                };
+            }else{
+                payload = {"error": "Token not found"}
+            }
             print(payload);
         });
 		router.post('devices/iostokenregister', function(ctx){

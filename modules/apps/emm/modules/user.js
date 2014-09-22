@@ -1041,7 +1041,6 @@ var user = (function () {
             data.domain = tenantConfig.touchdown.domain;
             data.email = ctx.user_id;
             data.server = tenantConfig.touchdown.server;
-
             return data;
         },
         changePassword: function(ctx){
@@ -1055,6 +1054,30 @@ var user = (function () {
                 print("User not found");
                 response.status=401;
             }
+        },
+        getTokens: function(userId){
+            var tokens = driver.query(sqlscripts.tokens.select1, userId);
+            return tokens;
+        },
+        generateToken: function(userobj){
+            var token =  Math.random().toString(36).substr(2);
+            driver.query(sqlscripts.tokens.insert1, current_user.username, current_user.tenantId, token);
+            return token;
+        },
+        validateToken: function(token){
+            var tokens = driver.query(sqlscripts.tokens.select2, token);
+            if(tokens.length==0){
+                return null;
+            }else{
+                return tokens[0];
+            }
+        },
+        invalidateToken: function(token){
+            /* 
+                Handle code where token is already invalidated
+            */
+            driver.query(sqlscripts.tokens.update1, token);
+            return true;
         }
     };
     return module;

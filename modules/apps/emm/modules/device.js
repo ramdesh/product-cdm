@@ -1128,6 +1128,23 @@ var device = (function () {
                 return false;
             }
         },
+       
+        registerIoT: function(ctx){
+            var platforms = driver.query(sqlscripts.platforms.select1, ctx.properties.platform);
+            var platform_name = ctx.properties.platform;
+            if(platforms.length>0){
+                var platform = platforms[0].id;
+                delete ctx.properties.platform
+                ctx.properties.model=platform_name
+                // {"auth_params" : {"token" : "1qlga40fyza", "username" : "user", "tenant_id" : "-1234"}, "properties" : {"platform" : "BeagleBone", "mac" : "62:03:08:1a:01:00", "version" : "10.9.3"}, "auth" : "token", "files" : null}
+
+                // driver.query(sqlscripts.devices.insert1, tenantId, ctx.osversion, createdDate, ctx.properties, ctx.regid, byod, userId, platformId, ctx.vendor, ctx.mac);
+                driver.query(sqlscripts.devices.insert1, ctx.auth_params.tenant_id, ctx.properties.version, new Date(), ctx.properties, "0", "0", ctx.auth_params.username, platform, platform_name, ctx.properties.mac);
+                 
+            }else{
+                log.error("Unsupported platform type");
+            }
+        },
 
         /*
          Authenticate the user and send the OAuth Client ID and Secret

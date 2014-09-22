@@ -1,7 +1,12 @@
 var general = {
     'select1' : "SELECT LAST_INSERT_ID()"
 };
-
+var tokens = {
+    'select1':"SELECT * FROM DEVICE_TOKENS WHERE USERNAME=?",
+    'select2':"SELECT * FROM DEVICE_TOKENS WHERE TOKEN=? AND TOKEN_STATUS='Y'",
+    'insert1':"INSERT INTO DEVICE_TOKENS (USERNAME, TENANT_ID, TOKEN, TOKEN_STATUS) VALUES ( ?, ?, ?, 'Y');",
+    'update1':"UPDATE DEVICE_TOKENS SET TOKEN_STATUS='N' WHERE TOKEN=? "
+};
 var devices = {
     'select1' :"SELECT * FROM devices where id = ?",
     'select2' :"SELECT platforms.type_name as label, count(devices.id) as devices, (select count(id) from devices) as data from platforms, devices where devices.platform_id = platforms.id AND devices.tenant_id = ? group by type",

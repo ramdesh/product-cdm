@@ -94,6 +94,16 @@ var user = (function (){
 			response.status = 404;
 		    print("User not found");
 		});
+		router.get('users/token',function(ctx){
+			var log = new Log();
+			var token =user.generateToken();
+		    if(token != null){
+		        response.content = {'token': token};
+		        response.status = 201;
+		    }else{
+		        response.status = 404;
+		    }
+		});
 		router.get('users/{userid}',function(ctx){
 			var log = new Log();
 			var userObj = user.getUser(ctx);
