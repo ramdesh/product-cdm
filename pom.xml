@@ -68,6 +68,7 @@
 		<module>modules/components/emm-task</module>
 		<module>modules/components/emm-gcm</module>
 		<module>modules/components/emm-core</module>
+		<module>modules/components/emm-bam</module>
 		<module>modules/features</module>
 		<module>modules/p2-profile-gen</module>
 		<module>modules/distribution</module>
