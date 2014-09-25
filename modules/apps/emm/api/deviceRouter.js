@@ -182,18 +182,52 @@ var device = (function () {
                 "challenge": "248209dsvsdkfudof"
             }
         */
+        router.post('devices/iot/{deviceId}/claim',function(ctx){
+            var device_id = ctx.deviceId;
+            device.claimDevice(device_id);
+        });
         router.post('devices/iot/register', function(ctx){
             /*
                 Store the device to the database. Return an  
             */
-            var token = user.validateToken(ctx.auth_params.token);
+            
             var payload;
-            if(token){
-                user.invalidateToken(token.token);
-                ctx.auth_params.username = token.username;
-                ctx.auth_params.tenant_id = token.tenant_id;
+            if(ctx.auth_params){
+                var token = user.validateToken(ctx.auth_params.token);
+                if(token){
+                    user.invalidateToken(token.token);
+                    ctx.auth_params.username = token.username;
+                    ctx.auth_params.tenant_id = token.tenant_id;
+                    device.registerIoT(ctx);
+                }else{
+                    payload ={
+                        "error": "400",
+                        "error_message" : "Token invalid"
+                    }; 
+                    print(payload);
+                    response.status= 400;
+                    return;
+                }
+            }else{
                 device.registerIoT(ctx);
-                payload ={
+            }
+            payload ={
+                    "status": "200",
+                    "payload" : {
+                        "tokens":{
+                            "access_token": "dfsdfsd",
+                            "refresh_token" : "dsfsdjflk"
+                        },
+                        "topics":{
+                            "device": "dfjslkdfj"
+                        }
+                    }
+            };
+            print(payload);
+        });
+		router.post('devices/iostokenregister', function(ctx){
+		    device.registerIOS(ctx);
+            var payload ={
                     "status": "200",
                     "payload" : {
                         "tokens":{
@@ -205,13 +239,7 @@ var device = (function () {
                         }
                     }
                 };
-            }else{
-                payload = {"error": "Token not found"}
-            }
             print(payload);
-        });
-		router.post('devices/iostokenregister', function(ctx){
-		    device.registerIOS(ctx);
 		});
 		
 		router.post('devices/pushtoken', function(ctx){

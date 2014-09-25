@@ -11,6 +11,7 @@
     "usersCRUD": "users/{0}",
     "usersToken": "users/token",
     "devicesCRUD": "devices/{0}",
+    "devicesIoTClaim": "devices/iot/{0}/claim",
     "usersEDIT": "users/groups?userid={0}",
     "getDeviceAppList": "refresh/devices/{0}/502A",
     "getDeviceGenInfo": "refresh/devices/{0}/500A",

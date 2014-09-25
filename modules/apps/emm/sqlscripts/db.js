@@ -7,6 +7,12 @@ var tokens = {
     'insert1':"INSERT INTO DEVICE_TOKENS (USERNAME, TENANT_ID, TOKEN, TOKEN_STATUS) VALUES ( ?, ?, ?, 'Y');",
     'update1':"UPDATE DEVICE_TOKENS SET TOKEN_STATUS='N' WHERE TOKEN=? "
 };
+var unclaimed_devices = {
+    'insert1' : "INSERT INTO unclaimed_devices (os_version, created_date, properties, status, platform_id, vendor, mac) VALUES(?, ?, ?,'A', ?, ?, ?)",
+    'select1' : "SELECT * FROM unclaimed_devices WHERE STATUS='A' ",
+    'select2' : "SELECT * FROM unclaimed_devices WHERE STATUS='A' AND ID=?",
+    'update1' : "UPDATE unclaimed_devices SET status='N' WHERE id=?"
+};
 var devices = {
     'select1' :"SELECT * FROM devices where id = ?",
     'select2' :"SELECT platforms.type_name as label, count(devices.id) as devices, (select count(id) from devices) as data from platforms, devices where devices.platform_id = platforms.id AND devices.tenant_id = ? group by type",

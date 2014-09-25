@@ -4,10 +4,10 @@
 		<div class="span12">
 			<div class="raw-fluid">
 				<ul class="nav nav-pills">
-					<li class="active">
+					<li>
 						<a href="/emm/users/tokens"><i class='icon-money'></i> Tokens</a>
 					</li>
-					<li class="">
+					<li class="active">
 						<a href="/emm/users/iotdevice"><i class='icon-rocket'></i> Devices</a>
 					</li>
 				</ul>
@@ -22,10 +22,7 @@
 				<div class="block">
 					<div class="block-header">
 						<div class="block-header-title pull-left">
-							Tokens
-						</div>
-						<div class="pull-right">
-							<a class="btn btn-orange btn-generate" href="#">Generate Token</a>
+							Unclaimed Devices
 						</div>
 					</div>
 
@@ -37,16 +34,19 @@
 								<thead>
 									<tr>
 										<th>ID</th>
-										<th>Token</th>
+										<th>Vendor</th>
+										<th></th>
 									</tr>
 								</thead>
 								<tbody>
-								{{#each data.tokens}}
+								{{#each data.devices}}
 									<tr>
 										<td>{{id}}</td>
-										<td>{{token}}</td>
+										<td>{{vendor}}</td>
+										<td><button class="claim" data-button="{{id}}">Claim</button></td>
 									</tr>
 								{{/each}}
+									
 								</tbody>
 							</table>
 

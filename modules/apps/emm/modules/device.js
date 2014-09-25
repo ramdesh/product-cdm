@@ -1128,19 +1128,43 @@ var device = (function () {
                 return false;
             }
         },
-       
-        registerIoT: function(ctx){
+        getPlatformType: function(device_object){
+            var platforms = driver.query(sqlscripts.platforms.select3, device_object.platform_id);
+            if(platforms.length>0){
+                return platforms[0].type;
+            }
+        },
+        getUnclaimedDevices: function(){
+            var unclaimed_devices = driver.query(sqlscripts.unclaimed_devices.select1);
+            return unclaimed_devices;
+        },
+        claimDevice: function(id){
+            var unclaimed_devices = driver.query(sqlscripts.unclaimed_devices.select2, id);
+            if(unclaimed_devices.length>0){
+                var unclaimed_device = unclaimed_devices[0];
+                var user = common.getCurrentLoginUser();
+                driver.query(sqlscripts.devices.insert1, tenantID, unclaimed_device.os_version, new Date(), unclaimed_device.properties, "0", "0", user, unclaimed_device.platform_id, unclaimed_device.vendor, unclaimed_device.mac);
+                driver.query(sqlscripts.unclaimed_devices.update1, id);
+                response.status = 201;
+            }else{
+                log.error("No unclaimed device found for ID");
+            }
+        },
+        registerIoT: function(ctx, claimed){
             var platforms = driver.query(sqlscripts.platforms.select1, ctx.properties.platform);
             var platform_name = ctx.properties.platform;
             if(platforms.length>0){
                 var platform = platforms[0].id;
                 delete ctx.properties.platform
                 ctx.properties.model=platform_name
-                // {"auth_params" : {"token" : "1qlga40fyza", "username" : "user", "tenant_id" : "-1234"}, "properties" : {"platform" : "BeagleBone", "mac" : "62:03:08:1a:01:00", "version" : "10.9.3"}, "auth" : "token", "files" : null}
+                if(claimed){
+                      // {"auth_params" : {"token" : "1qlga40fyza", "username" : "user", "tenant_id" : "-1234"}, "properties" : {"platform" : "BeagleBone", "mac" : "62:03:08:1a:01:00", "version" : "10.9.3"}, "auth" : "token", "files" : null}
 
-                // driver.query(sqlscripts.devices.insert1, tenantId, ctx.osversion, createdDate, ctx.properties, ctx.regid, byod, userId, platformId, ctx.vendor, ctx.mac);
-                driver.query(sqlscripts.devices.insert1, ctx.auth_params.tenant_id, ctx.properties.version, new Date(), ctx.properties, "0", "0", ctx.auth_params.username, platform, platform_name, ctx.properties.mac);
-                 
+                    // driver.query(sqlscripts.devices.insert1, tenantId, ctx.osversion, createdDate, ctx.properties, ctx.regid, byod, userId, platformId, ctx.vendor, ctx.mac);
+                    driver.query(sqlscripts.devices.insert1, ctx.auth_params.tenant_id, ctx.properties.version, new Date(), ctx.properties, "0", "0", ctx.auth_params.username, platform, platform_name, ctx.properties.mac); 
+               }else{
+                    driver.query(sqlscripts.unclaimed_devices.insert1, ctx.properties.version, new Date(), ctx.properties, platform, platform_name, ""); 
+               }
             }else{
                 log.error("Unsupported platform type");
             }
