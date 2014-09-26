@@ -24,6 +24,7 @@ import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
 import org.wso2.emm.bam.PublisherHandlerImp;
 import org.wso2.emm.bam.RegistrationStream;
+import org.wso2.emm.bam.TemperatureStream;
 
 /**
  * @scr.component name="emm.bam.service.component" immediate="true"
@@ -36,6 +37,7 @@ public class EMMCoreServiceComponent {
 	protected void activate(ComponentContext ctx) {
 		PublisherHandlerImp ph=PublisherHandlerImp.getInstance();
 		ph.register("Registration", new RegistrationStream());
+        ph.register("Temperature", new TemperatureStream());
 	}
 
 	protected void deactivate(ComponentContext ctx) {

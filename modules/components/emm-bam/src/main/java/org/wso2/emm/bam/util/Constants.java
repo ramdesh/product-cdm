@@ -27,8 +27,14 @@ public class Constants {
 	public static final String DEVICE_STREAM_VERSION = "1.0.0";
 	public static final String DEVICE_STREAM_NICKNAME = "AddingNewDevice";
 	public static final String DEVICE_STREAM_DESCRIPTION = "Device Request Data";
-	
-	public static final String BAM_PATH="/home/inoshp/Documents/work/BAM Integration/wso2bam-2.4.1/repository/resources/security"
+
+    public static final String TEMPERTURE="temperature";
+    public static final String TEMPERTURE_STREAM = "temperature_stream";
+    public static final String TEMPERTURE_STREAM_VERSION = "1.0.0";
+    public static final String TEMPERTURE_STREAM_NICKNAME = "Temperature Sensor Data";
+    public static final String TEMPERTURE_STREAM_DESCRIPTION = "Sensor data from temperature sensors";
+
+	public static final String BAM_PATH="/Users/chan/Development/WSO2/packs/wso2bam-2.4.1/repository/resources/security"
 			+ "/client-truststore.jks";
 
 	public static final String BAM_PASSWORD="wso2carbon";
