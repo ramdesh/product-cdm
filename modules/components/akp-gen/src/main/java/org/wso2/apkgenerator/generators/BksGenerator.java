@@ -12,7 +12,6 @@ import java.security.cert.X509Certificate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.wso2.apkgenerator.data.ObjectReader;
 import org.wso2.apkgenerator.util.Constants;
 
 public class BksGenerator {

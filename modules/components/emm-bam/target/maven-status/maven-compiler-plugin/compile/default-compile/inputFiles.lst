@@ -1,0 +1,13 @@
+/home/inoshp/Documents/work/source-emm/product-emm/modules/components/emm-bam/src/main/java/org/wso2/emm/bam/dto/RegistrationDataDto.java
+/home/inoshp/Documents/work/source-emm/product-emm/modules/components/emm-bam/src/main/java/org/wso2/emm/bam/EMMStreamDefinition.java
+/home/inoshp/Documents/work/source-emm/product-emm/modules/components/emm-bam/src/main/java/org/wso2/emm/bam/dto/DeviceDto.java
+/home/inoshp/Documents/work/source-emm/product-emm/modules/components/emm-bam/src/main/java/org/wso2/emm/bam/Publisher.java
+/home/inoshp/Documents/work/source-emm/product-emm/modules/components/emm-bam/src/main/java/org/wso2/emm/bam/util/Constants.java
+/home/inoshp/Documents/work/source-emm/product-emm/modules/components/emm-bam/src/main/java/org/wso2/emm/bam/DeviceStream.java
+/home/inoshp/Documents/work/source-emm/product-emm/modules/components/emm-bam/src/main/java/org/wso2/emm/bam/PublisherHandlerImp.java
+/home/inoshp/Documents/work/source-emm/product-emm/modules/components/emm-bam/src/main/java/org/wso2/emm/bam/PublisherHandler.java
+/home/inoshp/Documents/work/source-emm/product-emm/modules/components/emm-bam/src/main/java/org/wso2/emm/bam/util/JSONReader.java
+/home/inoshp/Documents/work/source-emm/product-emm/modules/components/emm-bam/src/main/java/org/wso2/emm/bam/StreamDefCreator.java
+/home/inoshp/Documents/work/source-emm/product-emm/modules/components/emm-bam/src/main/java/org/wso2/emm/bam/internal/EMMCoreServiceComponent.java
+/home/inoshp/Documents/work/source-emm/product-emm/modules/components/emm-bam/src/main/java/org/wso2/emm/bam/Activator.java
+/home/inoshp/Documents/work/source-emm/product-emm/modules/components/emm-bam/src/main/java/org/wso2/emm/bam/RegistrationStream.java

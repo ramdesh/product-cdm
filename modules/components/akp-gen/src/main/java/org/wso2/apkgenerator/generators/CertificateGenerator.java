@@ -31,51 +31,46 @@ public class CertificateGenerator {
 											// distinguished names
 	}
 
-	public boolean generate() {
-		// generate CA cert and keys
+	public void generator() throws Exception {
+		System.out.println("generator");
+		Security.addProvider(new BouncyCastleProvider());
+		System.out.println("generator2");
+		//generate CA cert and keys
 		keyPairCA = KeyPairCreator.getKeyPair();
-		// Cert.generateCert(csrDataSrc.getDaysCA(), dn.getCAName(),
-		// keyPairCA);
-		caCert = X509V3Certificates.generateCACert(csrDataSrc.getDaysCA(),
-				dn.getCAName(), keyPairCA);
-
-		// generate RA cert and keys
+		System.out.println("generator3");
+		try{
+//			caCert =	Cert.generateCert(csrDataSrc.getDaysCA(),dn.getCAName(), keyPairCA);
+		caCert = X509V3Certificates.generateCert(csrDataSrc.getDaysCA(),dn.getCAName(), keyPairCA);
+		}
+		catch(Exception e){
+			System.out.println("ee"+e.getMessage());
+		}
+		System.out.println("generator4");
+		
+		//generate RA cert and keys
 		keyPairRA = KeyPairCreator.getKeyPair();
-		raCert = X509V3Certificates.buildIntermediateCert("RA",
-				keyPairRA.getPublic(), keyPairCA.getPrivate(), caCert,
-				dn.getRAName(), csrDataSrc.getDaysRA());
-
-		// generate SSL cert and keys
-		keyPairSSL = KeyPairCreator.getKeyPair();
-		sslCert = X509V3Certificates.buildIntermediateCert("SSL",keyPairSSL.getPublic(),
-				keyPairCA.getPrivate(), caCert, dn.getSSLName(),
-				csrDataSrc.getDaysSSL());
-		if (keyPairCA == null || caCert == null || keyPairRA == null
-				|| raCert == null || keyPairSSL == null || sslCert == null) {
-			return false;
-		}
-		//CA certificate is written to a file for later usage
-		if(!FileOperator.writePem(APKGenerator.workingDir + Constants.PEM_file, caCert)){
-			return false;
-		}
-
-        /*
-        //This section can be enabled if it is necessery to write, certificates to actual file
-		FileOperator.writePem(APKGenerator.workingDir+ "ca.crt",caCert);
-		FileOperator.writePem(APKGenerator.workingDir+
-		"ca_private.pem",keyPairCA.getPrivate());
-		FileOperator.writePem(APKGenerator.workingDirR+
-		"ca_private.key",keyPairCA.getPrivate());
-
-		FileOperator.writePem(APKGenerator.workingDir+ "ra_cert.pem",raCert);
-		FileOperator.writePem(APKGenerator.workingDir+
-		"ra_private.pem",keyPairRA.getPrivate());
-
-		FileOperator.writePem(APKGenerator.workingDir+ "ia.crt",sslCert);
-		FileOperator.writePem(APKGenerator.workingDir+
-		"ia.key",keyPairSSL.getPrivate());
-		*/
-		return true;
+	    raCert = X509V3Certificates.buildIntermediateCert(keyPairRA.getPublic(), keyPairCA.getPrivate(),
+	                                                     caCert,dn.getRAName(),csrDataSrc.getDaysRA());		
+	    //generate SSL cert and keys
+	    keyPairSSL = KeyPairCreator.getKeyPair();
+	    sslCert = X509V3Certificates.buildEndEntityCert(keyPairSSL.getPublic(), keyPairCA.getPrivate(), 
+	                                                   caCert,dn.getSSLName(),csrDataSrc.getDaysSSL());
+	    
+	    
+	    
+	    FileOperator.writePem(APKGenerator.workingDir+ Constants.PEM_file,caCert);
+//	    FileOperator.writePem(Constants.WORKING_DIR+ "ca.crt",caCert);
+//	    FileOperator.writePem(Constants.WORKING_DIR+ "ca_private.pem",keyPairCA.getPrivate());
+//	    FileOperator.writePem(Constants.WORKING_DIR+ "ca_private.key",keyPairCA.getPrivate());
+//	    
+//	    FileOperator.writePem(Constants.WORKING_DIR+ "ra_cert.pem",raCert);
+//	    FileOperator.writePem(Constants.WORKING_DIR+ "ra_private.pem",keyPairRA.getPrivate());
+//	    
+//	    FileOperator.writePem(Constants.WORKING_DIR+ "ia.crt",sslCert);
+//	    FileOperator.writePem(Constants.WORKING_DIR+ "ia.key",keyPairSSL.getPrivate());
 	}
+	
 
+	
+	
 }

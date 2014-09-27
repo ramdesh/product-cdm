@@ -1,0 +1,13 @@
+org/wso2/emm/bam/StreamDefCreator.class
+org/wso2/emm/bam/Publisher.class
+org/wso2/emm/bam/internal/EMMCoreServiceComponent.class
+org/wso2/emm/bam/dto/RegistrationDataDto.class
+org/wso2/emm/bam/util/JSONReader.class
+org/wso2/emm/bam/PublisherHandler.class
+org/wso2/emm/bam/DeviceStream.class
+org/wso2/emm/bam/RegistrationStream.class
+org/wso2/emm/bam/dto/DeviceDto.class
+org/wso2/emm/bam/util/Constants.class
+org/wso2/emm/bam/EMMStreamDefinition.class
+org/wso2/emm/bam/Activator.class
+org/wso2/emm/bam/PublisherHandlerImp.class

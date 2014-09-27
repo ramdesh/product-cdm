@@ -1,0 +1,7 @@
+org/wso2/mobile/core/EMMDBInitializerException.class
+org/wso2/mobile/core/Activator.class
+org/wso2/mobile/core/utils/AndroidXMLParser.class
+org/wso2/mobile/core/internal/EMMDBInitializer.class
+org/wso2/mobile/core/utils/AndroidXMLParsing.class
+org/wso2/mobile/core/internal/EMMCoreServiceComponent.class
+org/wso2/mobile/core/utils/ZipFileReader.class

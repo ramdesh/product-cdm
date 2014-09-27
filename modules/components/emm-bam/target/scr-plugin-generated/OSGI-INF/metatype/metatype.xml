@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.0.0" localization="OSGI-INF/metatype/metatype">
+    <OCD id="emm.bam.service.component" name="%emm.bam.service.component.name" description="%emm.bam.service.component.description"/>
+    <Designate pid="emm.bam.service.component">
+        <Object ocdref="emm.bam.service.component"/>
+    </Designate>
+</metatype:MetaData>

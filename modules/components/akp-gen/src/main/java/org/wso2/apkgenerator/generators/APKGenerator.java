@@ -30,16 +30,14 @@ public class APKGenerator {
 	 * This is used to perform the sequence of actions necessary to generate
 	 * certificates, key stores, and apk
 	 */
-	public String generateApk(String jsonStr) {
+	public String generateApk(String jsonStr)  {
 		if (log.isDebugEnabled()) {
 			log.debug("Call to generate APK");
 		}
-
+	
 		// read the json string passed and convert it to a Json object
 		reader = new ObjectReader(jsonStr);
-		if (reader.json == null) {
-			return "Error while parsing the sent data";// tell jaggery UI
-		}
+		
 		// create a data object which stores necessery information to generate
 		// certificates. These details are taken from the created ObjectReader
 		CSRData csrDate = new CSRData(reader);
@@ -57,9 +55,14 @@ public class APKGenerator {
 
 		// generate CA,RA and SSL certificates
 		generator = new CertificateGenerator(csrDate);
-		if (!generator.generate()) {
-			return "could not generate certificates";// tell jaggery UI
+		try {
+			generator.generator();
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
+//			return "could not generate certificates";// tell jaggery UI
+//		}
 
 		// convert generated certificates and keys to JKS
 		boolean generated = KeyStoreGenerator.convertCertsToKeyStore(
