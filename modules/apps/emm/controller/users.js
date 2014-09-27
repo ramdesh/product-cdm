@@ -112,7 +112,28 @@ view = function(appController) {
 	return context;
 
 };
-
+tokens = function(appController){
+	var context = appController.context();
+	var userId = session.get('emmConsoleSelectedUser');
+	var tokens = user.getTokens(userId);
+	context.jsFile = "users/tokens.js";
+	context.data = {
+		configOption : "users",
+		tokens: tokens
+	};
+	return context;
+};
+iotdevice = function(appController){
+	var context = appController.context();
+	var userId = session.get('emmConsoleSelectedUser');
+	var devices = device.getUnclaimedDevices();
+	context.jsFile = "users/iotdevices.js";
+	context.data = {
+		configOption : "users",
+		devices: devices
+	};
+	return context;
+};
 devices = function(appController) {
 	context = appController.context();
 	var userId = request.getParameter('user');
@@ -176,8 +197,7 @@ devices = function(appController) {
 				
 		}
 
-
-		
+		devices[i].platform_type = device.getPlatformType(devices[i]);
 		devices[i].properties = JSON.parse(devices[i].properties);
 		try {
 			featureList = device.getFeaturesFromDevice({
@@ -197,7 +217,8 @@ devices = function(appController) {
 		configOption : "users",
 		devices : devices,
 		user : objUser,
-		noDevices: noDevices
+		noDevices: noDevices,
+		url: context.config.HTTPS_URL
 	};
 
 	return context;

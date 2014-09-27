@@ -12,11 +12,13 @@
 						{{firstName}} {{lastName}}'s Devices <span style="font-size: x-small"> ({{username}})</span>
 						{{/data.user}}
 					</div>
-
+					<div class="pull-right">
+                            <a class="btn btn-orange btn-enroll" data-url="{{data.url}}" href="#">Enroll Mobile Device</a>
+                            <a class="btn btn-orange" href="/emm/users/tokens">Enroll/Claim IoT Device</a>
+					</div>
 				</div>
 
 				<div class="block-body container-fluid raw-fluid well-small">
-
 					<ul class="nav nav-tabs" id="devicesTab">
 						{{#if data.noDevices}}
 							<div class="well text-center">
@@ -55,7 +57,9 @@
 											</div>
 
 											<div class="block-body container-fluid raw-fluid">
-
+												{{#compare platform_type '3'  operator="=="}}
+													<div style="font-size: x-small; padding-left: 15px; padding-top: 5px ">No Operation found for IoT Device</div>
+												 {{/compare}}
 												{{#features}}
 
 												{{#compare feature_type 'OPERATION'}}
@@ -215,11 +219,14 @@
 											<div class="block-header-small">
 												<div class="pull-left">
 													Policy
-													{{#if policies.violated}}
-													<span class="label label-important" data-toggle="tooltip">Violated</span>
-													{{else}}
-													<span class="label label-success" data-toggle="tooltip">Comply</span>
-													{{/if}}
+
+													{{#compare platform_type '3'  operator="!="}}
+														{{#if policies.violated}}
+														<span class="label label-important" data-toggle="tooltip">Violated</span>
+														{{else}}
+														<span class="label label-success" data-toggle="tooltip">Comply</span>
+														{{/if}}
+											 		{{/compare}}
 												</div>
 											</div>
 
@@ -235,10 +242,16 @@
 												</div>
 												
 												{{else}}
-													<div style="font-size: x-small; padding-left: 15px; padding-top: 5px ">No policies to display</div>
+													
+													{{#compare platform_type '3'  operator="!="}}
+														<div style="font-size: x-small; padding-left: 15px; padding-top: 5px ">No policies to display</div>
+											 		{{/compare}}
 												
 												{{/policies.policies}}
 												
+												{{#compare platform_type '3'  operator="=="}}
+												<div style="font-size: x-small; padding-left: 15px; padding-top: 5px ">Policy compliance is not available for IoT Devices</div>
+											 	{{/compare}}
 												
 												
 											</div>
@@ -258,9 +271,8 @@
 													Operations
 												</div>
 											</div>
-
 											<div class="block-body container-fluid raw-fluid">
-
+												
 												{{#features}}
 
 												{{#compare feature_type 'OPERATION'}}
@@ -319,9 +331,17 @@
 
 											<div class="block-body container-fluid raw-fluid well-small">
 											
-											<div id="app-list-{{@index}}" class="block-body container-fluid raw-fluid well-small">
+											
+											{{#compare platform_type '3'  operator="!="}}
+														<div id="app-list-{{@index}}" class="block-body container-fluid raw-fluid well-small">
 													<span style="font-size: small; padding-left: 10px; padding-top: 10px ">No apps to display</span>
-											</div>
+													</div>
+											 {{/compare}}
+											 {{#compare platform_type '3'  operator="=="}}
+											 	<div class="block-body container-fluid raw-fluid well-small">
+													<span style="font-size: x-small; padding-left: 10px; padding-top: 10px ">Apps not available for display in IoT Devices</span>
+												</div>
+											 {{/compare}}
 												
 												
 											</div>
