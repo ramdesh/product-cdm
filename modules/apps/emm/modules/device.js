@@ -1051,7 +1051,7 @@ var device = (function () {
                     var roles = common.removeNecessaryElements(roleList,removeRoles);
                     var role = roles[0];
                     var byod = 0;
-                    if(ctx.type == 'BYOD') {
+                    if(ctx.type == constants.BYOD) {
                         //Type = BYOD
                         byod = 1;
                     } else {

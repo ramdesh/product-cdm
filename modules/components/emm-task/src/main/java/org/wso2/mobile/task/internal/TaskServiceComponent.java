@@ -67,7 +67,6 @@ public class TaskServiceComponent {
             }
         } catch (Throwable e) {
             log.error(e.getMessage(), e);
-            /* don't throw exception */
         }
 
     }

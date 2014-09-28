@@ -70,7 +70,6 @@ public class EMMTaskConfig {
                 document = documentBuilder.parse(fXmlFile);
             } catch (Throwable e) {
                 log.error(e.getMessage(), e);
-                /* don't throw exception */
             }
 
             for (String configEntry : configEntryNames) {

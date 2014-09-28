@@ -98,3 +98,4 @@ const PRODUCTION = "production";
 const DEVELOPER = "developer";
 const NOTIFIER_LOCAL = "LOCAL";
 const CARBON_SUPER = "carbon.super";
+const BYOD = "BYOD";
