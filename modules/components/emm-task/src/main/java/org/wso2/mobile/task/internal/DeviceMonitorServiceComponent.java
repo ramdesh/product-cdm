@@ -24,7 +24,6 @@ import org.wso2.carbon.ntask.core.TaskManager;
 import org.wso2.carbon.ntask.core.TaskInfo.TriggerInfo;
 import org.wso2.carbon.ntask.core.TaskInfo;
 import org.wso2.mobile.task.utils.EMMTaskConfig;
-import java.util.HashMap;
 
 /**
  * @scr.component name="mobile.task.taskservicecomponent" immediate="true"
@@ -32,8 +31,8 @@ import java.util.HashMap;
  * cardinality="1..1" policy="dynamic" bind="setTaskService" unbind="unsetTaskService"
  **/
 
-public class TaskServiceComponent {
-    private static final Log log = LogFactory.getLog(TaskServiceComponent.class);
+public class DeviceMonitorServiceComponent {
+    private static final Log log = LogFactory.getLog(DeviceMonitorServiceComponent.class);
     private static TaskService taskService;
 
     /*
@@ -75,18 +74,18 @@ public class TaskServiceComponent {
         if (log.isDebugEnabled()) {
             log.debug("Setting the Task Service");
         }
-        TaskServiceComponent.taskService = taskService;
+        DeviceMonitorServiceComponent.taskService = taskService;
     }
 
     protected void unsetTaskService(TaskService taskService) {
         if (log.isDebugEnabled()) {
             log.debug("Unsetting the Task Service");
         }
-        TaskServiceComponent.taskService = null;
+        DeviceMonitorServiceComponent.taskService = null;
     }
 
     public static TaskService getTaskService() {
-        return TaskServiceComponent.taskService;
+        return DeviceMonitorServiceComponent.taskService;
     }
 
     protected void deactivate(ComponentContext ctxt) {

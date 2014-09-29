@@ -17,6 +17,8 @@ package org.wso2.mobile.task;/*
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.xmlbeans.SystemProperties;
 import org.wso2.carbon.ntask.core.Task;
 import org.wso2.mobile.task.utils.EMMTaskConfig;
@@ -25,7 +27,9 @@ import java.io.IOException;
 import java.util.Map;
 
 
-public class TaskImplementor implements Task {
+public class DeviceMonitorTaskImpl implements Task {
+
+    private static final Log log = LogFactory.getLog(DeviceMonitorTaskImpl.class);
 
     /*
       This function will call https call to the device monitor api
@@ -34,29 +38,27 @@ public class TaskImplementor implements Task {
     public void execute() {
         // TODO Auto-generated method stub
         GetMethod getMethod = null;
-        try {
-            String host = SystemProperties.getProperty(EMMTaskConfig.SERVER_HOST);
-            String ip = SystemProperties.getProperty(EMMTaskConfig.CARBON_LOCAL_IP);
-            String port = SystemProperties.getProperty(EMMTaskConfig.MGT_TRANSPORT_HTTPS_PROXYPORT);
-            if (port == null)
-                port = SystemProperties.getProperty(EMMTaskConfig.MGT_TRANSPORT_HTTPS_PORT);
-            String postUrl = "";
-            if (host == null || host == EMMTaskConfig.LOCALHOST) {
-                postUrl = EMMTaskConfig.HTTPS + ip + ":" + port;
-            } else {
-                postUrl = EMMTaskConfig.HTTPS + host + ":" + port;
-            }
+        String host = SystemProperties.getProperty(EMMTaskConfig.SERVER_HOST);
+        String ip = SystemProperties.getProperty(EMMTaskConfig.CARBON_LOCAL_IP);
+        String port = SystemProperties.getProperty(EMMTaskConfig.MGT_TRANSPORT_HTTPS_PROXYPORT);
+        if (port == null)
+            port = SystemProperties.getProperty(EMMTaskConfig.MGT_TRANSPORT_HTTPS_PORT);
+        String postUrl = "";
+        if (host == null) {
+            postUrl = EMMTaskConfig.HTTPS + ip + ":" + port;
+        } else {
+            postUrl = EMMTaskConfig.HTTPS + host + ":" + port;
+        }
 
+        try {
             getMethod = new GetMethod(postUrl + EMMTaskConfig.MONITOR_URL);
             final HttpClient httpClient = new HttpClient();
             getMethod.addRequestHeader(EMMTaskConfig.CONTENT_TYPE, EMMTaskConfig.APPLICATION_JSON);
             httpClient.executeMethod(getMethod);
         } catch (HttpException e) {
-            // TODO Auto-generated catch block
-            //e.printStackTrace();
+            log.error("HttpException: " + e);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.error("IOException: " + e);
         } finally {
             getMethod.releaseConnection();
         }

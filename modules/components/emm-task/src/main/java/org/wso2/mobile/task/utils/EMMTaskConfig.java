@@ -42,7 +42,7 @@ public class EMMTaskConfig {
     public static final String APPLICATION_JSON = "application/json";
     public static final String DEVICE_MONITOR_FREQUENCY = "DeviceMonitorFrequency";
 
-    public static final String TASK_MONITOR_CLASS = "org.wso2.mobile.task.TaskImplementor";
+    public static final String TASK_MONITOR_CLASS = "org.wso2.mobile.task.DeviceMonitorTaskImpl";
     public static final String MONITOR_URL = "/emm/api/devices/monitor";
 
     private static EMMTaskConfig emmTaskConfig;
