@@ -8,6 +8,7 @@ var notification = (function() {
 	var common = require("/modules/common.js");
     var sqlscripts = require('/sqlscripts/db.js');
     var deviceModule = require('/modules/device.js').device;
+    var constants = require('/modules/constants.js');
 
     var device;
     var driver;
@@ -69,7 +70,7 @@ var notification = (function() {
                 var device_id = notifications[0].device_id;
                 var message = notifications[0].message;
 
-                if(featureCode == "500P" || featureCode == "502P") {
+                if(featureCode == constants.POLICY_ENFORCE || featureCode == constants.POLICY_REVOKE) {
 
                     var policySequence = identifier.split("-")[1];
 
@@ -107,7 +108,8 @@ var notification = (function() {
                         parsedReceivedData[operationCount].status = "received";
                     }
 
-                    driver.query(sqlscripts.notifications.update4, stringify(parsedReceivedData), recivedDate, notificationId);
+                    driver.query(sqlscripts.notifications.update4, stringify(parsedReceivedData), recivedDate,
+                        notificationId);
 
                     if (pendingExist == true) {
                         return true;
@@ -117,7 +119,7 @@ var notification = (function() {
                     }
 
 
-                } else if(featureCode == "501P") {
+                } else if(featureCode == constants.POLICY_MONTORING) {
                     
                     var parsedReceivedData = parse(parse(stringify(ctx.data)));
                     var formattedData = new Array();
@@ -173,7 +175,7 @@ var notification = (function() {
                 		}
                 	}
                     try{
-                        driver.query(sqlscripts.notifications.delete2, device_id,"501P");
+                        driver.query(sqlscripts.notifications.delete2, device_id, constants.POLICY_MONTORING);
                     }catch(e){
                         log.error(e);
                     }
@@ -187,7 +189,7 @@ var notification = (function() {
                         driver.query(sqlscripts.notifications.update6, ctx.data, recivedDate, identifier);
                     }
                     
-                    if(featureCode == "500A") {
+                    if(featureCode == constants.DEVICE_INFO) {
                     	
                     	var dataObj = parse(parse(stringify(ctx.data)));
                     	var deviceName = dataObj["DeviceName"];
@@ -201,6 +203,7 @@ var notification = (function() {
                 }
             }
         },
+
         addNotification: function(ctx){
 			var recivedDate = common.getCurrentDateTime();
 			var result = driver.query(sqlscripts.notifications.select9, ctx.msgID);
@@ -289,8 +292,7 @@ var notification = (function() {
 		},
 		getPolicyState : function(ctx) {
 
-            var result = driver.query(sqlscripts.notifications.select16,
-                    ctx.deviceid, '501P');
+            var result = driver.query(sqlscripts.notifications.select16, ctx.deviceid, constants.POLICY_MONTORING);
             var newArray = new Array();
             if (result == null || result == undefined || result.length == 0) {
                 return newArray;
@@ -317,7 +319,7 @@ var notification = (function() {
                         var features = driver.query(sqlscripts.features.select6,
                                 featureCode);
 
-                        if (featureCode == "528B") {
+                        if (featureCode == constants.BLACKLISTAPPS) {
                             if (blackListApp.status == true) {
                                 blackListApp.name = features[0].description;
                                 blackListApp.status = arrayFromDatabase[i].status
@@ -465,7 +467,8 @@ var notification = (function() {
                             // log.info(responseData[i]);
                             var featureData = responseData[i].data;
                             var messageId = featureData[0].messageId;
-                            if (responseData[i].code == '500A' || responseData[i].code == '502A') {
+                            if (responseData[i].code == constants.DEVICE_INFO ||
+                                responseData[i].code == constants.APP_INFO) {
                                 sentMessage = featureData[0].data[0].data;
                             } else {
                                 sentMessage = featureData[0].data;
@@ -480,8 +483,10 @@ var notification = (function() {
                     var pendingOperations;
 
                     //Check if there is a Enterprise Wipe
-                    var enterpriseWipe = driver.query(sqlscripts.notifications.select15 , devices[0].id, "527A");
-                    if(enterpriseWipe != undefined && enterpriseWipe != null && enterpriseWipe[0] != undefined && enterpriseWipe[0] != null) {
+                    var enterpriseWipe = driver.query(sqlscripts.notifications.select15 , devices[0].id,
+                        constants.ENTERPRISEWIPE);
+                    if(enterpriseWipe != undefined && enterpriseWipe != null && enterpriseWipe[0] != undefined &&
+                        enterpriseWipe[0] != null) {
                         pendingOperations = enterpriseWipe;
                         driver.query(sqlscripts.notifications.update5, enterpriseWipe[0].id);
                         var devices = driver.query(sqlscripts.devices.select1, enterpriseWipe[0].device_id);
@@ -498,7 +503,8 @@ var notification = (function() {
                     }
 
                     // log.info(pendingOperations);
-                    if (pendingOperations != undefined && pendingOperations != null && pendingOperations[0] != undefined && pendingOperations[0] != null) {
+                    if (pendingOperations != undefined && pendingOperations != null &&
+                        pendingOperations[0] != undefined && pendingOperations[0] != null) {
                         var payloadArray = [];
                         for(var i=0; i<pendingOperations.length; ++i) {
                             var operation = {};
@@ -519,8 +525,6 @@ var notification = (function() {
                         return payloadArray;
                     } else {
                         //No pending operations
-                        //recivedDate = common.getCurrentDateTime();
-                        //driver.query(sqlscripts.device_awake.update6, recivedDate, devices[0].id);
                         return null;
                     }
 
@@ -533,6 +537,5 @@ var notification = (function() {
         }
 
 	};
-	// return module
 	return module;
 })();

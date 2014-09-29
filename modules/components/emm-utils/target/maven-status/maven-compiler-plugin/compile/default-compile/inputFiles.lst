@@ -1,0 +1,6 @@
+/home/nira/git/EMM/product-emm/modules/components/emm-utils/src/main/java/org/wso2/mobile/utils/Activator.java
+/home/nira/git/EMM/product-emm/modules/components/emm-utils/src/main/java/org/wso2/mobile/utils/utilities/ZipFileReading.java
+/home/nira/git/EMM/product-emm/modules/components/emm-utils/src/main/java/org/wso2/mobile/utils/internal/EMMUtilsServiceComponent.java
+/home/nira/git/EMM/product-emm/modules/components/emm-utils/src/main/java/org/wso2/mobile/utils/persistence/JDBCPersistenceManager.java
+/home/nira/git/EMM/product-emm/modules/components/emm-utils/src/main/java/org/wso2/mobile/utils/utilities/AndroidXMLParsing.java
+/home/nira/git/EMM/product-emm/modules/components/emm-utils/src/main/java/org/wso2/mobile/utils/persistence/EMMDBInitializer.java

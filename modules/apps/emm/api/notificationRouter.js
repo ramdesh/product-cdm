@@ -1,11 +1,13 @@
 var notification = (function () {
+
+    var constants = require('/modules/constants.js');
 	
     var module = function (db,router) {
 		var notificationModule = require('modules/notification.js').notification;
 		var notification = new notificationModule(db);
 		router.get('notifications/devices/{deviceid}', function(ctx){
 		    var result = notification.getNotifications(ctx);
-		    if(result!= null && result != undefined && result[0] != null && result[0] != undefined){
+		    if(result!= null && result != undefined && result[0] != null && result[0] != undefined) {
 		        print(result);
 		        response.status = 200;
 		    }else{
@@ -31,17 +33,17 @@ var notification = (function () {
 		        response.status = 404;
 		    }
 		});
+
         /*
          Device contacts this api to get and update the pending operations
          */
         router.post('notifications/pendingOperations/1.0.0', function(ctx) {
             var operations = notification.getAndroidOperations(ctx);
             log.debug("Pending >>>>> " + stringify(operations));
-
-            if(operations == "527A") {
+            if(operations == constants.ENTERPRISEWIPE) {
                 //Unregister the android agent
                 response.status = 200;
-                response.content = "527A";
+                response.content = constants.ENTERPRISEWIPE;
             } else {
                 response.status = 200;
                 print(operations);

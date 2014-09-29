@@ -100,6 +100,11 @@
             <artifactId>org.wso2.carbon.logging</artifactId>
             <version>4.2.0</version>
         </dependency>
+        <dependency>
+            <groupId>commons-httpclient.wso2</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1.0.wso2v2</version>
+        </dependency>
     </dependencies>
 
 </project>
