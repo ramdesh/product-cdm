@@ -186,6 +186,13 @@ var device = (function () {
             var device_id = ctx.deviceId;
             device.claimDevice(device_id);
         });
+        router.post('devices/iot/publish',function(ctx){
+            var payload = ctx.payload;
+            var streamName = ctx.stream;
+
+            var reg = new Packages.org.wso2.emm.bam.PublisherHandlerImp.getInstance();
+            reg.publish(streamName, payload);
+        });
         router.post('devices/iot/register', function(ctx){
             /*
                 Store the device to the database. Return an  
