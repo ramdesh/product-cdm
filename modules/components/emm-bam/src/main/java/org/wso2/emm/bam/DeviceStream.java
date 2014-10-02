@@ -54,7 +54,7 @@ public class DeviceStream implements EMMStreamDefinition{
 	}
 
 	public StreamDefinition getStreamDefinition(){
-		definition = new StreamDefCreator(Constants.DEVICE_STREAM,
+		definition = new StreamDefCreator(Constants.DEVICE_STREAM_NAME,
 				Constants.DEVICE_STREAM_VERSION,
 				Constants.DEVICE_STREAM_NICKNAME,
 				Constants.DEVICE_STREAM_DESCRIPTION);

@@ -22,8 +22,11 @@ package org.wso2.emm.bam.internal;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
+import org.wso2.emm.bam.AppInfoStream;
+import org.wso2.emm.bam.NotificationsStream;
 import org.wso2.emm.bam.PublisherHandlerImp;
 import org.wso2.emm.bam.RegistrationStream;
+import org.wso2.emm.bam.util.Constants;
 
 /**
  * @scr.component name="emm.bam.service.component" immediate="true"
@@ -36,6 +39,8 @@ public class EMMCoreServiceComponent {
 	protected void activate(ComponentContext ctx) {
 		PublisherHandlerImp ph=PublisherHandlerImp.getInstance();
 		ph.register("Registration", new RegistrationStream());
+		ph.register("Notifications", new NotificationsStream());
+		ph.register(Constants.APP_NOTIFICATIONS_STREAM_NAME, new AppInfoStream());
 	}
 
 	protected void deactivate(ComponentContext ctx) {

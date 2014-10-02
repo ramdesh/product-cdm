@@ -40,7 +40,7 @@ public class RegistrationStream implements EMMStreamDefinition{
 
 	public StreamDefinition getStreamDefinition() {
 		definition = new StreamDefCreator(
-				Constants.REGISTRATION_STREAM,
+				Constants.REGISTRATION_STREAM_NAME,
 				Constants.REGISTRATION_STREAM_VERSION,
 				Constants.REGISTRATION_STREAM_NICKNAME,
 				Constants.REGISTRATION_STREAM_DESCRIPTION);
