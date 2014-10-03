@@ -296,7 +296,12 @@ var mvc = (function () {
 				}
 			}
 			catch(e){
-				//Error is printed in debug. 
+				log.debug("Absolute error occured");
+				if(!e.rhinoException){
+					throw e;
+				}else{
+					log.info(e.rhinoException.getMessage());	
+				}
 			}
         },
 		registerHelper: function(helperName, helperFunction){
