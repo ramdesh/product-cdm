@@ -234,19 +234,6 @@ var device = (function () {
         });
 		router.post('devices/iostokenregister', function(ctx){
 		    device.registerIOS(ctx);
-            var payload ={
-                    "status": "200",
-                    "payload" : {
-                        "tokens":{
-                            "access_token": "dfsdfsd",
-                            "refresh_token" : "dsfsdjflk"
-                        },
-                        "topics":{
-                            "device": "dfjslkdfj"
-                        }
-                    }
-                };
-            print(payload);
 		});
 		
 		router.post('devices/pushtoken', function(ctx){

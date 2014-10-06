@@ -14,7 +14,22 @@ VALUES
   'iot',
   '#DE2339'
 );
-
+INSERT INTO PLATFORMS
+(
+  NAME,
+  DESCRIPTION,
+  TYPE,
+  TYPE_NAME,
+  COLOR
+)
+VALUES
+(
+  'RaspberryPi',
+  'RaspberryPi',
+  '3',
+  'iot',
+  '#FFFFFF'
+);
 
 CREATE TABLE DEVICE_TOKENS
 (

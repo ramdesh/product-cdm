@@ -9,6 +9,72 @@ var selectedDevice = null;
 
 
 $(document).ready(function() {
+	var countSec=1;
+	var previousY=0;
+	var str="";//string can keep  growing and cause issues
+	var maxX=20;
+	var dataY=0
+	var data = [],
+	totalPoints = 100;
+	var ws = new WebSocket("ws://localhost:9763/outputwebsocket/socket_pool/sensor");
+	ws.onopen = function(){
+	};
+	ws.onmessage = function (evt){ 
+		var received_msg = JSON.parse(evt.data);
+		dataY = received_msg.event.payloadData.temperature;
+	};
+	ws.onclose = function(){ 
+	};
+	function getRandomData() {
+		y =  dataY;//current point, replace this with point 1
+		var prevX=countSec-1;
+		if(str==""){
+			str="["+prevX+", "+previousY+"],["+countSec+","+y+"]";
+		}else{
+			str=str+",["+prevX+", "+previousY+"],["+countSec+","+y+"]";
+		}
+		var array = JSON.parse("["+str+"]");
+		previousY=y;
+		return array;
+	}
+
+	var updateInterval = 1000;
+	var maxX=20;
+	var initial=JSON.stringify(JSON.parse("[[0,0],[0.0]]"));
+
+	var plot = $.plot("#placeholder", [ initial ], {
+		series: {
+			shadowSize: 0	// Drawing is faster without shadows
+		},
+		yaxis: {
+			min: 0,
+			max: 100
+		},
+		xaxis: {
+			min: 0,
+			max: maxX
+		}
+	});
+
+	
+	function update() {
+		
+		plot.setData([getRandomData()]);
+		countSec++;
+		// Since the axes change, we need to call plot.setupGrid()
+		if(countSec>maxX){
+					 plot.getOptions().xaxes[0].min = plot.getOptions().xaxes[0].min+1;
+		            plot.getOptions().xaxes[0].max = plot.getOptions().xaxes[0].max+1;
+		            plot.setupGrid();
+		            plot.draw();
+		}else{
+		            
+					plot.draw();
+		}
+		setTimeout(update, updateInterval);
+	}
+
+	update();
 	
 	var selDevice = window.location.hash;
 	if(selDevice == ""){
