@@ -16,12 +16,14 @@ $(document).ready(function() {
 	var dataY=0
 	var data = [],
 	totalPoints = 100;
-	var ws = new WebSocket("ws://localhost:9763/outputwebsocket/socket_pool/sensor");
+	var ws = new WebSocket("wss://localhost:9443/outputwebsocket/socket_pool/sensor");
 	ws.onopen = function(){
 	};
 	ws.onmessage = function (evt){ 
 		var received_msg = JSON.parse(evt.data);
 		dataY = received_msg.event.payloadData.temperature;
+
+		$(".tempValue").html(dataY);
 	};
 	ws.onclose = function(){ 
 	};
