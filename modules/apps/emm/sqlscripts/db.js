@@ -2,10 +2,10 @@ var general = {
     'select1' : "SELECT LAST_INSERT_ID()"
 };
 var tokens = {
-    'select1':"SELECT * FROM DEVICE_TOKENS WHERE USERNAME=?",
-    'select2':"SELECT * FROM DEVICE_TOKENS WHERE TOKEN=? AND TOKEN_STATUS='Y'",
-    'insert1':"INSERT INTO DEVICE_TOKENS (USERNAME, TENANT_ID, TOKEN, TOKEN_STATUS) VALUES ( ?, ?, ?, 'Y');",
-    'update1':"UPDATE DEVICE_TOKENS SET TOKEN_STATUS='N' WHERE TOKEN=? "
+    'select1':"SELECT * FROM device_tokens WHERE username=?",
+    'select2':"SELECT * FROM device_tokens WHERE token=? AND token_status='Y'",
+    'insert1':"INSERT INTO device_tokens (username, tenant_id, token, token_status) VALUES ( ?, ?, ?, 'Y');",
+    'update1':"UPDATE device_tokens SET token_status='N' WHERE token=? "
 };
 var unclaimed_devices = {
     'insert1' : "INSERT INTO unclaimed_devices (os_version, created_date, properties, status, platform_id, vendor, mac) VALUES(?, ?, ?,'A', ?, ?, ?)",
