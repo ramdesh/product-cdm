@@ -114,7 +114,8 @@ view = function(appController) {
 };
 tokens = function(appController){
 	var context = appController.context();
-	var userId = session.get('emmConsoleSelectedUser');
+	var userId = session.get('emmConsoleUser').username;
+	log.info(userId);
 	var tokens = user.getTokens(userId);
 	context.jsFile = "users/tokens.js";
 	context.data = {
@@ -125,7 +126,7 @@ tokens = function(appController){
 };
 iotdevice = function(appController){
 	var context = appController.context();
-	var userId = session.get('emmConsoleSelectedUser');
+	var userId = session.get('emmConsoleUser').username;
 	var devices = device.getUnclaimedDevices();
 	context.jsFile = "users/iotdevices.js";
 	context.data = {
