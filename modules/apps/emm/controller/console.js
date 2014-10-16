@@ -1,10 +1,19 @@
+/*
+ This Controller is Deprecated
+ */
+
+
+
 var userModule = require('/modules/user.js').user;
 var user = new userModule(db);
 
+/*
+Application login function
+ */
 login = function(appController){	
 	if(request.getMethod() == 'POST'){
-		username = request.getParameter('username');
-		password =  request.getParameter('password');
+		var username = request.getParameter('username');
+		var password =  request.getParameter('password');
 		var data = {'username': username, 'password': password};		
 		var objUser = user.authenticate(data);
 
@@ -64,9 +73,14 @@ login = function(appController){
 
 };
 
+
+/*
+ Application logout function
+ */
 logout = function(appController){
-	
+
 };
+
 
 dashboard = function(appController){
 	context = appController.context();
@@ -78,6 +92,8 @@ dashboard = function(appController){
 	return context;	
 	
 };
+
+
 configuration = function(appController){	
 	context = appController.context();
 	context.title = context.title + " | Configuration";	
@@ -87,6 +103,8 @@ configuration = function(appController){
 	};
 	return context;	
 };
+
+
 
 management = function(appController){		
 	context = appController.context();
@@ -98,6 +116,8 @@ management = function(appController){
 	return context;	
 	
 };
+
+
 info = function(appController){		
 	print(session.get("emmConsoleUser"));
 	return null;

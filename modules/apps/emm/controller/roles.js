@@ -17,12 +17,17 @@ var user_groupModule = require('/modules/user_group.js').user_group;
 var user_group = new user_groupModule(db);
 
 
+
+/*
+ Roles configurations function
+ */
 configuration = function(appController){
 
-	context = appController.context();
-	
+    var context = appController.context();
+
+	var groups;
 	try{
-		var groups = group.getGroupsByType({type:context.contextData.user.role});
+		groups = group.getGroupsByType({type:context.contextData.user.role});
         for(i = 0; i < groups.length; i++){
             if(groups[i].name == 'Internal/publisher' || groups[i].name == 'Internal/reviewer' || groups[i].name == 'Internal/store' || groups[i].name == 'subscriber'){
                 groups[i]['isMam'] = true;
@@ -31,11 +36,9 @@ configuration = function(appController){
             }
         }
 	}catch(e){
-		
-		var groups = [];
+        log.error("Error while retrieving groups from the backend : " + e);
+		groups = [];
 	}
-	
-	
 	
 	context.title = context.title + " | Configuration";
 	context.page = "configuration";
@@ -49,18 +52,31 @@ configuration = function(appController){
 };
 
 
+
+
+
+
+/*
+ Roles management function
+ */
 management = function(appController){
-	context = appController.context();
+
+    var context = appController.context();
+
 	var groups;
 	try{
 		groups = webconsole.getDevicesCountAndUserCountForAllGroups({});
 	}catch(e){
+        log.error("Error while retrieving groups from the backend : " + e);
 		groups = [];
 	}
+
+
 	var features
 	try{
 		features =feature.getAllFeatures({});
 	}catch(e){
+         log.error("Error while retrieving features from the backend : " + e);
 		 features = [];
 	}
 
@@ -78,18 +94,32 @@ management = function(appController){
 };
 
 
+
+
+
+
+/*
+ Roles configurations function
+ */
 users = function(appController){
-	context = appController.context();
+
+    var context = appController.context();
+
 	var role = request.getParameter('role');
+
 	if(!role){
 		role = session.get('emmConsoleSelectedRole');
 	}
-	session.put('emmConsoleSelectedRole', role)
+	session.put('emmConsoleSelectedRole', role);
+
+    var users;
 	try{
-		var users = group.getUsersOfGroup({'groupid':role});
+		users = group.getUsersOfGroup({'groupid':role});
 	}catch(e){
-		var users = [];
+        log.error("Error while retrieving users from the backend : " + e);
+        users = [];
 	}
+
 	for (var i = 0; i < users.length; i++) {
 
 		if(users[i].no_of_devices > 0){
@@ -110,7 +140,15 @@ users = function(appController){
 		}
 
 	}
-	var features = feature.getAllFeatures({});
+
+	var features;
+    try{
+        features = feature.getAllFeatures({});
+    }catch(e){
+        log.error("Error while retrieving features from the backend : " + e);
+        features = [];
+    }
+
 	context.title = context.title + " | Users";
 	context.page = "management";
 	context.jsFile= "roles/users.js";
@@ -119,18 +157,27 @@ users = function(appController){
 		users: users,
 		features: features
 	};
+
 	return context;
 
 };
 
 
+/*
+ Roles add function
+ */
 add = function(appController){
-	context = appController.context();
+
+    var context = appController.context();
+
+    var users;
 	try{
-		var users = user.getUsersByType({type:context.contextData.user.role});
+		users = user.getUsersByType({type:context.contextData.user.role});
 	}catch(e){
-		var users = [];
+        log.error("Error while retrieving users from the backend : " + e);
+		users = [];
 	}
+
 	log.debug(session.get("emmConsoleUser"));
 	
 	context.title = context.title + " | Add Role";
@@ -141,11 +188,19 @@ add = function(appController){
 		users: users,
 		tenantId:session.get("emmConsoleUser").tenantId
 	};
+
 	return context;
 };
 
+
+
+/*
+ Roles edit function
+ */
 edit = function(appController){
-	context = appController.context();
+
+    var context = appController.context();
+
 	var role = request.getParameter('group');
 	log.debug(session.get("emmConsoleUser"));
 	
@@ -157,11 +212,15 @@ edit = function(appController){
 		role: role,
 		tenantId:session.get("emmConsoleUser").tenantId
 	};
+
 	return context;
 };
 
 
 
+/*
+ Roles assign to users function
+ */
 assign_users = function(appController){
 
 	var groupId = request.getParameter('group');
@@ -169,10 +228,11 @@ assign_users = function(appController){
 	try{
 		var users = user_group.getUsersOfRoleByAssignment({groupid: groupId});
 	}catch(e){
+        log.error("Error while retrieving users from the backend : " + e);
 		var users = [];
 	}
-	log.debug(session.get("emmConsoleUser"));
-	context = appController.context();
+
+    var context = appController.context();
 	context.title = context.title + " | Assign Users to group";
 	context.page = "configuration";
 	context.jsFile= "roles/assign_users.js";
@@ -182,16 +242,20 @@ assign_users = function(appController){
 		tenantId:session.get("emmConsoleUser").tenantId,
 		groupId: groupId
 	};
+
 	return context;
 };
 
 
 
+/*
+ Assign roles to permission function
+ */
 assign_permissions = function(appController){
 
 	var groupId = request.getParameter('group');
-	
-	context = appController.context();
+
+    var context = appController.context();
 	context.title = context.title + " | Assign permissions to group";
 	context.page = "configuration";
 	context.jsFile= "roles/assign_permissions.js";
@@ -200,30 +264,36 @@ assign_permissions = function(appController){
 		tenantId:session.get("emmConsoleUser").tenantId,
 		groupId: groupId
 	};
+
 	return context;
 };
 
 
+
+/*
+ View users belong to a perticular role function
+ */
 view_users = function(appController){
 
-
 	var groupId = request.getParameter('group');
-
-
 
 	try{
         log.debug("Test Group ID"+groupId);
 		var users = group.getUsersOfGroup({groupid: groupId});
         log.debug("Test Result"+users);
 	}catch(e){
+        log.error("Error while retrieving users from the backend : " + e);
 		var users = [];
 	}
+
+
 	try{
 		var groups = group.getAllGroups({});
 	}catch(e){
+        log.error("Error while retrieving groups from the backend : " + e);
 		var groups = [];
 	}
-	context = appController.context();
+    var context = appController.context();
 	context.title = context.title + " | Configuration";
 	context.page = "configuration";
 	context.jsFile= "users/configuration.js";
@@ -233,6 +303,7 @@ view_users = function(appController){
 		groups: groups,
 		groupId: groupId
 	};
+
 	return context;
 };
 

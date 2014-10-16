@@ -2,8 +2,7 @@ describe('Policy Module',function(){
     describe('Add Policy operations - Policy Module', function () {
         var policy_module = require('/modules/policy.js').policy;
         var db, policy, driver;
-        var ctx = {"policyName":"test_policy", "policyData":{}, "policyType":"1", "category":"1",
-            "policyMamData":{}};
+        var ctx = {"policyName":"test_policy", "policyData":{}, "policyType":"1", "category":"1", "policyMamData":{}};
 
         function tearUp() {
             try {
@@ -50,8 +49,7 @@ describe('Policy Module',function(){
     describe('Get Policy operations - Policy Module', function () {
         var policy_module = require('/modules/policy.js').policy;
         var db, policy, driver;
-        var ctx = {"policyName":"test_policy", "policyData":{}, "policyType":"1", "category":"1",
-            "policyMamData":{}};
+        var ctx = {"policyName":"test_policy", "policyData":{}, "policyType":"1", "category":"1", "policyMamData":{}};
 
         function tearUp() {
             try {
@@ -100,8 +98,7 @@ describe('Policy Module',function(){
     describe('Update Policy operations - Policy Module', function () {
         var policy_module = require('/modules/policy.js').policy;
         var db, policy, driver;
-        var ctx = {"policyName":"test_policy", "policyData":{}, "policyType":"1", "category":"1",
-            "policyMamData":{}};
+        var ctx = {"policyName":"test_policy", "policyData":{}, "policyType":"1", "category":"1", "policyMamData":{}};
 
         function tearUp() {
             try {
@@ -150,8 +147,7 @@ describe('Policy Module',function(){
     describe('Delete Policy operations - Policy Module', function () {
         var policy_module = require('/modules/policy.js').policy;
         var db, policy, driver;
-        var ctx = {"policyName":"test_policy", "policyData":{}, "policyType":"1", "category":"1",
-            "policyMamData":{}};
+        var ctx = {"policyName":"test_policy", "policyData":{}, "policyType":"1", "category":"1", "policyMamData":{}};
 
         function tearUp() {
             try {
@@ -200,8 +196,7 @@ describe('Policy Module',function(){
     describe('Assign Users To Policy operations - Policy Module', function () {
         var policy_module = require('/modules/policy.js').policy;
         var db, policy, driver;
-        var ctx = {"policyName":"test_policy", "policyData":{}, "policyType":"1", "category":"1",
-            "policyMamData":{}};
+        var ctx = {"policyName":"test_policy", "policyData":{}, "policyType":"1", "category":"1", "policyMamData":{}};
         var test_usr = "test_user";
 
         function tearUp() {
@@ -224,8 +219,7 @@ describe('Policy Module',function(){
                 policy.addPolicy(ctx);
                 var policyId = driver.query("select id from policies where name='test_policy'")[0].id;
                 policy.assignUsersToPolicy({"policyid":policyId,"removed_users":[],"added_users":[test_usr]});
-                var usr = driver.query("SELECT user_id from user_policy_mapping where policy_id = ?" +
-                    " AND user_id = ?",policyId,test_usr)[0].user_id;
+                var usr = driver.query("SELECT user_id from user_policy_mapping where policy_id = ? AND user_id = ?",policyId,test_usr)[0].user_id;
                 expect(usr).toBe(test_usr);
             } catch (e) {
                 log.error(e);
@@ -243,8 +237,7 @@ describe('Policy Module',function(){
                 var policyId = driver.query("select id from policies where name='test_policy'")[0].id;
                 policy.assignUsersToPolicy({"policyid":policyId,"removed_users":[],"added_users":[test_usr]});
                 policy.assignUsersToPolicy({"policyid":policyId,"removed_users":[test_usr],"added_users":[]});
-                var usr = driver.query("SELECT user_id from user_policy_mapping where policy_id = ? " +
-                    "AND user_id = ?",policyId,test_usr);
+                var usr = driver.query("SELECT user_id from user_policy_mapping where policy_id = ? AND user_id = ?",policyId,test_usr);
                 expect(usr.length).toBe(0);
             } catch (e) {
                 log.error(e);
@@ -259,8 +252,7 @@ describe('Policy Module',function(){
     describe('Assign Platforms To Policy operations - Policy Module', function () {
         var policy_module = require('/modules/policy.js').policy;
         var db, policy, driver;
-        var ctx = {"policyName":"test_policy", "policyData":{}, "policyType":"1", "category":"1",
-            "policyMamData":{}};
+        var ctx = {"policyName":"test_policy", "policyData":{}, "policyType":"1", "category":"1", "policyMamData":{}};
         var platform_id = "1";
 
         function tearUp() {
@@ -282,10 +274,8 @@ describe('Policy Module',function(){
                 tearUp();
                 policy.addPolicy(ctx);
                 var policyId = driver.query("select id from policies where name='test_policy'")[0].id;
-                policy.assignPlatformsToPolicy({"policyid":policyId,"removed_platforms":[],
-                    "added_platforms":[platform_id]});
-                var id = driver.query("SELECT platform_id from platform_policy_mapping where policy_id =" +
-                    " ? AND platform_id = ?",policyId,platform_id)[0].platform_id;
+                policy.assignPlatformsToPolicy({"policyid":policyId,"removed_platforms":[],"added_platforms":[platform_id]});
+                var id = driver.query("SELECT platform_id from platform_policy_mapping where policy_id = ? AND platform_id = ?",policyId,platform_id)[0].platform_id;
                 expect(id).toBe(platform_id);
             } catch (e) {
                 log.error(e);
@@ -301,12 +291,9 @@ describe('Policy Module',function(){
                 tearUp();
                 policy.addPolicy(ctx);
                 var policyId = driver.query("select id from policies where name='test_policy'")[0].id;
-                policy.assignPlatformsToPolicy({"policyid":policyId,"removed_platforms":[],
-                    "added_platforms":[platform_id]});
-                policy.assignPlatformsToPolicy({"policyid":policyId,"removed_platforms":[platform_id],
-                    "added_platforms":[]});
-                var id = driver.query("SELECT platform_id from platform_policy_mapping where policy_id = " +
-                    "? AND platform_id = ?",policyId,platform_id);
+                policy.assignPlatformsToPolicy({"policyid":policyId,"removed_platforms":[],"added_platforms":[platform_id]});
+                policy.assignPlatformsToPolicy({"policyid":policyId,"removed_platforms":[platform_id],"added_platforms":[]});
+                var id = driver.query("SELECT platform_id from platform_policy_mapping where policy_id = ? AND platform_id = ?",policyId,platform_id);
                 expect(id.length).toBe(0);
             } catch (e) {
                 log.error(e);
@@ -321,8 +308,7 @@ describe('Policy Module',function(){
     describe('Assign Groups To Policy operations - Policy Module', function () {
         var policy_module = require('/modules/policy.js').policy;
         var db, policy, driver;
-        var ctx = {"policyName":"test_policy", "policyData":{}, "policyType":"1", "category":"1",
-            "policyMamData":{}};
+        var ctx = {"policyName":"test_policy", "policyData":{}, "policyType":"1", "category":"1", "policyMamData":{}};
         var group_id = "1";
 
         function tearUp() {
@@ -344,10 +330,8 @@ describe('Policy Module',function(){
                 tearUp();
                 policy.addPolicy(ctx);
                 var policyId = driver.query("select id from policies where name='test_policy'")[0].id;
-                policy.assignGroupsToPolicy({"policyid":policyId,"removed_groups":[],"added_groups":[group_id],
-                    "removed_users":[],"added_users":[],"removed_platforms":[],"added_platforms":[]});
-                var id = driver.query("SELECT group_id from group_policy_mapping where policy_id = ?" +
-                    " AND group_id = ?",policyId,group_id)[0].group_id;
+                policy.assignGroupsToPolicy({"policyid":policyId,"removed_groups":[],"added_groups":[group_id],"removed_users":[],"added_users":[],"removed_platforms":[],"added_platforms":[]});
+                var id = driver.query("SELECT group_id from group_policy_mapping where policy_id = ? AND group_id = ?",policyId,group_id)[0].group_id;
                 expect(id).toBe(group_id);
             } catch (e) {
                 log.error(e);
@@ -363,12 +347,9 @@ describe('Policy Module',function(){
                 tearUp();
                 policy.addPolicy(ctx);
                 var policyId = driver.query("select id from policies where name='test_policy'")[0].id;
-                policy.assignGroupsToPolicy({"policyid":policyId,"removed_groups":[],"added_groups":[group_id]
-                    ,"removed_users":[],"added_users":[],"removed_platforms":[],"added_platforms":[]});
-                policy.assignGroupsToPolicy({"policyid":policyId,"removed_groups":[group_id],"added_groups":[],
-                    "removed_users":[],"added_users":[],"removed_platforms":[],"added_platforms":[]});
-                var id = driver.query("SELECT group_id from group_policy_mapping where policy_id = ? " +
-                    "AND group_id = ?",policyId,group_id);
+                policy.assignGroupsToPolicy({"policyid":policyId,"removed_groups":[],"added_groups":[group_id],"removed_users":[],"added_users":[],"removed_platforms":[],"added_platforms":[]});
+                policy.assignGroupsToPolicy({"policyid":policyId,"removed_groups":[group_id],"added_groups":[],"removed_users":[],"added_users":[],"removed_platforms":[],"added_platforms":[]});
+                var id = driver.query("SELECT group_id from group_policy_mapping where policy_id = ? AND group_id = ?",policyId,group_id);
                 expect(id.length).toBe(0);
             } catch (e) {
                 log.error(e);

@@ -249,12 +249,17 @@ var store = (function() {
         /*
             Processing pagniation
         */
+
+
             var pagination = true;
             var fApps = [];
             var page = 1;
             log.debug("Tenant ID: " + getTenantID());
+
             do {
+
                 var url = configsFile.mam.store_location + "/apis/assets/mobileapp" + "?domain=" + getTenantDomainFromID(getTenantID()) + "&page=" + page;
+                log.info("APPS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + url);
                 log.debug("url: " + url);
                 var data = get(url, {});
                 data = parse(data.data);
@@ -268,7 +273,7 @@ var store = (function() {
                     }
                 }
                 page++;
-            } while (pagination);
+            } while (false);
             return fApps;
         },
         getAppsFromStoreFormatted: function() {

@@ -50,9 +50,10 @@
         }
     },
     "mam": {
-        "store_location": "%https.ip%/store",
-        "archieve_location_ios": "%https.ip%",
-        "archieve_location_android": "%http.ip%"
+        "store_location": "https://localhost:9443/store",
+        "archieve_location_general": "https://localhost:9443",
+        "archieve_location_ios": "https://localhost:9443",
+        "archieve_location_android": "http://localhost:9763"
     },
     "registry": {
         "oauthClientKey" : "/_system/config/emm/OAuthClientKey",

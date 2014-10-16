@@ -2,18 +2,26 @@ var repostsModule = require('/modules/mdm_reports.js').mdm_reports;
 var report = new repostsModule(db);
 
 
-index = function(appController){		
-	
-	context = appController.context();
+/*
+ Report view index function
+ */
+index = function(appController){
+
+    var context = appController.context();
 	context.title = context.title + " | Reports";	
 	context.page = "reports";
 	context.data = {		
 	};
+
 	return context;	
 	
 };
 
 
+
+/*
+ Report all registered devices function
+ */
 all_reg_devices = function(appController){	
 	
 	var results = null; 
@@ -22,25 +30,23 @@ all_reg_devices = function(appController){
 	
 	
 	if(request.getMethod() == 'POST' || dashboard == 'true'){
-		
-		//print(request.getParameter('dashboard') == 'true');
-		
+
 		var startdate = request.getParameter('startdate');
 		var enddate = request.getParameter('enddate');
 		var platform = request.getParameter('platform');
-		
-		try{
-			var reportResults = report.getDevicesByRegisteredDate({startDate: startdate, endDate: enddate, platformType : platform});	
+
+        var reportResults;
+        try{
+			reportResults = report.getDevicesByRegisteredDate({startDate: startdate, endDate: enddate, platformType : platform});
 		}catch(e){
-			var reportResults = [];
+			reportResults = [];
 		}
-		
-		
+
 		results = reportResults;
 	}
-	
-		
-	context = appController.context();
+
+
+    var context = appController.context();
 	context.title = context.title + " | Reports";	
 	context.jsFile= "reports/reports.js";
 	context.page = "reports";
@@ -48,19 +54,21 @@ all_reg_devices = function(appController){
 		results: results,
 		inputData : {startdate: startdate, enddate: enddate, platform : platform}		
 	};
+
 	return context;	
 	
 };
 
 
+
+/*
+ Report all registered devices function
+ */
 devices_complience = function(appController){	
 	
-	var results = null; 
-	
+	var results = null;
 	var dashboard = request.getParameter('dashboard');
-	
-	
-	
+
 	if(request.getMethod() == 'POST' || dashboard == 'true'){
 		
 		var startdate = request.getParameter('startdate');
@@ -71,18 +79,14 @@ devices_complience = function(appController){
 		if(username == null){
 			username = "";
 		}
-		
-		//print(startdate + enddate + username + status);
-		
+
 		var reportResults = report.getDevicesByComplianceState({startDate: startdate, endDate: enddate, username: username, status: status});
-		
-		//print(reportResults);
-		
+
 		results = reportResults;
 	}
-	
-		
-	context = appController.context();
+
+
+    var context = appController.context();
 	context.title = context.title + " | Reports";	
 	context.jsFile= "reports/reports.js";
 	context.page = "reports";
@@ -95,28 +99,23 @@ devices_complience = function(appController){
 };
 
 
+
+/*
+ Report device status function
+ */
 devices_status = function(appController){	
 	
-	    var results = null; 
-	
-	
-		
+	    var results = null;
 		var startdate = request.getParameter('startdate');
 		var enddate = request.getParameter('enddate');
 		var deviceId = request.getParameter('deviceid');
 		var imei = request.getParameter('imei');
-		
-		//print(startdate + enddate + username + status);
-		
 		var reportResults = report.getComplianceStatus({startDate: startdate, endDate: enddate, deviceID: deviceId});
-		
-		//print(reportResults);
-		
+
 		results = reportResults;
-	
-	
-		
-	context = appController.context();
+
+
+    var context = appController.context();
 	context.title = context.title + " | Reports";	
 	context.jsFile= "reports/reports.js";
 	context.page = "reports";
@@ -124,31 +123,29 @@ devices_status = function(appController){
 		results: results,
 		inputData : {startdate: startdate, enddate: enddate, deviceId: deviceId, imei: imei}		
 	};
+
 	return context;	
 	
 };
 
 
 
-
+/*
+ Report top ten apps function
+ */
 top_ten_apps = function(appController){	
 	
 	var results = null; 
 	
 	if(request.getMethod() == 'POST'){
 		
-		
 		var platform = request.getParameter('platform');
-		
 		var reportResults = report.getInstalledApps({platformType : platform});
-		
-		//print(reportResults);
-		
 		results = reportResults;
 	}
-	
-		
-	context = appController.context();
+
+
+    var context = appController.context();
 	context.title = context.title + " | Reports";	
 	context.jsFile= "reports/reports.js";
 	context.page = "reports";
@@ -156,12 +153,15 @@ top_ten_apps = function(appController){
 		results: results,
 		inputData : {platform : platform}		
 	};
+
 	return context;	
 	
 };
 
 
-
+/*
+ Report installed apps summery function
+ */
 install_app_sum = function(appController){	
 	
 	var results = null; 
@@ -169,14 +169,13 @@ install_app_sum = function(appController){
 	if(request.getMethod() == 'POST'){
 		
 		var username = request.getParameter('username');
-		
 		var reportResults = report.getInstalledAppsByUser({userid: username});
 		
 		results = reportResults;
 	}
-	
-		
-	context = appController.context();
+
+
+    var context = appController.context();
 	context.title = context.title + " | Reports";	
 	context.jsFile= "reports/reports.js";
 	context.page = "reports";
@@ -184,6 +183,7 @@ install_app_sum = function(appController){
 		results: results,
 		inputData : {username: username}		
 	};
+
 	return context;	
 	
 };

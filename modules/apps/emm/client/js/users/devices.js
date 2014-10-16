@@ -49,7 +49,7 @@ $(document).ready(function() {
 
 });
 
-$('#devicesTab a').click(function(e) {
+$('#devicesTab').find('a').click(function(e) {
 	var tabId = $(this).data("tabId");
 	var deviceId = $(this).data("deviceId");
 
@@ -62,7 +62,7 @@ $('#devicesTab a').click(function(e) {
 });
 
 
-$('#devicesTab a').on('shown', function (e) {
+$('#devicesTab').find('a').on('shown', function (e) {
     window.location.hash = e.target.hash;
     loadGeneralInformation(selectedTab, selectedDevice);
 });

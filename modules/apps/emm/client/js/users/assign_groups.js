@@ -7,13 +7,13 @@ $("#btn-add").click(function() {
 	
 	
 	
-	var groupsArray = []
+	var groupsArray = [];
 	if (groups != null) {
 		groupsArray = groups.toString().split(",");
 	}
 	
 
-	var removedGroups = Array();
+	var removedGroups = [];
 	
 	//this is not a good thing to have it in the UI, but backend logic need it badly
 	$("#inputGroups option").each(function(){ 
@@ -22,7 +22,7 @@ $("#btn-add").click(function() {
 		}  		
 	});
 	
-		
+	//TODO have proper name
 	jso = {
 		"tenant_id" : tenantId,
 		"username" : id,
@@ -30,7 +30,7 @@ $("#btn-add").click(function() {
 		"removed_groups" : removedGroups
 	};
 
-	
+	//TODO Add default error handler to methods, make it async call
 	jQuery.ajax({
 		url : getServiceURLs("usersEDIT", id),
 		type : "PUT",
@@ -41,21 +41,21 @@ $("#btn-add").click(function() {
 		statusCode: {
 			400: function() {
 				noty({
-					text : 'Error occured!',
+					'text' : 'Error occured!',
 					'layout' : 'center',
 					'type': 'error'
 				});
 			},
 			500: function() {
 				noty({
-					text : 'Fatal error occured!',
+					'text' : 'Fatal error occured!',
 					'layout' : 'center',
 					'type': 'error'
 				});
 			},
 			200: function() {
 				noty({
-					text : 'Roles are assigned to the user successfully!',
+					'text' : 'Roles are assigned to the user successfully!',
 					'layout' : 'center'
 				});
 				window.location.assign("configuration");

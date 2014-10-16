@@ -1,3 +1,7 @@
+/*
+ Test controller
+ */
+
 var groupModule = require('/modules/group.js').group;
 var group = new groupModule(db);
 
@@ -15,9 +19,10 @@ var user = new userModule(db);
 
 
 
+
 index = function(appController){
 
-	context = appController.context();	
+    var context = appController.context();
 	
 	var testData =  notification.getNotifications({deviceid: 998});
 

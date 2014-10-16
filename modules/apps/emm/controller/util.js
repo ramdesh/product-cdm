@@ -1,4 +1,5 @@
 var isAdmin = function () {
+
 	var objUser = session.get("userFeed");
 	var roles = objUser["roles"];
 	
@@ -17,16 +18,19 @@ var isAdmin = function () {
 	return false;
 };
 
+
 var getTenantIdByDomain = function (domain) {
 	var carbon = require('carbon');
 	var server = new carbon.server.Server(configs.HTTPS_URL + '/admin');
 	return server.getTenantIdByDomain(domain);
 };
 
+
 var getLoggedInUserId = function () {
 	var objUser = session.get("userFeed");
 	return objUser["username"];
 };
+
 
 var getLoggedInTenantId = function () {
 	var objUser = session.get("userFeed");

@@ -16,21 +16,27 @@ var store = new storeModule(db);
 
 
 
+
+/*
+ Policies configuration function
+ */
 configuration = function(appController){	
 	
 	try{
 		var policies = policy.getAllPoliciesForMDM({});
 	}catch(e){
+        log.error("Error while retrieving policies from the backend : " + e);
 		var policies = [];
 	}
 			
 	try{
 		var groups = group.getGroups({});
 	}catch(e){
+        log.error("Error while retrieving groups from the backend : " + e);
 		var groups = [];
 	}
-	
-	context = appController.context();
+
+    var context = appController.context();
 	context.jsFile= "policies/configuration.js";
 	context.title = context.title + " | Configuration";		
 	context.page = "configuration";
@@ -44,6 +50,9 @@ configuration = function(appController){
 };
 
 
+/*
+ Policies assign to groups function
+ */
 assign_groups = function(appController){	
 	
 	
@@ -57,7 +66,7 @@ assign_groups = function(appController){
 	try{
 		var groups = policy.getGroupsByPolicy({policyid: policyId});		
 	}catch(e){
-		log.error("Error form the Backend to UI >> " + e);
+        log.error("Error while retrieving groups from the backend : " + e);
 		var groups = [];
 	}
 	
@@ -66,14 +75,12 @@ assign_groups = function(appController){
 			hasGroups = true;
 		}
 	}
-	
-	
-		
+
 	
 	try{
 		var users = policy.getUsersByPolicy({policyid: policyId});
 	}catch(e){
-		log.error("Error form the Backend to UI >> " + e);
+        log.error("Error while retrieving users from the backend : " + e);
 		var users = [];
 	}
 	
@@ -87,7 +94,7 @@ assign_groups = function(appController){
 	try{
 		var platforms = policy.getPlatformsByPolicy({policyid: policyId});		
 	}catch(e){
-		log.error("Error form the Backend to UI >> " + e);
+        log.error("Error while retrieving users from the backend : " + e);
 		var platforms = [];
 	}
 	
@@ -96,8 +103,8 @@ assign_groups = function(appController){
 			hasPlatforms = true;
 		}
 	}
-					
-	context = appController.context();
+
+    var context = appController.context();
 	context.title = context.title + " | Assign Users to group";	
 	context.page = "configuration";	
 	context.jsFile= "policies/assign_groups.js";
@@ -111,47 +118,53 @@ assign_groups = function(appController){
 		policyName: policyName,
 		hasResources : {hasGroups: hasGroups, hasUsers: hasUsers, hasPlatforms: hasPlatforms}
 	};
+
 	return context;
 };
 
 
 
-assign_resources = function(appController){	
-	
-	context = appController.context();
+/*
+ Policies assign to resources (groups/ users / platforms)  function
+ */
+assign_resources = function(appController){
+
+    var context = appController.context();
 	
 	var policyId = request.getParameter('policy');
 	var policyName = request.getParameter('policyName');
-		
+
+    var groups;
 	try{
-		var groups = group.getGroupsByType({type:context.contextData.user.role});		
+		groups = group.getGroupsByType({type:context.contextData.user.role});
 	}catch(e){
 		log.error("Error form the Backend to UI >> " + e);
-		var groups = [];
+		groups = [];
 	}
 	
-	//print(groups);
-	
+
+    var users;
 	try{
-		var users = policy.getUsersByPolicy({policyid: policyId});		
+		users = policy.getUsersByPolicy({policyid: policyId});
 	}catch(e){
-		log.error("Error form the Backend to UI >> " + e);
-		var users = [];
+        log.error("Error while retrieving users from the backend : " + e);
+		users = [];
+	}
+
+    var platforms;
+	try{
+		platforms = policy.getPlatformsByPolicy({policyid: policyId});
+	}catch(e){
+        log.error("Error while retrieving platforms from the backend : " + e);
+		platforms = [];
 	}
 	
-	
+	var policies;
 	try{
-		var platforms = policy.getPlatformsByPolicy({policyid: policyId});		
+		policies = policy.getAllPolicies({});
 	}catch(e){
-		log.error("Error form the Backend to UI >> " + e);
-		var platforms = [];
-	}
-	
-	
-	try{
-		var policies = policy.getAllPolicies({});
-	}catch(e){
-		var policies = [];
+        log.error("Error while retrieving policies from the backend : " + e);
+		policies = [];
 	}
 	
 					
@@ -169,36 +182,41 @@ assign_resources = function(appController){
 		policyName: policyName,
 		policies: policies
 	};
+
 	return context;
 };
 
 
 
+/*
+ Policies add  function
+ */
+add = function(appController){
 
-add = function(appController){	
-	
-	context = appController.context();
-	
-	
+    var context = appController.context();
+
+    var groups;
 	try{
-		var groups = group.getGroups({});		
+		groups = group.getGroups({});
 	}catch(e){
-		var groups = [];
+        log.error("Error while retrieving groups from the backend : " + e);
+		groups = [];
 	}
-	
-		
+
+    var features;
 	try{
-		var features =feature.getAllFeatures({});
+        features =feature.getAllFeatures({});
 	}catch(e){
-		var features = [];
+        log.error("Error while retrieving features from the backend : " + e);
+		features = [];
 	}
-    
-    
+
+    var installedApps;
     try{
-		var installedApps =  store.getAppsFromStoreFormatted();
-        
+		installedApps =  store.getAppsFromStoreFormatted();
 	}catch(e){
-		var installedApps = [];
+        log.error("Error while retrieving installed apps from the backend : " + e);
+		installedApps = [];
 	}
     
 		
@@ -215,19 +233,24 @@ add = function(appController){
 };
 
 
-edit = function(appController){	
-	
-	context = appController.context();	
+
+/*
+ Policies edit  function
+ */
+edit = function(appController){
+
+    var context = appController.context();
 	
 	
 	var policyId = request.getParameter('policy');
 	var policyName = request.getParameter('policy');
-    
-    
+
+    var installedApps;
     try{
-		var installedApps =  store.getAppsFromStoreFormatted();
+		installedApps =  store.getAppsFromStoreFormatted();
 	}catch(e){
-		var installedApps = [];
+        log.error("Error while retrieving installed apps from the backend : " + e);
+		installedApps = [];
 	}
 	
 	
@@ -246,23 +269,26 @@ edit = function(appController){
 
 
 
+/*
+ Policies add bundle function
+ */
+add_bundle = function(appController){
 
+    var context = appController.context();
 
-
-add_bundle = function(appController){	
-	
-	context = appController.context();
-		
-	try{
-		var groups = group.getGroups({});		
+    var groups;
+    try{
+		groups = group.getGroups({});
 	}catch(e){
-		var groups = [];
-	}	
-	
+		groups = [];
+	}
+
+    var features;
 	try{
-		var features = feature.getAllFeatures({});
+		features = feature.getAllFeatures({});
 	}catch(e){
-		var features = [];
+        log.error("Error while retrieving features from the backend : " + e);
+		features = [];
 	}
 	
 	context.jsFile= "permissions/add_bundle.js";
@@ -274,4 +300,5 @@ add_bundle = function(appController){
 			features: features
 	}
 	return context;
+
 }

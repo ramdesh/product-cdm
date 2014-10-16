@@ -1,3 +1,4 @@
+//importing modules
 var groupModule = require('/modules/group.js').group;
 var group = new groupModule(db);
 
@@ -6,22 +7,28 @@ var feature = new featureModule(db);
 
 
 
-configuration = function(appController){		
-		
-	context = appController.context();	
-	
-	try{
-		var permissionGroup = JSON.parse(get(appController.getServiceURLs("permissionsCRUD", "")).data);	
+/*
+    Permission configuration Function
+ */
+configuration = function(appController){
+
+    var context = appController.context();
+
+    var permissionGroup;
+    try{
+		permissionGroup = JSON.parse(get(appController.getServiceURLs("permissionsCRUD", "")).data);
 	}catch(e){
-		var permissionGroup = [];
+        log.error("Error while retrieving permission groups from the backend : " + e);
+		permissionGroup = [];
 	}
-	
+
+    var groups;
 	try{
-		var groups = group.getGroupsByType({type:context.contextData.user.role});		
+		groups = group.getGroupsByType({type:context.contextData.user.role});
 	}catch(e){
-		var groups = [];
+        log.error("Error while retrieving groups from the backend : " + e);
+		groups = [];
 	}
-	
 	
 	context.jsFile= "permissions/configuration.js";
 	context.title = context.title + " | Configuration";		
@@ -36,22 +43,28 @@ configuration = function(appController){
 };
 
 
-add = function(appController){	
-	
-	context = appController.context();
-	
-	
+
+/*
+ Permission add Function
+ */
+add = function(appController){
+
+    var context = appController.context();
+
+    var groups;
 	try{
-		var groups = group.getGroups({});		
+		groups = group.getGroups({});
 	}catch(e){
-		var groups = [];
+        log.error("Error while retrieving groups from the backend : " + e);
+		groups = [];
 	}
-	
-		
+
+    var features;
 	try{
-		var features =feature.getAllFeatures({});
+		features =feature.getAllFeatures({});
 	}catch(e){
-		var features = [];
+        log.error("Error while retrieving features from the backend : " + e);
+		features = [];
 	}
 	
 	context.jsFile= "permissions/add.js";
@@ -62,27 +75,32 @@ add = function(appController){
 			groups: groups,
 			features: features
 	};
+
 	return context;
 };
 
 
-
-
-
+/*
+    Permission add bundle Function
+ */
 add_bundle = function(appController){	
 	
-	context = appController.context();
-		
+	var context = appController.context();
+
+    var groups;
 	try{
-		var groups = group.getGroups({});		
+		groups = group.getGroups({});
 	}catch(e){
-		var groups = [];
+        log.error("Error while retrieving groups from the backend : " + e);
+        groups = [];
 	}	
-	
-	try{
-		var features = feature.getAllFeatures({});
+
+    var features;
+    try{
+		features = feature.getAllFeatures({});
 	}catch(e){
-		var features = [];
+        log.error("Error while retrieving features from the backend : " + e);
+		features = [];
 	}
 	
 	context.jsFile= "permissions/add_bundle.js";
@@ -93,5 +111,6 @@ add_bundle = function(appController){
 			groups: groups,
 			features: features
 	};
+
 	return context;
 };

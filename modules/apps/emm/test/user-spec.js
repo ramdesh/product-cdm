@@ -62,8 +62,7 @@ describe('User Module',function(){
         }
         var user_module = require('/modules/user.js').user;
         var user, db;
-        var ctx = {"first_name": "Firstname", "last_name": "Lastname", "mobile_no": "0123456789",
-            "groups": [], "type": ""};
+        var ctx = {"first_name": "Firstname", "last_name": "Lastname", "mobile_no": "0123456789", "groups": [], "type": ""};
         var userRole;
 
         function initModule() {
@@ -100,8 +99,7 @@ describe('User Module',function(){
         it('Test addUser with partial data', function () {
             try {
                 initModule();
-                var userOp = user.addUser({"first_name": "Firstname", "last_name": "Lastname",
-                    "mobile_no": "0123456789"});
+                var userOp = user.addUser({"first_name": "Firstname", "last_name": "Lastname", "mobile_no": "0123456789"});
                 expect(userOp.status).toEqual("BAD_REQUEST");
             } catch (e) {
                 log.error(e);
@@ -119,8 +117,7 @@ describe('User Module',function(){
         }
         var user_module = require('/modules/user.js').user;
         var user, db;
-        var ctx = {"first_name": "Firstname", "last_name": "Lastname", "mobile_no": "0123456789",
-            "groups": [], "type": ""};
+        var ctx = {"first_name": "Firstname", "last_name": "Lastname", "mobile_no": "0123456789", "groups": [], "type": ""};
         var userRole;
 
         function initModule() {
@@ -175,8 +172,7 @@ describe('User Module',function(){
         }
         var user_module = require('/modules/user.js').user;
         var user, db;
-        var ctx = {"first_name": "Firstname", "last_name": "Lastname", "mobile_no": "0123456789",
-            "groups": [], "type": ""};
+        var ctx = {"first_name": "Firstname", "last_name": "Lastname", "mobile_no": "0123456789", "groups": [], "type": ""};
         var userRole;
 
         function initModule() {
@@ -232,8 +228,7 @@ describe('User Module',function(){
         }
         var user_module = require('/modules/user.js').user;
         var user, db;
-        var ctx = {"first_name": "Firstname", "last_name": "Lastname", "mobile_no": "0123456789",
-            "groups": [], "type": ""};
+        var ctx = {"first_name": "Firstname", "last_name": "Lastname", "mobile_no": "0123456789", "groups": [], "type": ""};
         var userRole;
 
         function initModule() {
@@ -276,8 +271,7 @@ describe('User Module',function(){
         }
         var user_module = require('/modules/user.js').user;
         var user, db;
-        var ctx = {"first_name": "Firstname", "last_name": "Lastname", "mobile_no": "0123456789",
-            "groups": [], "type": ""};
+        var ctx = {"first_name": "Firstname", "last_name": "Lastname", "mobile_no": "0123456789", "groups": [], "type": ""};
         var userRole;
 
         function initModule() {

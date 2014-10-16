@@ -1,10 +1,16 @@
+
+
+/*
+ Tenant configuration function
+ */
+
 configuration = function(appController) {
-	context = appController.context();
+    var context = appController.context();
 	context.title = context.title + " | Configuration";
 	context.page = "configuration";
 	context.jsFile = "tenant/configuration.js";
 	context.data = {
-		configOption : "tenant",
+		configOption : "tenant"
 	};
 	return context;
 };
