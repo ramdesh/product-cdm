@@ -24,8 +24,8 @@ import org.json.JSONObject;
 import org.wso2.emm.apkgenerator.generators.CertificateGenerationException;
 
 /**
- * This class accepts the data coming as a JSON string and translate them to java JSON
- * objects
+ * This class accepts the data coming in JSON form and translate them to java
+ * JSON objects.
  */
 public class ObjectReader {
 
@@ -68,8 +68,8 @@ public class ObjectReader {
 		} catch (JSONException e) {
 			log.error("Error in getting String " + key + " from JSONObject, "
 					+ e.getMessage(), e);
-			throw new CertificateGenerationException(
-					"error while reading parameter, " + e.getMessage() + key, e);
+			throw new CertificateGenerationException("Error in getting String "
+					+ key + " from JSONObject, " + e.getMessage(), e);
 		}
 	}
 }
