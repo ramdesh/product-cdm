@@ -87,6 +87,17 @@ public class FileOperator {
 				if (input != null) {
 					input.close();
 				}
+			} catch (IOException e) {
+				log.error(
+						"Error in closing file Stream , while trying to copy file "
+								+ source + "\n to its destination: "
+								+ destination, e);
+				throw new CertificateGenerationException(
+						"Error in closing file Stream , while trying to copy file "
+								+ source + "\n to its destination: "
+								+ destination, e);
+			}
+			try {
 				if (output != null) {
 					output.close();
 				}
@@ -308,3 +319,4 @@ public class FileOperator {
 		}
 	}
 }
+
