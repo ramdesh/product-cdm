@@ -125,16 +125,20 @@ public class FileOperator {
 	 */
 	public static String readFile(String path)
 			throws CertificateGenerationException {
-		Scanner scanner;
+		Scanner scanner = null;
+		String fileContent;
 		try {
 			scanner = new Scanner(new File(path));
+			fileContent = scanner.useDelimiter("\\Z").next();
 		} catch (FileNotFoundException e) {
 			log.error("Error reading file " + path + " ," + e.getMessage(), e);
 			throw new CertificateGenerationException("Error reading file "
 					+ path + " ," + e.getMessage(), e);
+		} finally {
+			if (scanner != null) {
+				scanner.close();
+			}
 		}
-		String fileContent = scanner.useDelimiter("\\Z").next();
-		scanner.close();
 		return fileContent;
 	}
 
@@ -149,17 +153,20 @@ public class FileOperator {
 	 */
 	public static void fileWrite(String path, String content)
 			throws CertificateGenerationException {
-		PrintWriter out;
+		PrintWriter out = null;
 		try {
 			out = new PrintWriter(path);
+			out.println(content);
 		} catch (FileNotFoundException e) {
 			log.error("Error writing to file " + path + " ," + e.getMessage(),
 					e);
 			throw new CertificateGenerationException("Error writing to file "
 					+ path + " ," + e.getMessage(), e);
+		} finally {
+			if (out != null) {
+				out.close();
+			}
 		}
-		out.println(content);
-		out.close();
 	}
 
 	/**
@@ -174,9 +181,9 @@ public class FileOperator {
 	 */
 	public static void createZip(String zipFilePath, String[] files)
 			throws CertificateGenerationException {
-		FileOutputStream fout;
+		FileOutputStream fileOut;
 		try {
-			fout = new FileOutputStream(zipFilePath);
+			fileOut = new FileOutputStream(zipFilePath);
 		} catch (FileNotFoundException e) {
 			log.error(
 					"Error opening file " + zipFilePath + " ," + e.getMessage(),
@@ -184,13 +191,13 @@ public class FileOperator {
 			throw new CertificateGenerationException("Error opening file "
 					+ zipFilePath + " ," + e.getMessage(), e);
 		}
-		ZipOutputStream zout = new ZipOutputStream(fout);
+		ZipOutputStream zipOutStream = new ZipOutputStream(fileOut);
 		for (int x = 0; x < files.length; x++) {
-			File f = new File(files[x]);
-			FileInputStream in;
+			File file = new File(files[x]);
+			FileInputStream inputStream;
 			try {
-				in = new FileInputStream(files[x]);
-				zout.putNextEntry(new ZipEntry(f.getName()));
+				inputStream = new FileInputStream(files[x]);
+				zipOutStream.putNextEntry(new ZipEntry(file.getName()));
 			} catch (FileNotFoundException e) {
 				log.error(
 						"Cannot open the file ," + files[x] + ", "
@@ -206,13 +213,15 @@ public class FileOperator {
 						+ files[x] + "to zip , " + e.getMessage(), e);
 			}
 
-			byte[] b = new byte[1024];
+			byte[] bytes = new byte[1024];
 			int count;
 			try {
-				while ((count = in.read(b)) > 0) {
-					zout.write(b, 0, count);
+				while ((count = inputStream.read(bytes)) > 0) {
+					zipOutStream.write(bytes, 0, count);
 				}
-				in.close();
+				if (inputStream != null) {
+					inputStream.close();
+				}
 			} catch (IOException e) {
 				log.error("file error while closing the file, " + files[x]
 						+ ", " + e.getMessage(), e);
@@ -222,8 +231,8 @@ public class FileOperator {
 			}
 		}
 		try {
-			if (zout != null) {
-				zout.close();
+			if (zipOutStream != null) {
+				zipOutStream.close();
 			}
 		} catch (IOException e) {
 			log.error("file error while closing the file, " + zipFilePath
@@ -244,10 +253,10 @@ public class FileOperator {
 	 */
 	public static void writePem(String path, Object file)
 			throws CertificateGenerationException {
-		FileOutputStream fos3;
+		FileOutputStream fileOutput = null;
 		try {
-			fos3 = new FileOutputStream(path);
-			PEMWriter pemWriter3 = new PEMWriter(new PrintWriter(fos3));
+			fileOutput = new FileOutputStream(path);
+			PEMWriter pemWriter3 = new PEMWriter(new PrintWriter(fileOutput));
 			pemWriter3.writeObject(file);
 			pemWriter3.flush();
 			pemWriter3.close();
@@ -256,6 +265,18 @@ public class FileOperator {
 					e);
 			throw new CertificateGenerationException("Error writing file to :"
 					+ path + ", " + e.getMessage(), e);
+		}finally {
+			if (fileOutput != null) {
+				try {
+					fileOutput.close();
+				} catch (IOException e) {
+					log.error("file error while closing the file, " + path
+							+ ", " + e.getMessage(), e);
+					throw new CertificateGenerationException(
+							"file error while closing the file, " + path + ", "
+									+ e.getMessage(), e);
+				}
+			}
 		}
 	}
 
@@ -291,7 +312,7 @@ public class FileOperator {
 			throws CertificateGenerationException {
 		try {
 			new File(path).mkdirs();
-		} catch (Exception e) {
+		} catch (SecurityException e) {
 			log.error(
 					"Error when creating directory " + path + " ,"
 							+ e.getMessage(), e);
