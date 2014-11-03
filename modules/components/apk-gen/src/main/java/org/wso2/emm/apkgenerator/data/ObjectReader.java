@@ -24,8 +24,8 @@ import org.json.JSONObject;
 import org.wso2.emm.apkgenerator.generators.CertificateGenerationException;
 
 /**
- * This class accepts the data coming in JSON form and translate them to java
- * JSON objects.
+ * This class accepts the data coming as a JSON string and translate them to java JSON
+ * objects
  */
 public class ObjectReader {
 
