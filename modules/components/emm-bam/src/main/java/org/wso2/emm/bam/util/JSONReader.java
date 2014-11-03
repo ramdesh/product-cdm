@@ -24,7 +24,7 @@ import org.json.JSONObject;
 import org.wso2.emm.bam.PublisherException;
 
 /**
- * This class accepts the data coming in JSON form and translate them to JSON
+ * This class accepts the data coming as a JSON string and translate them to java JSON
  * objects
  */
 public class JSONReader {
