@@ -222,7 +222,9 @@ public class FileOperator {
 			}
 		}
 		try {
-			zout.close();
+			if (zout != null) {
+				zout.close();
+			}
 		} catch (IOException e) {
 			log.error("file error while closing the file, " + zipFilePath
 					+ ", " + e.getMessage(), e);
