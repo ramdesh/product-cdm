@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8"?>
 <metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.0.0" localization="OSGI-INF/metatype/metatype">
+=======
+<?xml version="1.0" encoding="UTF-8"?><metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.0.0" localization="OSGI-INF/metatype/metatype">
+>>>>>>> ecfbac8555c0c9e7131494ff1d7838d556cf79a4
     <OCD id="emm.utils.service.component" name="%emm.utils.service.component.name" description="%emm.utils.service.component.description"/>
     <Designate pid="emm.utils.service.component">
         <Object ocdref="emm.utils.service.component"/>

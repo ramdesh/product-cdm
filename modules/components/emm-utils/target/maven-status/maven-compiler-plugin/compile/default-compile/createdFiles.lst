@@ -1,6 +1,11 @@
 org/wso2/mobile/utils/utilities/AndroidXMLParsing.class
+<<<<<<< HEAD
 org/wso2/mobile/utils/Activator.class
 org/wso2/mobile/utils/persistence/JDBCPersistenceManager.class
+=======
+org/wso2/mobile/utils/persistence/JDBCPersistenceManager.class
+org/wso2/mobile/utils/Activator.class
+>>>>>>> ecfbac8555c0c9e7131494ff1d7838d556cf79a4
 org/wso2/mobile/utils/utilities/ZipFileReading.class
 org/wso2/mobile/utils/internal/EMMUtilsServiceComponent.class
 org/wso2/mobile/utils/persistence/EMMDBInitializer.class

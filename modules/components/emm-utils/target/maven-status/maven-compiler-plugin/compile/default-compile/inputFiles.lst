@@ -1,6 +1,15 @@
+<<<<<<< HEAD
 /home/nira/git/EMM/product-emm/modules/components/emm-utils/src/main/java/org/wso2/mobile/utils/Activator.java
 /home/nira/git/EMM/product-emm/modules/components/emm-utils/src/main/java/org/wso2/mobile/utils/utilities/ZipFileReading.java
 /home/nira/git/EMM/product-emm/modules/components/emm-utils/src/main/java/org/wso2/mobile/utils/internal/EMMUtilsServiceComponent.java
 /home/nira/git/EMM/product-emm/modules/components/emm-utils/src/main/java/org/wso2/mobile/utils/persistence/JDBCPersistenceManager.java
 /home/nira/git/EMM/product-emm/modules/components/emm-utils/src/main/java/org/wso2/mobile/utils/utilities/AndroidXMLParsing.java
 /home/nira/git/EMM/product-emm/modules/components/emm-utils/src/main/java/org/wso2/mobile/utils/persistence/EMMDBInitializer.java
+=======
+/home/inoshp/Documents/work/source-emm/product-emm/modules/components/emm-utils/src/main/java/org/wso2/mobile/utils/persistence/EMMDBInitializer.java
+/home/inoshp/Documents/work/source-emm/product-emm/modules/components/emm-utils/src/main/java/org/wso2/mobile/utils/utilities/ZipFileReading.java
+/home/inoshp/Documents/work/source-emm/product-emm/modules/components/emm-utils/src/main/java/org/wso2/mobile/utils/Activator.java
+/home/inoshp/Documents/work/source-emm/product-emm/modules/components/emm-utils/src/main/java/org/wso2/mobile/utils/internal/EMMUtilsServiceComponent.java
+/home/inoshp/Documents/work/source-emm/product-emm/modules/components/emm-utils/src/main/java/org/wso2/mobile/utils/persistence/JDBCPersistenceManager.java
+/home/inoshp/Documents/work/source-emm/product-emm/modules/components/emm-utils/src/main/java/org/wso2/mobile/utils/utilities/AndroidXMLParsing.java
+>>>>>>> ecfbac8555c0c9e7131494ff1d7838d556cf79a4

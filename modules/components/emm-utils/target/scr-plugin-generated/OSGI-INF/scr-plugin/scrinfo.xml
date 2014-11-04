@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8"?>
 <components xmlns:scr="http://www.osgi.org/xmlns/scr/v1.0.0">
+=======
+<?xml version="1.0" encoding="UTF-8"?><components xmlns:scr="http://www.osgi.org/xmlns/scr/v1.0.0">
+>>>>>>> ecfbac8555c0c9e7131494ff1d7838d556cf79a4
     <scr:component enabled="true" immediate="true" name="emm.utils.service.component">
         <implementation class="org.wso2.mobile.utils.internal.EMMUtilsServiceComponent"/>
         <property name="service.pid" value="emm.utils.service.component" private="false"/>
