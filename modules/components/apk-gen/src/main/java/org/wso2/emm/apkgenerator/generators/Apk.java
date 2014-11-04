@@ -95,16 +95,16 @@ public class Apk {
 			String password) throws CertificateGenerationException {
 
 		String content = FileOperator.readFile(commonUtilPath);
-		int startInd = content.indexOf("String SERVER_IP = \"");
+		int startInd = content.indexOf(Constants.SERVER_IP_ANDROID);
 		int lastInd = content.indexOf("\";", startInd);
 		String changedContent = content.substring(0, startInd)
-				+ "String SERVER_IP = \"" + hostName
+				+ Constants.SERVER_IP_ANDROID + hostName
 				+ content.substring(lastInd);
 
-		startInd = changedContent.indexOf("String TRUSTSTORE_PASSWORD = \"");
+		startInd = changedContent.indexOf(Constants.TRUST_STORE_BKS);
 		lastInd = changedContent.indexOf("\";", startInd);
 		changedContent = changedContent.substring(0, startInd)
-				+ "String TRUSTSTORE_PASSWORD = \"" + password
+				+ Constants.TRUST_STORE_BKS + password
 				+ changedContent.substring(lastInd);
 		FileOperator.fileWrite(commonUtilPath, changedContent);
 	}
@@ -117,7 +117,7 @@ public class Apk {
 	static void buildApk() throws CertificateGenerationException {
 		renameFile();
 		try {
-			List<String> PUBLISH_GOALS = Arrays.asList("clean", "package");
+			List<String> PUBLISH_GOALS = Arrays.asList(Constants.ACTION, Constants.GOAL);
 			InvocationRequest request = new DefaultInvocationRequest();
 			// provide POM file to invoker
 			request.setPomFile(new File(ApkGenerator.workingDir
@@ -125,7 +125,7 @@ public class Apk {
 			request.setGoals(PUBLISH_GOALS);
 			DefaultInvoker invoker = new DefaultInvoker();
 			// retrieve Maven home
-			invoker.setMavenHome(new File(getMavenHome("MAVEN_HOME")));
+			invoker.setMavenHome(new File(getMavenHome(Constants.ENVIRONMENT_VARIABLE)));
 			invoker.execute(request);
 		} catch (NullPointerException e) {
 			log.error(
@@ -193,9 +193,10 @@ public class Apk {
 		}
 		// maven invoker adds "bin/mvn" when setMavenHome is called. so if it is
 		// present in the MAVEN_HOME, it has to be removed
-		if (filePath.contains("/bin/mvn")) {
-			filePath = filePath.substring(0, filePath.indexOf("/bin/mvn"));
+		if (filePath.contains(Constants.BIN_PATH)) {
+			filePath = filePath.substring(0, filePath.indexOf(Constants.BIN_PATH));
 		}
 		return filePath;
 	}
 }
+

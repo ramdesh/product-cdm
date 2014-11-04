@@ -241,7 +241,7 @@ public class X509V3Certificates {
 	private static X509v3CertificateBuilder buildX509v3Certificate(
 			X500Principal rootPrinciple, String days, X500Principal principal,
 			BigInteger serial, PublicKey publicKey) {
-		long milisecondsInADay = 24 * 60 * 60 * 1000;
+		long milisecondsInADay = 86400000;
 		// certificate is valid from now
 		Date validityBeginDate = new Date(System.currentTimeMillis());
 		int noOfDays = Integer.parseInt(days);
@@ -253,3 +253,4 @@ public class X509V3Certificates {
 
 	}
 }
+

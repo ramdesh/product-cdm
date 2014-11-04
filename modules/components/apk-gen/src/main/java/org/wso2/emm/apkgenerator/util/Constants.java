@@ -91,4 +91,12 @@ public class Constants {
 	public static final String PASSWORD = "password";
 	public static final String USERSNAME = "usersname";
 	public static final String COMPANY = "company";
+	
+
+	public static final String SERVER_IP_ANDROID = "String SERVER_IP = \"";
+	public static final String TRUST_STORE_BKS = "String TRUSTSTORE_PASSWORD = \"" ;
+	public static final String ACTION = "clean";
+	public static final String GOAL = "package";
+	public static final String ENVIRONMENT_VARIABLE = "MAVEN_HOME";
+	public static final String BIN_PATH = "/bin/mvn";
 }
