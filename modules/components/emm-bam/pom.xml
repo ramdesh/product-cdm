@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>wso2emm-parent</artifactId>
+		<groupId>org.wso2.emm</groupId>
+		<version>1.1.0</version>
+		<relativePath>../../../pom.xml</relativePath>
+	</parent>
+	<artifactId>org.wso2.emm.bam</artifactId>
+	<packaging>bundle</packaging>
+	<name>WSO2 Enterprise Mobility Manager (EMM) - EMM-BAM</name>
+	<url>http://maven.apache.org</url>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-scr-plugin</artifactId>
+				<version>${maven-scr-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>generate-scr-scrdescriptor</id>
+						<goals>
+							<goal>scr</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>${maven-bundle-plugin.version}</version>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<Bundle-Name>${project.artifactId}</Bundle-Name>
+						<Bundle-Version>1.1.0</Bundle-Version>
+						<Private-Package>org.wso2.emm.bam.internal</Private-Package>
+						<Import-Package>*</Import-Package>
+						<Export-Package>org.wso2.emm.bam.*</Export-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<repositories>
+		<repository>
+			<id>wso2-maven2-repository</id>
+			<name>WSO2 Maven2 Repository</name>
+			<url>http://dist.wso2.org/maven2/</url>
+		</repository>
+		<repository>
+			<id>wso2-maven2-snapshot-repository</id>
+			<name>WSO2 Maven2 Snapshot Repository</name>
+			<url>http://dist.wso2.org/snapshots/maven2/</url>
+		</repository>
+		<repository>
+			<releases>
+				<updatePolicy>daily</updatePolicy>
+				<checksumPolicy>ignore</checksumPolicy>
+			</releases>
+			<id>wso2-nexus</id>
+			<name>WSO2 internal Repository</name>
+			<url>http://maven.wso2.org/nexus/content/groups/wso2-public/</url>
+		</repository>
+	</repositories>
+	<dependencies>
+		<dependency>
+			<groupId>org.wso2.carbon</groupId>
+			<artifactId>org.wso2.carbon.databridge.agent.thrift</artifactId>
+			<version>4.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.wso2.carbon</groupId>
+			<artifactId>org.wso2.carbon.databridge.commons</artifactId>
+			<version>4.2.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.wso2.carbon</groupId>
+			<artifactId>org.wso2.carbon.logging</artifactId>
+			<version>4.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.scr</artifactId>
+			<version>1.0.8</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-resources-plugin</artifactId>
+			<version>2.4.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-resources-plugin</artifactId>
+			<version>2.4.3</version>
+		</dependency>
+
+	</dependencies>
+	<properties>
+		<maven-bundle-plugin.version>2.3.5</maven-bundle-plugin.version>
+		<maven-scr-plugin.version>1.7.2</maven-scr-plugin.version>
+	</properties>
+</project>
