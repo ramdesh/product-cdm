@@ -18,6 +18,7 @@
 package org.wso2.emm.apkgenerator.data;
 
 import java.io.Serializable;
+
 import org.apache.log4j.Logger;
 import org.wso2.emm.apkgenerator.generators.CertificateGenerationException;
 import org.wso2.emm.apkgenerator.util.Constants;
@@ -29,6 +30,7 @@ import org.wso2.emm.apkgenerator.util.Constants;
  */
 public class CSRData implements Serializable {
 
+	
 	private static final long serialVersionUID = 1L;
 	String countryCA, stateCA, localityCA, organizationCA, organizationUCA,
 			daysCA, commonNameCA;
@@ -36,6 +38,12 @@ public class CSRData implements Serializable {
 			daysRA, commonNameRA;
 	String countrySSL, stateSSL, localitySSL, organizationSSL,
 			organizationUSSL, daysSSL, serverIp;
+	private static final String COMMON_NAME_KEY = ", CN=";
+	private static final String ORGANIZATION_UNIT_KEY = ", OU=";
+	private static final String ORGANIZATION_KEY = ", O=";
+	private static final String LOCALITY_KEY = ", L=";
+	private static final String STATE_KEY = ", ST=";
+	private static final String COUNTRY_KEY = "C=";
 	private static Logger log = Logger.getLogger(CSRData.class);
 
 	/**
@@ -244,17 +252,17 @@ public class CSRData implements Serializable {
 	 */
 	public String getCADistinguishedName() {
 		StringBuilder builder= new StringBuilder() ;
-		builder.append("C=");
+		builder.append(COUNTRY_KEY);
 		builder.append(getCountryCA());
-		builder.append(", ST=");
+		builder.append(STATE_KEY);
 		builder.append(getStateCA());
-		builder.append(", L=");
+		builder.append(LOCALITY_KEY);
 		builder.append(getLocalityCA());
-		builder.append(", O=");
+		builder.append(ORGANIZATION_KEY);
 		builder.append(getOrganizationCA());
-		builder.append(", OU=");
+		builder.append(ORGANIZATION_UNIT_KEY);
 		builder.append( getOrganizationUCA());
-		builder.append(", CN=");
+		builder.append(COMMON_NAME_KEY);
 		builder.append( getCommonNameCA());
 		String distinguishedNameCA = builder.toString();
 		if (log.isDebugEnabled()) {
@@ -269,17 +277,17 @@ public class CSRData implements Serializable {
 	 */
 	public String getRADistinguishedName() {
 		StringBuilder builder= new StringBuilder() ;
-		builder.append("C=");
+		builder.append(COUNTRY_KEY);
 		builder.append(getCountryRA());
-		builder.append(", ST=");
+		builder.append(STATE_KEY);
 		builder.append(getStateRA());
-		builder.append(", L=");
+		builder.append(LOCALITY_KEY);
 		builder.append(getLocalityRA());
-		builder.append(", O=");
+		builder.append(ORGANIZATION_KEY);
 		builder.append(getOrganizationRA());
-		builder.append(", OU=");
+		builder.append(ORGANIZATION_UNIT_KEY);
 		builder.append( getOrganizationURA());
-		builder.append(", CN=");
+		builder.append(COMMON_NAME_KEY);
 		builder.append( getCommonNameRA());
 		String distinguishedNameRA = builder.toString();
 		if (log.isDebugEnabled()) {
@@ -293,17 +301,17 @@ public class CSRData implements Serializable {
 	 */
 	public String getSSLDistinguishedName() {
 		StringBuilder builder= new StringBuilder() ;
-		builder.append("C=");
+		builder.append(COUNTRY_KEY);
 		builder.append(getCountrySSL());
-		builder.append(", ST=");
+		builder.append(STATE_KEY);
 		builder.append(getStateSSL());
-		builder.append(", L=");
+		builder.append(LOCALITY_KEY);
 		builder.append(getLocalitySSL());
-		builder.append(", O=");
+		builder.append(ORGANIZATION_KEY);
 		builder.append(getOrganizationSSL());
-		builder.append(", OU=");
+		builder.append(ORGANIZATION_UNIT_KEY);
 		builder.append( getOrganizationUSSL());
-		builder.append(", CN=");
+		builder.append(COMMON_NAME_KEY);
 		builder.append( getCommonNameSSL());
 		String distinguishedNameSSL = builder.toString();
 		if (log.isDebugEnabled()) {
