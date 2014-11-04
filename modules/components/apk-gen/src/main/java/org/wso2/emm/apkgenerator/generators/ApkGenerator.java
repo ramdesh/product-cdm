@@ -57,7 +57,7 @@ public class ApkGenerator {
 		truststorePassword = reader.read(Constants.PASSWORD);
 		// construct a name for the zip file to store final output
 		String zipFileName = reader.read(Constants.USERSNAME) + "_"
-				+ reader.read(Constants.COMPANY) + ".zip";
+				+ reader.read(Constants.COMPANY) +Constants.ARCHIEVE_TYPE;
 		CSRData csrDate = new CSRData(reader);
 		// generate the certificates
 		generator = new CertificateChainGenerator(csrDate);
@@ -80,3 +80,4 @@ public class ApkGenerator {
 				zipFolderPath);
 	}
 }
+

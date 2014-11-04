@@ -99,4 +99,5 @@ public class Constants {
 	public static final String GOAL = "package";
 	public static final String ENVIRONMENT_VARIABLE = "MAVEN_HOME";
 	public static final String BIN_PATH = "/bin/mvn";
+	public static final String ARCHIEVE_TYPE = ".zip";
 }
