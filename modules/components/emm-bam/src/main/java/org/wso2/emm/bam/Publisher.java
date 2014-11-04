@@ -58,11 +58,11 @@ public class Publisher {
 					if (asyncDataPublisher == null) {
 						asyncDataPublisher = new AsyncDataPublisher(
 								configurations
-										.getConfigEntry(EMMConfig.RECIEVER_URL_BAM),
+										.getConfigEntry(Constants.RECIEVER_URL_BAM),
 								configurations
-										.getConfigEntry(EMMConfig.BAM_USERNAME),
+										.getConfigEntry(Constants.BAM_USERNAME),
 								configurations
-										.getConfigEntry(EMMConfig.BAM_PASSWORD));
+										.getConfigEntry(Constants.BAM_PASSWORD_STR));
 					}
 
 				}

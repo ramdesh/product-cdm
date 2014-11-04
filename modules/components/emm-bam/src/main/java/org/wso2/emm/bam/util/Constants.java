@@ -103,5 +103,9 @@ public class Constants {
 
 	// Device operations stream
 	public static final String DATA = "data";
+	
+	public static final String RECIEVER_URL_BAM = "RecieverUrlBAM";
+	public static final String BAM_USERNAME = "BAMUsername";
+	public static final String BAM_PASSWORD_STR = "BAMPassword";
 
 }

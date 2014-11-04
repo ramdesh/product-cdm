@@ -41,19 +41,16 @@ import java.util.Map;
  */
 public class EMMConfig {
 
-	public static final String CONF_LOCATION = "conf.location";
-	public static final String EMM_CONFIG_XML = "emm-config.xml";
-	public static final String RECIEVER_URL_BAM = "RecieverUrlBAM";
-	public static final String DeviceMonitorFrequency = "DeviceMonitorFrequency";
-	public static final String BAM_PATH = "BAMPath";
-	public static final String BAM_ENABLED = "BAMEnabled";
-	public static final String TRUSTSTORE_PASSWORD = "TrustStorePassword";
-	public static final String BAM_USERNAME = "BAMUsername";
-	public static final String BAM_PASSWORD = "BAMPassword";
+	private static final String CONF_LOCATION = "conf.location";
+	private static final String EMM_CONFIG_XML = "emm-config.xml";
+	
+	private static final String DeviceMonitorFrequency = "DeviceMonitorFrequency";
+	private static final String BAM_PATH = "BAMPath";
+	private static final String TRUSTSTORE_PASSWORD = "TrustStorePassword";
 	private static EMMConfig emmTaskConfig;
 	private static Map<String, String> configMap;
-	private static String[] configEntryNames = { RECIEVER_URL_BAM,
-			DeviceMonitorFrequency, BAM_USERNAME, BAM_PASSWORD, BAM_PATH,
+	private static String[] configEntryNames = { Constants.RECIEVER_URL_BAM,
+			DeviceMonitorFrequency, Constants.BAM_USERNAME, Constants.BAM_PASSWORD, BAM_PATH,
 			TRUSTSTORE_PASSWORD };
 	private static final Log logger = LogFactory.getLog(EMMConfig.class);
 	private static volatile EMMConfig configInstance = null;
@@ -147,3 +144,4 @@ public class EMMConfig {
 
 	}
 }
+
