@@ -4,6 +4,7 @@ var log = new Log();
 var sqlscripts = require('/sqlscripts/db.js');
 var config = require('/config/emm.js').config();
 var driver = require('driver').driver(db);
+var constants = require('/modules/constants.js');
 
 var getCurrentLoginUser = function () {
     if (typeof session.get("emmConsoleUser") != 'undefined' && session.get("emmConsoleUser") != null) {
@@ -55,7 +56,8 @@ var getTenantIDFromEmail = function (email) {
 }
 var getTenantIDFromDevice = function (deviceID) {
     var result = driver.query(sqlscripts.devices.select1, deviceID);
-    if (typeof (result) !== 'undefined' && result !== null && typeof (result[0]) !== 'undefined' && result[0] !== null) {
+    if (typeof (result) !== 'undefined' && result !== null && typeof (result[0]) !== 'undefined' &&
+        result[0] !== null) {
         return result[0].tenant_id;
     } else {
         return null;
@@ -97,7 +99,9 @@ var removeNecessaryElements = function (list, removeList) {
 
 var getCurrentDateTime = function () {
     var date = new Date();
-    var fdate = date.getFullYear() + '-' + ('00' + (date.getMonth() + 1)).slice(-2) + '-' + ('00' + date.getDate()).slice(-2) + ' ' + ('00' + date.getHours()).slice(-2) + ':' + ('00' + date.getMinutes()).slice(-2) + ':' + ('00' + date.getSeconds()).slice(-2);
+    var fdate = date.getFullYear() + '-' + ('00' + (date.getMonth() + 1)).slice(-2) + '-' + ('00' +
+        date.getDate()).slice(-2) + ' ' + ('00' + date.getHours()).slice(-2) + ':' + ('00' +
+        date.getMinutes()).slice(-2) + ':' + ('00' + date.getSeconds()).slice(-2);
     return fdate;
 }
 
@@ -106,7 +110,9 @@ var getCurrentDateTimeAdjusted = function () {
     var date = new Date();
     date.setTime(date.getTime() + (seconds * 1000));
 
-    var fdate = date.getFullYear() + '-' + ('00' + (date.getMonth() + 1)).slice(-2) + '-' + ('00' + date.getDate()).slice(-2) + ' ' + ('00' + date.getHours()).slice(-2) + ':' + ('00' + date.getMinutes()).slice(-2) + ':' + ('00' + date.getSeconds()).slice(-2);
+    var fdate = date.getFullYear() + '-' + ('00' + (date.getMonth() + 1)).slice(-2) + '-' + ('00' +
+        date.getDate()).slice(-2) + ' ' + ('00' + date.getHours()).slice(-2) + ':' + ('00' +
+        date.getMinutes()).slice(-2) + ':' + ('00' + date.getSeconds()).slice(-2);
     return fdate;
 }
 
@@ -115,7 +121,9 @@ var getFormattedDate = function (value) {
         return "";
     }
     var date = new Date(value);
-    var fdate = date.getFullYear() + '-' + ('00' + (date.getMonth() + 1)).slice(-2) + '-' + ('00' + date.getDate()).slice(-2) + ' ' + ('00' + date.getHours()).slice(-2) + ':' + ('00' + date.getMinutes()).slice(-2) + ':' + ('00' + date.getSeconds()).slice(-2);
+    var fdate = date.getFullYear() + '-' + ('00' + (date.getMonth() + 1)).slice(-2) + '-' + ('00' +
+        date.getDate()).slice(-2) + ' ' + ('00' + date.getHours()).slice(-2) + ':' + ('00' +
+        date.getMinutes()).slice(-2) + ':' + ('00' + date.getSeconds()).slice(-2);
     return fdate;
 }
 
@@ -164,16 +172,16 @@ var loadPayload = function (identifier, operationCode, data) {
     paramMap.put("PayloadOrganization", "WSO2");
 
     var isProfile = false;
-    if (operationCode == "503A") {
+    if (operationCode == constants.DEVICE_LOCK) {
         operation = Packages.org.wso2.carbon.emm.ios.payload.generator.PayloadType.DEVICE_LOCK;
-    } else if (operationCode == "505A") {
+    } else if (operationCode == constants.CLEARPASSCODE) {
         operation = Packages.org.wso2.carbon.emm.ios.payload.generator.PayloadType.CLEAR_PASSCODE;
         paramMap.put("UnlockToken", data.unlockToken);
-    } else if (operationCode == "502A") {
+    } else if (operationCode == constants.APP_INFO) {
         operation = Packages.org.wso2.carbon.emm.ios.payload.generator.PayloadType.APPLICATION_LIST;
-    } else if (operationCode == "500A") {
+    } else if (operationCode == constants.DEVICE_INFO) {
         operation = Packages.org.wso2.carbon.emm.ios.payload.generator.PayloadType.DEVICE_INFORMATION;
-    } else if (operationCode == "508A") {
+    } else if (operationCode == constants.CAMERA) {
         operation = Packages.org.wso2.carbon.emm.ios.payload.generator.PayloadType.CAMERA_SETTINGS;
         paramMap.put("PayloadIdentifier", payloadIdentifier["CAMERA"]);
         if (data.function == "Disable") {
@@ -182,14 +190,14 @@ var loadPayload = function (identifier, operationCode, data) {
             paramMap.put("AllowCamera", true);
         }
         isProfile = true;
-    } else if (operationCode == "507A") {
+    } else if (operationCode == constants.WIFI) {
         operation = Packages.org.wso2.carbon.emm.ios.payload.generator.PayloadType.WIFI_SETTINGS;
         paramMap.put("PayloadIdentifier", payloadIdentifier["WIFI"]);
         paramMap.put("PayloadDisplayName", "WIFI Configurations");
         paramMap.put("Password", data.password);
         paramMap.put("SSID", data.ssid);
         isProfile = true;
-    } else if (operationCode == "512A") {
+    } else if (operationCode == constants.APN) {
         operation = Packages.org.wso2.carbon.emm.ios.payload.generator.PayloadType.APN_SETTINGS;
         paramMap.put("PayloadIdentifier", payloadIdentifier["APN"]);
         paramMap.put("PayloadDisplayName", "APN Configurations");
@@ -199,14 +207,14 @@ var loadPayload = function (identifier, operationCode, data) {
         paramMap.put("Proxy", data.proxy_server);
         paramMap.put("ProxyPort", data.proxy_port);
         isProfile = true;
-    } else if (operationCode == "518A") {
+    } else if (operationCode == constants.WEBCLIP) {
         operation = Packages.org.wso2.carbon.emm.ios.payload.generator.PayloadType.WEBCLIP;
         paramMap.put("PayloadIdentifier", payloadIdentifier["WEBCLIP"]);
         paramMap.put("PayloadDisplayName", "Web Clip");
         paramMap.put("URL", data.identity);
         paramMap.put("Label", data.title);
         isProfile = true;
-    } else if (operationCode == "519A") {
+    } else if (operationCode == constants.PASSWORDPOLICY) {
         operation = Packages.org.wso2.carbon.emm.ios.payload.generator.PayloadType.PASSCODE_POLICY;
         paramMap.put("PayloadIdentifier", payloadIdentifier["PASSWORDPOLICY"]);
         paramMap.put("PayloadDisplayName", "Passcode Policy");
@@ -218,7 +226,7 @@ var loadPayload = function (identifier, operationCode, data) {
         paramMap.put("AllowSimple", data.allowSimple);
         paramMap.put("RequireAlphanumeric", data.requireAlphanumeric);
         isProfile = true;
-    } else if (operationCode == "520A") {
+    } else if (operationCode == constants.EMAIL) {
         operation = Packages.org.wso2.carbon.emm.ios.payload.generator.PayloadType.EMAIL_CONFIGURATIONS;
         paramMap.put("PayloadIdentifier", payloadIdentifier["EMAIL"]);
         paramMap.put("PayloadDisplayName", "Email Configurations");
@@ -248,7 +256,6 @@ var loadPayload = function (identifier, operationCode, data) {
         } else {
             paramMap.put("OutgoingMailServerAuthentication", "");
         }
-
         paramMap.put("EmailAccountDescription", data.emailAccountDescription);
         paramMap.put("IncomingMailServerUsername", data.incomingMailServerUsername);
         paramMap.put("IncomingPassword", data.incomingPassword);
@@ -261,9 +268,8 @@ var loadPayload = function (identifier, operationCode, data) {
         paramMap.put("IncomingMailServerPortNumber", data.incomingMailServerPortNumber);
         paramMap.put("OutgoingMailServerHostName", data.outgoingMailServerHostName);
         paramMap.put("OutgoingMailServerPortNumber", data.outgoingMailServerPortNumber);
-
         isProfile = true;
-    } else if (operationCode == "521A") {
+    } else if (operationCode == constants.GOOGLECALENDAR) {
         operation = Packages.org.wso2.carbon.emm.ios.payload.generator.PayloadType.CALENDAR_SUBSCRIPTION;
         paramMap.put("PayloadIdentifier", payloadIdentifier["GOOGLECALENDAR"]);
         paramMap.put("PayloadDisplayName", "Calendar Subscription");
@@ -274,14 +280,14 @@ var loadPayload = function (identifier, operationCode, data) {
         operation = Packages.org.wso2.carbon.emm.ios.payload.generator.PayloadType.CAL_DAV;
     } else if (operationCode == "") {
         operation = Packages.org.wso2.carbon.emm.ios.payload.generator.PayloadType.VPN_CERT;
-    } else if (operationCode == "523A") {
+    } else if (operationCode == constants.VPN) {
         operation = Packages.org.wso2.carbon.emm.ios.payload.generator.PayloadType.VPN_SECRET;
         paramMap.put("PayloadIdentifier", payloadIdentifier["VPN"]);
         paramMap.put("PayloadDisplayName", "VPN Configurations");
         paramMap.put("AuthenticationMethod", data.type);
         paramMap.put("SharedSecret", data.sharedsecret);
         isProfile = true;
-    } else if (operationCode == "524A") {
+    } else if (operationCode == constants.LDAP) {
         operation = Packages.org.wso2.carbon.emm.ios.payload.generator.PayloadType.LDAP;
         paramMap.put("PayloadIdentifier", payloadIdentifier["LDAP"]);
         paramMap.put("PayloadDisplayName", "LDAP Configurations");
@@ -291,10 +297,9 @@ var loadPayload = function (identifier, operationCode, data) {
         paramMap.put("LDAPAccountPassword", data.password);
         paramMap.put("LDAPAccountUseSSL", data.usedssl);
         isProfile = true;
-    } else if (operationCode == "501P") {
+    } else if (operationCode == constants.POLICY_MONTORING) {
         operation = Packages.org.wso2.carbon.emm.ios.payload.generator.PayloadType.PROFILE_LIST;
-    } else if (operationCode == "509A") {
-
+    } else if (operationCode == constants.INSTALLAPP) {
         if (data.type == "Enterprise") {
             operation = Packages.org.wso2.carbon.emm.ios.payload.generator.PayloadType.INSTALL_ENTERPRISE_APPLICATION;
             paramMap.put("ManifestURL", data.identity);
@@ -302,28 +307,21 @@ var loadPayload = function (identifier, operationCode, data) {
             operation = Packages.org.wso2.carbon.emm.ios.payload.generator.PayloadType.INSTALL_APPSTORE_APPLICATION;
             paramMap.put("iTunesStoreID", data.identity);
         } else if (data.type == "VPP") {
-            operation = Packages.org.wso2.carbon.emm.ios.payload.generator.PayloadType.INSTALL_APPSTORE_APPLICATION_VOLUME_PURCHASE;
+            operation =
+            Packages.org.wso2.carbon.emm.ios.payload.generator.PayloadType.INSTALL_APPSTORE_APPLICATION_VOLUME_PURCHASE;
             paramMap.put("iTunesStoreID", data.identity);
         }
-
-    } else if (operationCode == "510A") {
-
+    } else if (operationCode == constants.UNINSTALLAPP) {
         operation = Packages.org.wso2.carbon.emm.ios.payload.generator.PayloadType.REMOVE_APPLICATION;
         paramMap.put("Identifier", data.identity);
-
-    } else if (operationCode == "502P") {
-
+    } else if (operationCode == constants.POLICY_REVOKE) {
         operation = Packages.org.wso2.carbon.emm.ios.payload.generator.PayloadType.REMOVE_PROFILE;
-
         paramMap.put("Identifier", data.uuid);
-
     } else if (operationCode == "528A") {
-
         operation = Packages.org.wso2.carbon.emm.ios.payload.generator.PayloadType.APPLY_REDEMPTION_CODE;
         paramMap.put("Identifier", data.identifier);
         paramMap.put("RedemptionCode", data.redemptionCode);
-
-    } else if (operationCode == "527A") {
+    } else if (operationCode == constants.ENTERPRISEWIPE) {
         return "ENTERPRISE_WIPE";
     } else {
         return "";
