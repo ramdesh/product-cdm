@@ -73,7 +73,9 @@ public class Publisher {
 
 	public void publish(Object[] payload, StreamDefinition streamDef)
 			throws PublisherException {
-		asyncDataPublisher.addStreamDefinition(streamDef);
+		if(!asyncDataPublisher.isStreamDefinitionAdded(streamDef.getName(), streamDef.getVersion())){
+			asyncDataPublisher.addStreamDefinition(streamDef);
+		}
 		try {
 			asyncDataPublisher.publish(streamDef.getName(),
 					streamDef.getVersion(), null, null, payload);
@@ -85,3 +87,4 @@ public class Publisher {
 
 	}
 }
+
