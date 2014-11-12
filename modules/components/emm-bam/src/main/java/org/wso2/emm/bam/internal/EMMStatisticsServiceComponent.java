@@ -36,34 +36,43 @@ public class EMMStatisticsServiceComponent {
 	private static final Log log = LogFactory
 			.getLog(EMMStatisticsServiceComponent.class);
 
-	protected void activate(ComponentContext ctx) throws PublisherException {
+	protected void activate(ComponentContext ctx) {
 		DataPublisher ph = DataPublisher.getInstance();
 		EMMStreamFactory streamFactory = new EMMStreamFactory();
-		EMMStream deviceStream = streamFactory
-				.getStream(Constants.DEVICE_STREAM_NAME);
-		ph.register(deviceStream.getStreamDefinition().getName(), deviceStream);
-		EMMStream appInfoStream = streamFactory
-				.getStream(Constants.APP_NOTIFICATIONS_STREAM_NAME);
-		ph.register(appInfoStream.getStreamDefinition().getName(),
-				appInfoStream);
-		EMMStream deviceInfoStream = streamFactory
-				.getStream(Constants.DEVICE_INFO_NOTIFICATIONS_STREAM_NAME);
-		ph.register(deviceInfoStream.getStreamDefinition().getName(),
-				deviceInfoStream);
-		EMMStream policyStream = streamFactory
-				.getStream(Constants.POLICY_NOTIFICATIONS_STREAM_NAME);
-		ph.register(policyStream.getStreamDefinition().getName(), policyStream);
-		EMMStream blacklistedAppStream = streamFactory
-				.getStream(Constants.BLACKLISTED_APPS_STREAM_NAME);
-		ph.register(blacklistedAppStream.getStreamDefinition().getName(),
-				blacklistedAppStream);
-		EMMStream deviceOperationStream = streamFactory
-				.getStream(Constants.DEVICE_OPERATIONS_STREAM_NAME);
-		ph.register(deviceOperationStream.getStreamDefinition().getName(),
-				deviceOperationStream);
-		if (log.isDebugEnabled()) {
-			log.debug("EMM-BAM bundle is activated ");
+		
+		try {
+			EMMStream deviceStream;
+			deviceStream = streamFactory
+					.getStream(Constants.DEVICE_STREAM_NAME);
+			ph.register(deviceStream.getStreamDefinition().getName(), deviceStream);
+			EMMStream appInfoStream = streamFactory
+					.getStream(Constants.APP_NOTIFICATIONS_STREAM_NAME);
+			ph.register(appInfoStream.getStreamDefinition().getName(),
+					appInfoStream);
+			EMMStream deviceInfoStream = streamFactory
+					.getStream(Constants.DEVICE_INFO_NOTIFICATIONS_STREAM_NAME);
+			ph.register(deviceInfoStream.getStreamDefinition().getName(),
+					deviceInfoStream);
+			EMMStream policyStream = streamFactory
+					.getStream(Constants.POLICY_NOTIFICATIONS_STREAM_NAME);
+			ph.register(policyStream.getStreamDefinition().getName(), policyStream);
+			EMMStream blacklistedAppStream = streamFactory
+					.getStream(Constants.BLACKLISTED_APPS_STREAM_NAME);
+			ph.register(blacklistedAppStream.getStreamDefinition().getName(),
+					blacklistedAppStream);
+			EMMStream deviceOperationStream = streamFactory
+					.getStream(Constants.DEVICE_OPERATIONS_STREAM_NAME);
+			ph.register(deviceOperationStream.getStreamDefinition().getName(),
+					deviceOperationStream);
+			if (log.isDebugEnabled()) {
+				log.debug("EMM-BAM bundle is activated ");
+			}
+		} catch (PublisherException e) {
+			log.error(
+					"Error while registering streams in EMM-BAM bundle activation"
+							+ e.getMessage(), e);
 		}
+		
 	}
 
 	protected void deactivate(ComponentContext ctx) {
@@ -72,3 +81,4 @@ public class EMMStatisticsServiceComponent {
 		}
 	}
 }
+
