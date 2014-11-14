@@ -33,8 +33,8 @@ import org.wso2.emm.apkgenerator.generators.CertificateGenerationException;
 
 /**
  * Common file operations such as read ,write PEM files and zip file creation
- * are handled by this class. These methods are added to improve reusability 
- * of commonly used file operations
+ * are handled by this class. These methods are added to improve reusability of
+ * commonly used file operations
  * 
  * 
  */
@@ -99,12 +99,12 @@ public class FileOperator {
 			throws CertificateGenerationException {
 		try {
 			FileUtils.fileWrite(path, content);
-		}catch (IOException e) {
+		} catch (IOException e) {
 			log.error("Error writing to file " + path + " ," + e.getMessage(),
 					e);
 			throw new CertificateGenerationException("Error writing to file "
 					+ path + " ," + e.getMessage(), e);
-		} 
+		}
 	}
 
 	/**
