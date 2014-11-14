@@ -64,11 +64,15 @@ public class AppInfoStream implements EMMStream {
 					AttributeType.STRING);
 		} catch (MalformedStreamDefinitionException e) {
 			log.error(
-					"Error getting stream definition for AppInfoStream stream: "
+					"Error getting stream definition for "
+							+ Constants.APP_NOTIFICATIONS_STREAM_NAME
+							+ "  , Version-"
+							+ Constants.APP_NOTIFICATIONS_STREAM_VERSION + " ,"
 							+ e.getMessage(), e);
-			throw new PublisherException(
-					"Error getting stream definition for AppInfoStream stream",
-					e);
+			throw new PublisherException("Error getting stream definition for "
+					+ Constants.APP_NOTIFICATIONS_STREAM_NAME + "  , Version-"
+					+ Constants.APP_NOTIFICATIONS_STREAM_VERSION + " ,"
+					+ e.getMessage(), e);
 		}
 	}
 
@@ -92,3 +96,4 @@ public class AppInfoStream implements EMMStream {
 		return streamDefinition;
 	}
 }
+

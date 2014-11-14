@@ -63,11 +63,14 @@ public class DeviceStream implements EMMStream {
 
 		} catch (MalformedStreamDefinitionException e) {
 			log.error(
-					"Error getting stream definition for registration stream :"
+					"Error getting stream definition for "
+							+ Constants.DEVICE_STREAM_NAME + "  , Version-"
+							+ Constants.DEVICE_OPERATIONS_STREAM_VERSION + " ,"
 							+ e.getMessage(), e);
-			throw new PublisherException(
-					"Error getting stream definition for registration stream",
-					e);
+			throw new PublisherException("Error getting stream definition for "
+					+ Constants.DEVICE_STREAM_NAME + "  , Version-"
+					+ Constants.DEVICE_OPERATIONS_STREAM_VERSION + " ,"
+					+ e.getMessage(), e);
 		}
 	}
 
@@ -94,3 +97,4 @@ public class DeviceStream implements EMMStream {
 		return streamDefinition;
 	}
 }
+

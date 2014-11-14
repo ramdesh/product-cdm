@@ -48,11 +48,15 @@ public class BlacklistedAppStream implements EMMStream {
 					AttributeType.STRING);
 		} catch (MalformedStreamDefinitionException e) {
 			log.error(
-					"Error getting stream definition for blaklisted apps stream :"
+					"Error getting stream definition for "
+							+ Constants.BLACKLISTED_APPS_STREAM_NAME
+							+ "  , Version-"
+							+ Constants.BLACKLISTED_APPS_STREAM_VERSION + " ,"
 							+ e.getMessage(), e);
-			throw new PublisherException(
-					"Error getting stream definition for blaklisted apps stream",
-					e);
+			throw new PublisherException("Error getting stream definition for "
+					+ Constants.BLACKLISTED_APPS_STREAM_NAME + "  , Version-"
+					+ Constants.BLACKLISTED_APPS_STREAM_VERSION + " ,"
+					+ e.getMessage(), e);
 		}
 	}
 

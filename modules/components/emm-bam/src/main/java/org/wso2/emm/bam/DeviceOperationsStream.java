@@ -49,10 +49,16 @@ public class DeviceOperationsStream implements EMMStream {
 			streamDefinition.addPayloadData(Constants.DATA,
 					AttributeType.STRING);
 		} catch (MalformedStreamDefinitionException e) {
-			log.error("Error getting stream definition for "
-					+ Constants.DEVICE_OPERATIONS_STREAM_NAME, e);
+			log.error(
+					"Error getting stream definition for "
+							+ Constants.DEVICE_OPERATIONS_STREAM_NAME
+							+ "  , Version-"
+							+ Constants.DEVICE_OPERATIONS_STREAM_VERSION + " ,"
+							+ e.getMessage(), e);
 			throw new PublisherException("Error getting stream definition for "
-					+ Constants.DEVICE_OPERATIONS_STREAM_NAME, e);
+					+ Constants.DEVICE_OPERATIONS_STREAM_NAME + "  , Version-"
+					+ Constants.DEVICE_OPERATIONS_STREAM_VERSION + " ,"
+					+ e.getMessage(), e);
 		}
 	}
 
@@ -69,3 +75,4 @@ public class DeviceOperationsStream implements EMMStream {
 		return streamDefinition;
 	}
 }
+

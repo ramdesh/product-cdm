@@ -74,13 +74,14 @@ public class DeviceInfoStream implements EMMStream {
 			streamDefinition.addPayloadData(Constants.BATTERY,
 					AttributeType.STRING);
 		} catch (MalformedStreamDefinitionException e) {
-			log.error(
-					"Error getting stream definition for "
-							+ Constants.DEVICE_OPERATIONS_STREAM_NAME + " :"
-							+ e.getMessage(), e);
-			throw new PublisherException(
-					"Error getting stream definition for AppInfoStream stream",
-					e);
+			log.error("Error getting stream definition for "
+					+ Constants.DEVICE_INFO_NOTIFICATIONS_STREAM_NAME + "  , Version-"
+					+ Constants.DEVICE_INFO_NOTIFICATIONS_STREAM_VERSION + " ,"
+					+ e.getMessage(), e);
+			throw new PublisherException("Error getting stream definition for "
+					+ Constants.DEVICE_INFO_NOTIFICATIONS_STREAM_NAME + "  , Version-"
+					+ Constants.DEVICE_INFO_NOTIFICATIONS_STREAM_VERSION + " ,"
+					+ e.getMessage(), e);
 		}
 	}
 
@@ -111,3 +112,4 @@ public class DeviceInfoStream implements EMMStream {
 	}
 
 }
+

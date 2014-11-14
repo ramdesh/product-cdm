@@ -62,9 +62,17 @@ public class PolicyStream implements EMMStream {
 					AttributeType.STRING);
 
 		} catch (MalformedStreamDefinitionException e) {
-			log.error("Error getting stream definition for policy stream", e);
-			throw new PublisherException(
-					"Error getting stream definition for policy stream", e);
+			log.error(
+					"Error getting stream definition for "
+							+ Constants.POLICY_NOTIFICATIONS_STREAM_NAME
+							+ "  , Version-"
+							+ Constants.POLICY_NOTIFICATIONS_STREAM_VERSION
+							+ " ," + e.getMessage(), e);
+			throw new PublisherException("Error getting stream definition for "
+					+ Constants.POLICY_NOTIFICATIONS_STREAM_NAME
+					+ "  , Version-"
+					+ Constants.POLICY_NOTIFICATIONS_STREAM_VERSION + " ,"
+					+ e.getMessage(), e);
 		}
 	}
 
