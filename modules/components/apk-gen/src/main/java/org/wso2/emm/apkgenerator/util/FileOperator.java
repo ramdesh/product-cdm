@@ -22,21 +22,20 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
 import org.apache.log4j.Logger;
 import org.bouncycastle.openssl.PEMWriter;
+import org.codehaus.plexus.util.FileUtils;
 import org.wso2.emm.apkgenerator.generators.CertificateGenerationException;
 
 /**
  * Common file operations such as read ,write PEM files and zip file creation
- * are handled by this class
+ * are handled by this class. These methods are added to improve reusability 
+ * of commonly used file operations
+ * 
  * 
  */
 public class FileOperator {
@@ -54,64 +53,17 @@ public class FileOperator {
 	 */
 	public static void copyFile(String source, String destination)
 			throws CertificateGenerationException {
-		InputStream input = null;
-		OutputStream output = null;
 		try {
-			input = new FileInputStream(new File(source));
-			output = new FileOutputStream(new File(destination));
-			byte[] buf = new byte[1024];
-			int bytesRead;
-			while ((bytesRead = input.read(buf)) > 0) {
-				output.write(buf, 0, bytesRead);
-			}
-		} catch (FileNotFoundException e) {
-			log.error(
-					"cannot find one of the files, while trying to copy file :"
-							+ source + "\n to its destination: " + destination,
-					e);
-			throw new CertificateGenerationException(
-					"cannot find one of the files, while trying to copy file :"
-							+ source + "\n to its destination: " + destination,
-					e);
+			FileUtils.copyFile(new File(source), new File(destination));
 		} catch (IOException e) {
 			log.error(
-					"Error opening/working with file, while trying to copy file :"
-							+ source + "\n to its destination: " + destination,
-					e);
+					"cannot find one of the files, while trying to copy file :"
+							+ source + ",  to its destination: " + destination
+							+ " ," + e.getMessage(), e);
 			throw new CertificateGenerationException(
-					"Error opening/working with file, while trying to copy file :"
-							+ source + "\n to its destination: " + destination,
-					e);
-		} finally {
-			try {
-				if (input != null) {
-					input.close();
-				}
-			} catch (IOException e) {
-				log.error(
-						"Error in closing file Stream , while trying to copy file "
-								+ source + "\n to its destination: "
-								+ destination, e);
-				throw new CertificateGenerationException(
-						"Error in closing file Stream , while trying to copy file "
-								+ source + "\n to its destination: "
-								+ destination, e);
-			}
-			try {
-				if (output != null) {
-					output.close();
-				}
-			} catch (IOException e) {
-				log.error(
-						"Error in closing file Stream , while trying to copy file "
-								+ source + "\n to its destination: "
-								+ destination, e);
-				throw new CertificateGenerationException(
-						"Error in closing file Stream , while trying to copy file "
-								+ source + "\n to its destination: "
-								+ destination, e);
-			}
-
+					"cannot find one of the files, while trying to copy file :"
+							+ source + ",  to its destination: " + destination
+							+ " ," + e.getMessage(), e);
 		}
 	}
 
@@ -125,21 +77,13 @@ public class FileOperator {
 	 */
 	public static String readFile(String path)
 			throws CertificateGenerationException {
-		Scanner scanner = null;
-		String fileContent;
 		try {
-			scanner = new Scanner(new File(path));
-			fileContent = scanner.useDelimiter("\\Z").next();
-		} catch (FileNotFoundException e) {
+			return FileUtils.fileRead(new File(path));
+		} catch (IOException e) {
 			log.error("Error reading file " + path + " ," + e.getMessage(), e);
 			throw new CertificateGenerationException("Error reading file "
 					+ path + " ," + e.getMessage(), e);
-		} finally {
-			if (scanner != null) {
-				scanner.close();
-			}
 		}
-		return fileContent;
 	}
 
 	/**
@@ -153,24 +97,18 @@ public class FileOperator {
 	 */
 	public static void fileWrite(String path, String content)
 			throws CertificateGenerationException {
-		PrintWriter out = null;
 		try {
-			out = new PrintWriter(path);
-			out.println(content);
-		} catch (FileNotFoundException e) {
+			FileUtils.fileWrite(path, content);
+		}catch (IOException e) {
 			log.error("Error writing to file " + path + " ," + e.getMessage(),
 					e);
 			throw new CertificateGenerationException("Error writing to file "
 					+ path + " ," + e.getMessage(), e);
-		} finally {
-			if (out != null) {
-				out.close();
-			}
-		}
+		} 
 	}
 
 	/**
-	 * Creates a zip file from a set of files provided
+	 * Creates a zip file from a list of files provided
 	 * 
 	 * @param zipFilePath
 	 *            the path of the final zip file to be created
@@ -265,7 +203,7 @@ public class FileOperator {
 					e);
 			throw new CertificateGenerationException("Error writing file to :"
 					+ path + ", " + e.getMessage(), e);
-		}finally {
+		} finally {
 			if (fileOutput != null) {
 				try {
 					fileOutput.close();
