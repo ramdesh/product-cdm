@@ -204,7 +204,7 @@
 		<slf4j.version>1.7.7</slf4j.version>
 
         <!--Testing -->
-        <test.framework.version>4.3.1-SNAPSHOT</test.framework.version>
+        <test.framework.version>4.3.1</test.framework.version>
         <testng.version>6.8</testng.version>
         <stub.version>4.3.0-SNAPSHOT</stub.version>
 	</properties>
