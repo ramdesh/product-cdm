@@ -19,6 +19,8 @@
             "TEMPLATE": "You have been registered to the WSO2 EMM. Below is the link to enroll."
         }
     },
+    "APP_CONTEXT" : "/emm/",
+    "API_CONTEXT" : "api",
     "HTTPS_URL": "%https.ip%",
     "HTTP_URL": "%http.ip%",
     "IOS_URL": "%https.ip%/devicelogin.html",
