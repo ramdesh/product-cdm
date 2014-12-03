@@ -1,19 +1,17 @@
-/*
- * *
- * * Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights
- * Reserved.
- * *
- * * Licensed under the Apache License, Version 2.0 (the "License");
- * * you may not use this file except in compliance with the License.
- * * You may obtain a copy of the License at
- * *
- * * http://www.apache.org/licenses/LICENSE-2.0
- * *
- * * Unless required by applicable law or agreed to in writing, software
- * * distributed under the License is distributed on an "AS IS" BASIS,
- * * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * * See the License for the specific language governing permissions and
- * * limitations under the License.
+/**
+ * Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.wso2.emm.apkgenerator.data;
 
@@ -30,14 +28,10 @@ import org.wso2.emm.apkgenerator.util.Constants;
  */
 public class CSRData implements Serializable {
 
-	
 	private static final long serialVersionUID = 1L;
-	String countryCA, stateCA, localityCA, organizationCA, organizationUCA,
-			daysCA, commonNameCA;
-	String countryRA, stateRA, localityRA, organizationRA, organizationURA,
-			daysRA, commonNameRA;
-	String countrySSL, stateSSL, localitySSL, organizationSSL,
-			organizationUSSL, daysSSL, serverIp;
+	String countryCA, stateCA, localityCA, organizationCA, organizationUCA, daysCA, commonNameCA;
+	String countryRA, stateRA, localityRA, organizationRA, organizationURA, daysRA, commonNameRA;
+	String countrySSL, stateSSL, localitySSL, organizationSSL, organizationUSSL, daysSSL, serverIp;
 	private static final String COMMON_NAME_KEY = ", CN=";
 	private static final String ORGANIZATION_UNIT_KEY = ", OU=";
 	private static final String ORGANIZATION_KEY = ", O=";
@@ -251,7 +245,7 @@ public class CSRData implements Serializable {
 	 * @return distinguished name for CA certificate generated using CRS data
 	 */
 	public String getCADistinguishedName() {
-		StringBuilder builder= new StringBuilder() ;
+		StringBuilder builder = new StringBuilder();
 		builder.append(COUNTRY_KEY);
 		builder.append(getCountryCA());
 		builder.append(STATE_KEY);
@@ -261,9 +255,9 @@ public class CSRData implements Serializable {
 		builder.append(ORGANIZATION_KEY);
 		builder.append(getOrganizationCA());
 		builder.append(ORGANIZATION_UNIT_KEY);
-		builder.append( getOrganizationUCA());
+		builder.append(getOrganizationUCA());
 		builder.append(COMMON_NAME_KEY);
-		builder.append( getCommonNameCA());
+		builder.append(getCommonNameCA());
 		String distinguishedNameCA = builder.toString();
 		if (log.isDebugEnabled()) {
 			log.debug("CA Distinguish Name: " + distinguishedNameCA);
@@ -276,7 +270,7 @@ public class CSRData implements Serializable {
 	 * @return distinguished name for RA certificate generated using CRS data
 	 */
 	public String getRADistinguishedName() {
-		StringBuilder builder= new StringBuilder() ;
+		StringBuilder builder = new StringBuilder();
 		builder.append(COUNTRY_KEY);
 		builder.append(getCountryRA());
 		builder.append(STATE_KEY);
@@ -286,9 +280,9 @@ public class CSRData implements Serializable {
 		builder.append(ORGANIZATION_KEY);
 		builder.append(getOrganizationRA());
 		builder.append(ORGANIZATION_UNIT_KEY);
-		builder.append( getOrganizationURA());
+		builder.append(getOrganizationURA());
 		builder.append(COMMON_NAME_KEY);
-		builder.append( getCommonNameRA());
+		builder.append(getCommonNameRA());
 		String distinguishedNameRA = builder.toString();
 		if (log.isDebugEnabled()) {
 			log.debug("RA Distinguish Name: " + distinguishedNameRA);
@@ -300,7 +294,7 @@ public class CSRData implements Serializable {
 	 * @return distinguished name for SSL certificate generated using CRS data
 	 */
 	public String getSSLDistinguishedName() {
-		StringBuilder builder= new StringBuilder() ;
+		StringBuilder builder = new StringBuilder();
 		builder.append(COUNTRY_KEY);
 		builder.append(getCountrySSL());
 		builder.append(STATE_KEY);
@@ -310,9 +304,9 @@ public class CSRData implements Serializable {
 		builder.append(ORGANIZATION_KEY);
 		builder.append(getOrganizationSSL());
 		builder.append(ORGANIZATION_UNIT_KEY);
-		builder.append( getOrganizationUSSL());
+		builder.append(getOrganizationUSSL());
 		builder.append(COMMON_NAME_KEY);
-		builder.append( getCommonNameSSL());
+		builder.append(getCommonNameSSL());
 		String distinguishedNameSSL = builder.toString();
 		if (log.isDebugEnabled()) {
 			log.debug("SSL Distinguish Name: " + distinguishedNameSSL);
@@ -321,4 +315,3 @@ public class CSRData implements Serializable {
 	}
 
 }
-

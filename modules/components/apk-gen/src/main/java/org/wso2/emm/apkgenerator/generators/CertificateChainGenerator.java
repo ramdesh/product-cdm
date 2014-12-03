@@ -1,19 +1,17 @@
-/*
- * *
- * * Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights
- * Reserved.
- * *
- * * Licensed under the Apache License, Version 2.0 (the "License");
- * * you may not use this file except in compliance with the License.
- * * You may obtain a copy of the License at
- * *
- * * http://www.apache.org/licenses/LICENSE-2.0
- * *
- * * Unless required by applicable law or agreed to in writing, software
- * * distributed under the License is distributed on an "AS IS" BASIS,
- * * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * * See the License for the specific language governing permissions and
- * * limitations under the License.
+/**
+ * Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.wso2.emm.apkgenerator.generators;
 
@@ -31,7 +29,7 @@ import org.wso2.emm.apkgenerator.util.FileOperator;
  */
 public class CertificateChainGenerator {
 
-	private CSRData csrDataSrc;
+	private CSRData csrData;
 	public KeyPair keyPairCA, keyPairRA, keyPairSSL;
 	public X509Certificate caCert, raCert, sslCert;
 	static {
@@ -45,7 +43,7 @@ public class CertificateChainGenerator {
 	 *            is data necessary to generate certificates
 	 */
 	public CertificateChainGenerator(CSRData csrData) {
-		csrDataSrc = csrData;
+		this.csrData = csrData;
 	}
 
 	/**
@@ -53,25 +51,29 @@ public class CertificateChainGenerator {
 	 * root(CA) certificate to working directory for future usage.
 	 */
 	public void generate() throws CertificateGenerationException {
-		// generate CA cert and keys.
+		// Generate CA cert and keys.
 		keyPairCA = KeyPairCreator.getKeyPair();
-		caCert = X509V3Certificates.generateCACert(csrDataSrc.getDaysCA(),
-				csrDataSrc.getCADistinguishedName(), keyPairCA);
+		caCert =
+		         X509V3Certificates.generateCACert(csrData.getDaysCA(),
+		                                           csrData.getCADistinguishedName(), keyPairCA);
 
-		// generate RA cert and keys.
+		// Generate RA cert and keys.
 		keyPairRA = KeyPairCreator.getKeyPair();
-		raCert = X509V3Certificates.buildIntermediateCert("RA",
-				keyPairRA.getPublic(), keyPairCA.getPrivate(), caCert,
-				csrDataSrc.getRADistinguishedName(), csrDataSrc.getDaysRA());
+		raCert =
+		         X509V3Certificates.buildIntermediateCert("RA", keyPairRA.getPublic(),
+		                                                  keyPairCA.getPrivate(), caCert,
+		                                                  csrData.getRADistinguishedName(),
+		                                                  csrData.getDaysRA());
 
-		// generate SSL cert and keys.
+		// Generate SSL cert and keys.
 		keyPairSSL = KeyPairCreator.getKeyPair();
-		sslCert = X509V3Certificates.buildIntermediateCert("SSL",
-				keyPairSSL.getPublic(), keyPairCA.getPrivate(), caCert,
-				csrDataSrc.getSSLDistinguishedName(), csrDataSrc.getDaysSSL());
+		sslCert =
+		          X509V3Certificates.buildIntermediateCert("SSL", keyPairSSL.getPublic(),
+		                                                   keyPairCA.getPrivate(), caCert,
+		                                                   csrData.getSSLDistinguishedName(),
+		                                                   csrData.getDaysSSL());
 
 		// CA certificate is written to a file for later usage.
-		FileOperator.writePem(ApkGenerator.workingDir + Constants.PEM_file,
-				caCert);
+		FileOperator.writePem(ApkGenerator.workingDir + Constants.PEM_file, caCert);
 	}
 }

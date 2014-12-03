@@ -1,19 +1,17 @@
-/*
- * *
- * * Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights
- * Reserved.
- * *
- * * Licensed under the Apache License, Version 2.0 (the "License");
- * * you may not use this file except in compliance with the License.
- * * You may obtain a copy of the License at
- * *
- * * http://www.apache.org/licenses/LICENSE-2.0
- * *
- * * Unless required by applicable law or agreed to in writing, software
- * * distributed under the License is distributed on an "AS IS" BASIS,
- * * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * * See the License for the specific language governing permissions and
- * * limitations under the License.
+/**
+ * Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.wso2.emm.apkgenerator.generators;
 
@@ -44,8 +42,7 @@ public class BksGenerator {
 	 *            inserted.
 	 * @throws CertificateGenerationException
 	 */
-	public static void generateBKS(X509Certificate cert)
-			throws CertificateGenerationException {
+	public static void generateBKS(X509Certificate cert) throws CertificateGenerationException {
 		KeyStore keystore;
 		String bksFile = ApkGenerator.workingDir + Constants.BKS_File;
 		try {
@@ -59,31 +56,23 @@ public class BksGenerator {
 			keystore.store(fos, ApkGenerator.truststorePassword.toCharArray());
 			fos.close();
 		} catch (KeyStoreException e) {
-			log.error(
-					"KeyStore error while creating new BKS ," + e.getMessage(),
-					e);
-			throw new CertificateGenerationException(
-					"KeyStore error while creating new BKS ," + e.getMessage(),
-					e);
+			log.error("KeyStore error while creating new BKS ," + e.getMessage(), e);
+			throw new CertificateGenerationException("KeyStore error while creating new BKS ," +
+			                                         e.getMessage(), e);
 		} catch (NoSuchAlgorithmException e) {
-			log.error(
-					"Cryptographic algorithm is requested but"
-							+ " it is not available in the environment, "
-							+ e.getMessage(), e);
-			throw new CertificateGenerationException(
-					"Cryptographic algorithm is requested but"
-							+ " it is not available in the environment, "
-							+ e.getMessage(), e);
+			log.error("Cryptographic algorithm is requested but" +
+			          " it is not available in the environment, " + e.getMessage(), e);
+			throw new CertificateGenerationException("Cryptographic algorithm is requested but" +
+			                                         " it is not available in the environment, " +
+			                                         e.getMessage(), e);
 		} catch (CertificateException e) {
 			log.error("Error working with certificate, " + e.getMessage(), e);
-			throw new CertificateGenerationException(
-					"Error working with certificate, " + e.getMessage(), e);
+			throw new CertificateGenerationException("Error working with certificate, " +
+			                                         e.getMessage(), e);
 		} catch (IOException e) {
-			log.error("file error while working with file, " + e.getMessage(),
-					e);
-			throw new CertificateGenerationException(
-					"file error while working with files, " + bksFile + ", "
-							+ e.getMessage(), e);
+			log.error("File error while working with file, " + e.getMessage(), e);
+			throw new CertificateGenerationException("File error while working with files, " +
+			                                         bksFile + ", " + e.getMessage(), e);
 		}
 	}
 }
