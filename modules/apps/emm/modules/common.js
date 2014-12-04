@@ -30,11 +30,8 @@ var getTenantID = function () {
     if (!(typeof session === "undefined")) {
         if (session.get("emmConsoleUser") && session.get("emmConsoleUser").tenantId != 0) {
             var tenantID = session.get("emmConsoleUser").tenantId;
-            //log.info("Tenant IDD :"+tenantID);
             return tenantID;
-        } else {
-            return "-1234";
-        }
+        } 
     }
 }
 

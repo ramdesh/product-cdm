@@ -42,7 +42,7 @@ var apimgr = (function() {
 			var url = serviceURL + '/site/blocks/user/login/ajax/login.jag';
 			
 			var headers = {};
-			
+			log.info(url);
 			var result = post(url, params, headers, null);
 			var cookie = result.xhr.getResponseHeader("Set-Cookie");
 			
