@@ -104,20 +104,6 @@ var device = (function () {
             print(iosManifest);
         });
 
-        router.get('devices/niranjantest', function(ctx) {
-            var context,
-                log = new Log(),
-                carbon = require('carbon'),
-                TenantRegistryLoader = org.wso2.carbon.registry.core.service.TenantRegistryLoader;
-            TenantRegistryLoader.loadTenantRegistry(2);
-        });
-
-        router.get('devices/niranjantenant', function(ctx) {
-            var options = {};
-            options.domain = "test1.com";
-            var tenantId = carbon.server.tenantId(options);
-            log.info("Tenant ID >>>>>> " + tenantId);
-        });
 
         /*
          This Api is used by the Task Component each time to start the Device Monitoring

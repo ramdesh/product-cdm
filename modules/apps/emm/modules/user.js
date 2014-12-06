@@ -528,7 +528,7 @@ var user = (function() {
             }
         },
         /*
-            Retrieve the Tenant configuration
+         Retrieve the Tenant configuration
          */
         getTenantConfiguration: function(ctx) {
             var tenantId = parseInt(common.getTenantID());
@@ -614,7 +614,7 @@ var user = (function() {
             return jsonBuilder;
         },
         /*
-            Retrieve registry value
+         Retrieve registry value
          */
         getRegistry: function(tenantId, registryPath) {
             return storeRegistry.sandbox({
@@ -722,7 +722,7 @@ var user = (function() {
             }
         },
         /*
-            Save Consumer Key and Consumer Secret to Registry
+         Save Consumer Key and Consumer Secret to Registry
          */
         saveOAuthClientKey: function(tenantId, consumerKey, consumerSecret) {
             var sessionInfo = common.getSessionInfo();
@@ -785,17 +785,22 @@ var user = (function() {
                     if (ctx.generatedPassword) {
                         password_text = "Your password to your login : " + ctx.generatedPassword;
                     }
-                    content = "Dear " + ctx.firstName + ", \n" + emailConfigurations.EmailTemplate[0] + " \n \n" + config.HTTPS_URL + "/emm/api/device_enroll \n " + password_text + " \n" + tenantCopyRight.CompanyName[0];
+                    content = "Dear " + ctx.firstName + ", \n\n" +
+                        emailConfigurations.EmailTemplate[0] + "\n\n"
+                        + config.HTTPS_URL + "/emm/api/device_enroll \n\n" + password_text +
+                        "\n\n" + tenantCopyRight.CompanyName[0];
                     subject = "EMM Enrollment";
                     var email = require('email');
-                    var sender = new email.Sender(String(emailConfigurations.SMTP[0]), String(emailConfigurations.Port[0]), String(emailConfigurations.UserName[0]), String(emailConfigurations.Password[0]), "tls");
+                    var sender = new email.Sender(String(emailConfigurations.SMTP[0]),
+                        String(emailConfigurations.Port[0]),String(emailConfigurations.UserName[0]),
+                        String(emailConfigurations.Password[0]), "tls");
                     sender.from = String(emailConfigurations.SenderAddress[0]);
-                    log.debug("Email sent to -> " + ctx.email);
-                    sender.to = stringify(ctx.email);
+                    sender.to = String(ctx.email);
                     sender.subject = subject;
                     sender.text = content;
                     try {
                         sender.send();
+                        log.info("Email sent to -> " + ctx.email);
                     } catch (e) {
                         log.error(e);
                     }
