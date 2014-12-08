@@ -1,19 +1,17 @@
-/*
- * *
- * * Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights
- * Reserved.
- * *
- * * Licensed under the Apache License, Version 2.0 (the "License");
- * * you may not use this file except in compliance with the License.
- * * You may obtain a copy of the License at
- * *
- * * http://www.apache.org/licenses/LICENSE-2.0
- * *
- * * Unless required by applicable law or agreed to in writing, software
- * * distributed under the License is distributed on an "AS IS" BASIS,
- * * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * * See the License for the specific language governing permissions and
- * * limitations under the License.
+/**
+ * Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.wso2.emm.bam;
 
@@ -28,43 +26,35 @@ import org.wso2.emm.bam.util.JSONReader;
  * Defines the stream definition and the pay load format when publishing
  * BlackListed Application related data to BAM.
  */
-public class BlacklistedAppStream implements EMMStream {
+class BlacklistedAppStream implements EMMStream {
 
 	private static Logger log = Logger.getLogger(BlacklistedAppStream.class);
 	private StreamDefinition streamDefinition;
 
 	public BlacklistedAppStream() throws PublisherException {
+		String streamName = StreamType.BLACKLISTED_APPS.getStreamType();
 		try {
-			streamDefinition = new StreamDefinition(
-					Constants.BLACKLISTED_APPS_STREAM_NAME,
-					Constants.BLACKLISTED_APPS_STREAM_VERSION);
-			streamDefinition.addPayloadData(Constants.PACKAGE_NAME,
-					AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.APP_NAME,
-					AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.PLATFORM,
-					AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.TYPE,
-					AttributeType.STRING);
+			streamDefinition =
+			                   new StreamDefinition(streamName,
+			                                        Constants.BLACKLISTED_APPS_STREAM_VERSION);
+			streamDefinition.addPayloadData(Constants.PACKAGE_NAME, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.APP_NAME, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.PLATFORM, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.TYPE, AttributeType.STRING);
+
 		} catch (MalformedStreamDefinitionException e) {
-			log.error(
-					"Error getting stream definition for "
-							+ Constants.BLACKLISTED_APPS_STREAM_NAME
-							+ "  , Version-"
-							+ Constants.BLACKLISTED_APPS_STREAM_VERSION + " ,"
-							+ e.getMessage(), e);
-			throw new PublisherException("Error getting stream definition for "
-					+ Constants.BLACKLISTED_APPS_STREAM_NAME + "  , Version-"
-					+ Constants.BLACKLISTED_APPS_STREAM_VERSION + " ,"
-					+ e.getMessage(), e);
+			String message =
+			                 "Error getting stream definition for " + streamName + "  , Version-" +
+			                         Constants.BLACKLISTED_APPS_STREAM_VERSION;
+			log.error(message, e);
+			throw new PublisherException(message, e);
 		}
 	}
 
 	public Object[] getPayload(JSONReader jsonReader) throws PublisherException {
 		return new Object[] { jsonReader.read(Constants.PACKAGE_NAME),
-				jsonReader.read(Constants.APP_NAME),
-				jsonReader.read(Constants.PLATFORM),
-				jsonReader.read(Constants.TYPE) };
+		                     jsonReader.read(Constants.APP_NAME),
+		                     jsonReader.read(Constants.PLATFORM), jsonReader.read(Constants.TYPE) };
 	}
 
 	public StreamDefinition getStreamDefinition() throws PublisherException {

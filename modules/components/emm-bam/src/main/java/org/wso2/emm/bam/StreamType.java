@@ -16,17 +16,23 @@
 package org.wso2.emm.bam;
 
 /**
- * Custom exception handling class, to handle the issue that come up during
- * execution.
+ * This defines the names of the streams which can be used to identify streams
  */
-public class PublisherException extends Exception {
+public enum StreamType {
 
-	public PublisherException(String message) {
-		super(message);
+	APP_NOTIFICATIONS("app_notifications_stream"), BLACKLISTED_APPS("blacklisted_apps_stream"),
+	DEVICE_INFO_NOTIFICATIONS("device_info_notifications_stream"),
+	DEVICE_OPERATIONS("device_operations_stream"),
+	DEVICE_REGISTRATIONS("device_register_streamz2"),
+	POLICY_NOTIFICATIONS("policy_info_notifications_stream");
+
+	private String streamType;
+
+	private StreamType(String streamType) {
+		this.streamType = streamType;
 	}
 
-	public PublisherException(String message, Throwable e) {
-		super(message, e);
+	public String getStreamType() {
+		return streamType;
 	}
-
 }

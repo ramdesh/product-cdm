@@ -1,19 +1,17 @@
-/*
- * *
- * * Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights
- * Reserved.
- * *
- * * Licensed under the Apache License, Version 2.0 (the "License");
- * * you may not use this file except in compliance with the License.
- * * You may obtain a copy of the License at
- * *
- * * http://www.apache.org/licenses/LICENSE-2.0
- * *
- * * Unless required by applicable law or agreed to in writing, software
- * * distributed under the License is distributed on an "AS IS" BASIS,
- * * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * * See the License for the specific language governing permissions and
- * * limitations under the License.
+/**
+ * Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.wso2.emm.bam.util;
 
@@ -43,15 +41,16 @@ public class EMMConfig {
 
 	private static final String CONF_LOCATION = "conf.location";
 	private static final String EMM_CONFIG_XML = "emm-config.xml";
-	
+
 	private static final String DeviceMonitorFrequency = "DeviceMonitorFrequency";
 	private static final String BAM_PATH = "BAMPath";
 	private static final String TRUSTSTORE_PASSWORD = "TrustStorePassword";
 	private static EMMConfig emmTaskConfig;
 	private static Map<String, String> configMap;
 	private static String[] configEntryNames = { Constants.RECIEVER_URL_BAM,
-			DeviceMonitorFrequency, Constants.BAM_USERNAME, Constants.BAM_PASSWORD, BAM_PATH,
-			TRUSTSTORE_PASSWORD };
+	                                            DeviceMonitorFrequency, Constants.BAM_USERNAME,
+	                                            Constants.BAM_PASSWORD, BAM_PATH,
+	                                            TRUSTSTORE_PASSWORD };
 	private static final Log logger = LogFactory.getLog(EMMConfig.class);
 	private static volatile EMMConfig configInstance = null;
 
@@ -81,9 +80,10 @@ public class EMMConfig {
 	 * @throws PublisherException
 	 */
 	private static synchronized Map<String, String> readEMMConfigurationXML()
-			throws PublisherException {
-		String confLocation = SystemProperties.getProperty(CONF_LOCATION)
-				+ File.separator + EMM_CONFIG_XML;
+	                                                                         throws PublisherException {
+		String confLocation =
+		                      SystemProperties.getProperty(CONF_LOCATION) + File.separator +
+		                              EMM_CONFIG_XML;
 
 		if (emmTaskConfig == null) {
 			emmTaskConfig = new EMMConfig();
@@ -92,29 +92,26 @@ public class EMMConfig {
 			Document document = null;
 
 			File fXmlFile = new File(confLocation);
-			DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory
-					.newInstance();
+			DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder documentBuilder;
 			try {
 				documentBuilder = documentBuilderFactory.newDocumentBuilder();
 				document = documentBuilder.parse(fXmlFile);
 			} catch (ParserConfigurationException e) {
-				logger.error("serious configuration error. ", e);
-				throw new PublisherException("serious configuration error ", e);
+				logger.error("Serious configuration error. ", e);
+				throw new PublisherException("Serious configuration error ", e);
 			} catch (SAXException e) {
-				logger.error("error parsing configuration file", e);
-				throw new PublisherException(
-						"error parsing configuration file ", e);
+				logger.error("Error parsing configuration file", e);
+				throw new PublisherException("Error parsing configuration file ", e);
 			} catch (IOException e) {
-				logger.error("error opening file", e);
-				throw new PublisherException("error opening file", e);
+				logger.error("Error opening file", e);
+				throw new PublisherException("Error opening file", e);
 			}
 
 			for (String configEntry : configEntryNames) {
 				NodeList elements = document.getElementsByTagName(configEntry);
 				if (elements != null && elements.getLength() > 0) {
-					configMap.put(configEntry, elements.item(0)
-							.getTextContent());
+					configMap.put(configEntry, elements.item(0).getTextContent());
 				}
 			}
 		}
@@ -133,15 +130,15 @@ public class EMMConfig {
 	public String getConfigEntry(final String key) throws PublisherException {
 		Map<String, String> configurationMap = readEMMConfigurationXML();
 		String configValue = configurationMap.get(key);
-		try {
-			return configValue.trim();
-		} catch (NullPointerException e) {
-			logger.error("Cannot find the key:" + key
-					+ " in configuration file", e);
-			throw new PublisherException("Cannot find the key:" + key
-					+ " in configuration file", e);
+		if (configValue == null) {
+			String message =
+			                 "Cannot find the key:" + key + " in configuration file " +
+			                         EMM_CONFIG_XML;
+			logger.error(message);
+			throw new IllegalArgumentException(message);
+
 		}
+		return configValue.trim();
 
 	}
 }
-

@@ -1,29 +1,33 @@
-/*
- * *
- * * Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights
- * Reserved.
- * *
- * * Licensed under the Apache License, Version 2.0 (the "License");
- * * you may not use this file except in compliance with the License.
- * * You may obtain a copy of the License at
- * *
- * * http://www.apache.org/licenses/LICENSE-2.0
- * *
- * * Unless required by applicable law or agreed to in writing, software
- * * distributed under the License is distributed on an "AS IS" BASIS,
- * * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * * See the License for the specific language governing permissions and
- * * limitations under the License.
+/**
+ * Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.wso2.emm.bam;
 
-import org.wso2.emm.bam.util.Constants;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
 
 /**
  * Factory of EMM Streams, which can be used to generate new stream objects that
  * implements EMMStreamm interface.
  */
 public class EMMStreamFactory {
+
+	private static Logger log = Logger.getLogger(EMMStreamFactory.class);
+	private static Map<String, EMMStream> streams = new HashMap<String, EMMStream>();
 
 	/**
 	 * Can be used to generate a new stream object according to the stream name
@@ -34,28 +38,47 @@ public class EMMStreamFactory {
 	 * @return A stream object of type {@link EMMStream}
 	 * @throws PublisherException
 	 */
-	public EMMStream getStream(String streamType) throws PublisherException {
+	public static EMMStream getStream(StreamType streamType) throws PublisherException {
 		if (streamType == null) {
-			return null;
+			String message = "Stream type cannot be null";
+			log.error(message);
+			throw new PublisherException(message);
 		}
-		if (streamType
-				.equalsIgnoreCase(Constants.APP_NOTIFICATIONS_STREAM_NAME)) {
-			return new AppInfoStream();
-		} else if (streamType
-				.equalsIgnoreCase(Constants.BLACKLISTED_APPS_STREAM_NAME)) {
-			return new BlacklistedAppStream();
-		} else if (streamType
-				.equalsIgnoreCase(Constants.DEVICE_INFO_NOTIFICATIONS_STREAM_NAME)) {
-			return new DeviceInfoStream();
-		} else if (streamType
-				.equalsIgnoreCase(Constants.DEVICE_OPERATIONS_STREAM_NAME)) {
-			return new DeviceOperationsStream();
-		} else if (streamType.equalsIgnoreCase(Constants.DEVICE_STREAM_NAME)) {
-			return new DeviceStream();
-		} else if (streamType
-				.equalsIgnoreCase(Constants.POLICY_NOTIFICATIONS_STREAM_NAME)) {
-			return new PolicyStream();
+		EMMStream stream = streams.get(streamType);
+		if (stream == null) {
+			synchronized (streamType.getStreamType().intern()) {
+				if (streams.get(streamType) == null) {
+					String streamName = streamType.getStreamType();
+					switch (streamType) {
+						case APP_NOTIFICATIONS:
+							stream = new AppInfoStream();
+							streams.put(streamName, stream);
+							break;
+						case BLACKLISTED_APPS:
+							stream = new BlacklistedAppStream();
+							streams.put(streamName, stream);
+							break;
+						case DEVICE_INFO_NOTIFICATIONS:
+							stream = new DeviceInfoStream();
+							streams.put(streamName, stream);
+							break;
+						case DEVICE_OPERATIONS:
+							stream = new DeviceOperationsStream();
+							streams.put(streamName, stream);
+							break;
+						case DEVICE_REGISTRATIONS:
+							stream = new DeviceRegisterStream();
+							streams.put(streamName, stream);
+							break;
+						case POLICY_NOTIFICATIONS:
+							stream = new PolicyStream();
+							streams.put(streamName, stream);
+							break;
+					}
+				}
+			}
+
 		}
-		return null;
+		return stream;
 	}
 }
