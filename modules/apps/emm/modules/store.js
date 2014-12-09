@@ -1,31 +1,44 @@
+/*
+ * *
+ *  *  Copyright (c) 2005-2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *  *
+ *  *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  *  you may not use this file except in compliance with the License.
+ *  *  You may obtain a copy of the License at
+ *  *
+ *  *        http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  *  Unless required by applicable law or agreed to in writing, software
+ *  *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  *  See the License for the specific language governing permissions and
+ *  *  limitations under the License.
+ *
+ */
 var TENANT_CONFIGS = 'tenant.configs';
 var USER_MANAGER = 'user.manager';
-
 var store = (function() {
     var configs = {
         CONTEXT: "/"
-    };
+    }
     var routes = new Array();
     var log = new Log();
     var carbon = require('carbon');
     var db;
-    
     var userModule = require('user.js').user;
     var user = new userModule();
-
     var deviceModule = require('device.js').device;
     var device;
-    
     var sqlscripts = require('/sqlscripts/db.js');
-
     var configsFile = require('/config/emm.js').config();
-    var GET_APP_FEATURE_CODE = '502A';
+    var constants = require('/modules/constants.js');
+    var common = require("/modules/common.js");
     var driver;
     var module = function(dbs) {
         db = dbs;
         driver = require('driver').driver(db);
         device = new deviceModule(db);
-    };
+    }
     var server = function() {
         return application.get("SERVER");
     }
@@ -35,7 +48,7 @@ var store = (function() {
             return configg;
         }
         return configs[tenantId] || (configs[tenantId] = {});
-    };
+    }
     var userManager = function(tenantId) {
         var config = configs(tenantId);
         if (!config || !config[USER_MANAGER]) {
@@ -44,30 +57,12 @@ var store = (function() {
             return um;
         }
         return configs(tenantId)[USER_MANAGER];
-    };
-    var getTenantID = function() {
-        if (!(typeof session === "undefined")) {
-            if (session.get("emmConsoleUser") && session.get("emmConsoleUser").tenantId != 0) {
-                var tenantID = session.get("emmConsoleUser").tenantId;
-                return tenantID;
-            } else {
-                return "-1234";
-            }
-        }
     }
-    var getTenantDomainFromID = function() {
-        if (arguments[0] == "-1234") {
-            return "carbon.super";
-        }
-        var carbon = require('carbon');
-        var ctx = {};
-        ctx.tenantId = arguments[0];
-        var tenantDomain = carbon.server.tenantDomain(ctx);
-        return tenantDomain;
-    }
+
+    
     var getAllDeviceCountForGroup = function(role, platform) {
-        var um = userManager(getTenantID());
-        if (role != 'Internal/everyone') {
+        var um = userManager(common.getTenantID());
+        if (role != constants.INTERNAL_EVERYONE) {
             var userList = um.getUserListOfRole(role);
             var deviceCountAll = 0;
             for (var j = 0; j < userList.length; j++) {
@@ -76,38 +71,27 @@ var store = (function() {
                     role = role.split('/')[1];
                     log.debug(role);
                 }
-                var resultDeviceCount = driver.query("SELECT COUNT(id) AS device_count FROM devices WHERE user_id = ? AND tenant_id = ? and " + buildPlatformString(platform), String(role), getTenantID());
+                var resultDeviceCount = driver.query("SELECT COUNT(id) AS device_count FROM devices 
+                    WHERE user_id = ? AND tenant_id = ? and " + buildPlatformString(platform), 
+                    String(role), common.getTenantID());
                 deviceCountAll += parseInt(resultDeviceCount[0].device_count);
             }
         } else {
-            deviceCountAll = driver.query("SELECT COUNT(id) AS device_count FROM devices WHERE tenant_id = ? and " + buildPlatformString(platform), getTenantID())[0].device_count;
+            deviceCountAll = driver.query("SELECT COUNT(id) AS device_count FROM devices WHERE 
+                tenant_id = ? and " + buildPlatformString(platform), common.getTenantID())[0].device_count;
             log.debug(deviceCountAll);
         }
         return deviceCountAll;
-    };
+    }
     var getAllDeviceCountForUser = function(user, platform) {
         var deviceCountAll = 0;
-        var resultDeviceCount = driver.query("SELECT COUNT(id) AS device_count FROM devices WHERE user_id = ? AND tenant_id = ? and " + buildPlatformString(platform), String(user), getTenantID());
+        var resultDeviceCount = driver.query("SELECT COUNT(id) AS device_count FROM devices 
+            WHERE user_id = ? AND tenant_id = ? and " + buildPlatformString(platform), String(user),
+             common.getTenantID());
         deviceCountAll += parseInt(resultDeviceCount[0].device_count);
         return deviceCountAll;
-    };
-    var removePrivateRole = function(roleList) {
-        var roles = new Array();
-        for (var i = 0; i < roleList.length; i++) {
-            var prefix = '';
-            try {
-                prefix = roleList[i].substring(0, 17);
-            } catch (e) {
-                //   log.info('error occured while removing private role');
-            }
-            if (prefix == 'Internal/private_') {
-                continue;
-            } else {
-                roles.push(roleList[i]);
-            }
-        }
-        return roles;
     }
+    
     var buildPlatformString = function(platform) {
         var platform = platform.toUpperCase();
         if (platform == 'ANDROID') {
@@ -124,36 +108,42 @@ var store = (function() {
         var platform = buildPlatformString(platform);
         var query;
         if (type == 1) {
-            query = "select out_table.id, out_table.user_id, out_table.device_id, out_table.received_data, devices.platform_id from notifications as out_table , devices where out_table.`feature_code`='" + GET_APP_FEATURE_CODE + "' and out_table.`status`='R' and out_table.`tenant_id`=" + tenantId + " and out_table.`id` in (select MAX(inner_table.`id`) from notifications as inner_table where inner_table.`feature_code`= '" + GET_APP_FEATURE_CODE + "' and inner_table.`status`='R' and out_table.device_id =inner_table.device_id)  and devices.id=out_table.device_id and " + platform + "  and  `received_data` like ?;";
+            query = "select out_table.id, out_table.user_id, out_table.device_id,
+             out_table.received_data, devices.platform_id from notifications as out_table , devices
+              where out_table.`feature_code`='" + constants.GET_APP_FEATURE_CODE + "' and out_table.`status`='R'
+               and out_table.`tenant_id`=" + tenantId + " and out_table.`id` in (select 
+                MAX(inner_table.`id`) from notifications as inner_table where inner_table.`feature_code`= 
+                '" + constants.GET_APP_FEATURE_CODE + "' and inner_table.`status`='R' and out_table.device_id 
+                =inner_table.device_id)  and devices.id=out_table.device_id and " + platform + "  and 
+                 `received_data` like ?;";
         } else if (type == 2) {
-            query = "select out_table.id, out_table.user_id, out_table.device_id, out_table.received_data, devices.platform_id  from notifications as out_table , devices where out_table.`feature_code`= '" + GET_APP_FEATURE_CODE + "' and out_table.`status`='R' and out_table.`tenant_id`=" + tenantId + " and out_table.`id` in (select MAX(inner_table.`id`) from notifications as inner_table where inner_table.`feature_code`= '" + GET_APP_FEATURE_CODE + "' and inner_table.`status`='R' and out_table.device_id =inner_table.device_id)  and devices.id=out_table.device_id and " + platform + " and `received_data` not like ?;";
+            query = "select out_table.id, out_table.user_id, out_table.device_id, 
+            out_table.received_data, devices.platform_id  from notifications as out_table , 
+            devices where out_table.`feature_code`= '" + constants.GET_APP_FEATURE_CODE + "' 
+            and out_table.`status`='R' and out_table.`tenant_id`=" + tenantId + " and out_table.`id` 
+            in (select MAX(inner_table.`id`) from notifications as inner_table where 
+                inner_table.`feature_code`= '" + constants.GET_APP_FEATURE_CODE + "' and inner_table.`status`='R' 
+                and out_table.device_id =inner_table.device_id)  and devices.id=out_table.device_id and " 
+            + platform + " and `received_data` not like ?;";
         }
         return query;
     }
     /*
     ctx - url, platform, ctx.id, ctx.packageid
   */
-    
-    var getApp = function(id, tenantDomain){
-        var app =  module.prototype.getAppFromStore(id, tenantDomain);
-        
+    var getApp = function(id, tenantDomain) {
+        var app = module.prototype.getAppFromStore(id, tenantDomain);
         return app;
     }
-    
-    
-    
     var buildInstallParam = function(ctx) {
-        
         var installParam = configsFile.mam.archieve_location_android + ctx.url;
         if (ctx.platform.toUpperCase() == 'IOS') {
-            installParam = configsFile.mam.archieve_location_ios + "/emm/api/apps/install/ios/" + ctx.id + "?tenantDomain=" + getTenantDomainFromID(getTenantID());
+            installParam = configsFile.mam.archieve_location_ios + "/emm/api/apps/install/ios/" +
+             ctx.id + "?tenantDomain=" + common.getTenantDomainSession();
         }
         if (ctx.type == "Market" || ctx.type == "VPP") {
-            
             if (ctx.platform.toUpperCase() == 'IOS') {
-                
                 installParam = getApp(ctx.id).attributes.overview_appid;
-               
             } else {
                 installParam = ctx.packageid;
             }
@@ -163,98 +153,13 @@ var store = (function() {
     // prototype
     module.prototype = {
         constructor: module,
-        getAllDevicesFromEmail: function(ctx) {
-            log.debug("EMM called >>>>>");
-            var devicesArray;
-            if (ctx.data.platform == 'webapp') {
-                user.getUser(ctx.user)
-                var userID = user.getUser({
-                    userid: ctx.data.email
-                }).id;
-                var devices = driver.query("select * from devices where devices.user_id=" + userID);
-                devicesArray = new Array();
-                for (var i = 0; i < devices.length; i++) {
-                    var deviceID = devices[i].id;
-                    var properties = devices[i].properties;
-                    var propertiesJsonObj = parse(properties);
-                    var name = propertiesJsonObj.device;
-                    var model = propertiesJsonObj.model;
-                    var platforms = driver.query("select platforms.type_name as platform from devices, platforms where platforms.id = devices.platform_id && devices.id=" + deviceID);
-                    var platform = platforms[0].platform
-                    var packet = {};
-                    packet.id = deviceID;
-                    packet.name = name;
-                    packet.model = model;
-                    packet.platform = platform;
-                    devicesArray.push(packet);
-                }
-                return devicesArray;
-            }
-            if (ctx.data.platform != undefined && ctx.data.platform != null) {
-                var userID = user.getUser({
-                    userid: ctx.data.email
-                }).id;
-                var devices = driver.query("select * from devices where devices.user_id=" + userID);
-                //    ctx.data.platform = "iOS";
-                var platforms = driver.query("select * from platforms where type_name ='" + ctx.data.platform + "'");
-                // platformId = platforms[0].id;
-                devicesArray = new Array();
-                for (var j = 0; j < platforms.length; j++) {
-                    var devices = driver.query("select * from devices where devices.user_id=" + userID + " and devices.platform_id = " + platforms[j].id);
-                    for (var i = 0; i < devices.length; i++) {
-                        var deviceID = devices[i].id;
-                        var properties = devices[i].properties;
-                        var propertiesJsonObj = parse(properties);
-                        var name = propertiesJsonObj.device;
-                        var model = propertiesJsonObj.model;
-                        var packet = {};
-                        packet.id = deviceID;
-                        packet.name = name;
-                        packet.model = model;
-                        packet.platform = ctx.data.platform;
-                        devicesArray.push(packet);
-                    }
-                }
-            } else {
-                
-                log.debug(stringify(user.getUser({
-                    userid: ctx.data.email
-                })));
-                var userID = user.getUser({
-                    userid: ctx.data.email
-                }).username;
-                var devices = driver.query("select * from devices where devices.user_id='" + String(userID) + "'");
-                devicesArray = new Array();
-                for (var i = 0; i < devices.length; i++) {
-                    var deviceID = devices[i].id;
-                    var properties = devices[i].properties;
-                    var propertiesJsonObj = parse(properties);
-                    var name = propertiesJsonObj.device;
-                    var model = propertiesJsonObj.model;
-                    var platforms = driver.query("select platforms.type_name as platform from devices, platforms where platforms.id = devices.platform_id && devices.id=" + deviceID);
-                    var platform = platforms[0].platform
-                    var packet = {};
-                    packet.id = deviceID;
-                    packet.name = name;
-                    packet.model = model;
-                    packet.platform = platform;
-                    devicesArray.push(packet);
-                }
-            }
-            return devicesArray;
-        },
-        // [{"id" : "6a680b0a-4f7a-42a2-9f68-3bc6ff377818", "type" : "mobileapp", "path" : "/_system/governance/mobileapps/android/Batman/1.0", "lifecycle" : "MobileAppLifeCycle", "lifecycleState" : "Published", "mediaType" : "application/vnd.wso2-mobileapp+xml", "attributes" : {"overview_status" : "null", "overview_name" : "Batman", "overview_url" : "/upload/MbAk3app.apk", "overview_bundleversion" : "1.0.1", "overview_packagename" : "com.wb.goog.ArkhamCity", "overview_category" : "iOS,Android,Web Clips", "images_thumbnail" : "/publisher//upload/GTbdSicon.png", "overview_type" : "Enterprise", "overview_description" : "sdfjkdslfj ", "overview_recentchanges" : "wieruweoir ", "overview_version" : "1.0", "images_screenshots" : "/publisher//upload/8UISPscreenshot1.jpg,/publisher//upload/ElLTAscreenshot2.jpg,", "overview_provider" : "admin@admin.com", "images_banner" : "/publisher//upload/8PnYgbanner.jpg", "overview_appid" : "null", "overview_platform" : "android"}, "content" : {}, "rating" : {"average" : 0.0, "user" : 0}, "indashboard" : false}, {"id" : "e23f5cf0-d1be-421d-a44e-74bd0ab65fff", "type" : "mobileapp", "path" : "/_system/governance/mobileapps/android/Zip Archiver/1.0", "lifecycle" : "MobileAppLifeCycle", "lifecycleState" : "Published", "mediaType" : "application/vnd.wso2-mobileapp+xml", "attributes" : {"overview_status" : "null", "overview_name" : "Zip Archiver", "overview_url" : "/upload/mGc3Happ.apk", "overview_bundleversion" : "0.6.1", "overview_packagename" : "org.b1.android.archiver", "overview_category" : "iOS,Android,Web Clips", "images_thumbnail" : "/publisher//upload/1eLXXicon.png", "overview_type" : "Enterprise", "overview_description" : "dfdslkfj ", "overview_recentchanges" : "wurowieur ", "overview_version" : "1.0", "images_screenshots" : "/publisher//upload/n5iv6screenshot2.jpg,/publisher//upload/Zu0Qkscreenshot1.jpg,", "overview_provider" : "admin@admin.com", "images_banner" : "/publisher//upload/s6jCKbanner.png", "overview_appid" : "null", "overview_platform" : "android"}, "content" : {}, "rating" : {"average" : 0.0, "user" : 0}, "indashboard" : false}]
         getAppsFromStore: function(page) {
-
-        /*
-            Processing pagniation
-        */
             var pagination = true;
             var fApps = [];
             var page = 1;
-            log.debug("Tenant ID: " + getTenantID());
             do {
-                var url = configsFile.mam.store_location + "/apis/assets/mobileapp" + "?domain=" + getTenantDomainFromID(getTenantID()) + "&page=" + page;
+                var url = configsFile.mam.store_location + "/apis/assets/mobileapp" + "?domain="
+                 + common.getTenantDomainSession() + "&page=" + page;
                 log.debug("url: " + url);
                 var data = get(url, {});
                 data = parse(data.data);
@@ -273,7 +178,6 @@ var store = (function() {
         },
         getAppsFromStoreFormatted: function() {
             var apps = this.getAppsFromStore();
-            
             var fApps = [];
             for (var i = apps.length - 1; i >= 0; i--) {
                 var app = apps[i];
@@ -291,15 +195,14 @@ var store = (function() {
                 };
                 fApps.push(fApp);
             }
-           
             return fApps;
         },
         getAppFromStore: function(id, tenantDomain) {
-           
             if (!tenantDomain) {
-                tenantDomain = getTenantDomainFromID(getTenantID());
+                tenantDomain = common.getTenantDomainSession();
             }
-            var url = configsFile.mam.store_location + "/apis/asset/mobileapp?id=" + id + "&domain=" + tenantDomain;
+            var url = configsFile.mam.store_location + "/apis/asset/mobileapp?id=" + id +
+             "&domain=" + tenantDomain;
             var data = get(url, {});
             data = parse(data.data);
             return data;
@@ -319,7 +222,7 @@ var store = (function() {
             return appsInfo;
         },
         getUsersForAppInstalled: function(package_identifier, platform) {
-            var query = buildDynamicQuery(platform, 1, getTenantID());
+            var query = buildDynamicQuery(platform, 1, common.getTenantID());
             var package_identifier = manipulatePackageId(package_identifier);
             var returnResult = {};
             query = driver.query(query, package_identifier);
@@ -341,7 +244,7 @@ var store = (function() {
                     userVal.total_devices = getAllDeviceCountForUser(result.user_id, platform);
                     userVal.device_count = userVal.device_count + 1;
                     userVal.devices.push(result.device_id);
-                    if(userObj.roles!=null){
+                    if (userObj.roles != null) {
                         userVal.roles = parse(userObj.roles);
                     }
                 }
@@ -349,7 +252,7 @@ var store = (function() {
             return returnResult;
         },
         getUsersForAppNotInstalled: function(package_identifier, platform) {
-            var query = buildDynamicQuery(platform, 2, getTenantID());
+            var query = buildDynamicQuery(platform, 2, common.getTenantID());
             var package_identifier = manipulatePackageId(package_identifier);
             var returnResult = {};
             query = driver.query(query, package_identifier);
@@ -378,7 +281,7 @@ var store = (function() {
         },
         getRolesForApp: function(package_identifier, platform, query_type) {
             //If query_type is 2 device ids are returned
-            var query = buildDynamicQuery(platform, 1, getTenantID());
+            var query = buildDynamicQuery(platform, 1, common.getTenantID());
             var package_identifier = manipulatePackageId(package_identifier);
             var returnResult = {};
             query = driver.query(query, package_identifier);
@@ -390,7 +293,7 @@ var store = (function() {
                 if (userObj != undefined) {
                     if (userObj.roles != undefined) {
                         userObj.roles = parse(userObj.roles);
-                        userObj.roles = removePrivateRole(userObj.roles);
+                        userObj.roles = common.removePrivateRole(userObj.roles);
                         for (var j = userObj.roles.length - 1; j >= 0; j--) {
                             var role = userObj.roles[j];
                             var roleVal = returnResult[role];
@@ -411,7 +314,7 @@ var store = (function() {
                     }
                 }
             };
-            query = buildDynamicQuery(platform, 2, getTenantID());
+            query = buildDynamicQuery(platform, 2, common.getTenantID());
             log.debug(package_identifier);
             query = driver.query(query, package_identifier);
             for (var i = query.length - 1; i >= 0; i--) {
@@ -422,7 +325,7 @@ var store = (function() {
                 if (userObj != undefined) {
                     if (userObj.roles != undefined) {
                         userObj.roles = parse(userObj.roles);
-                        userObj.roles = removePrivateRole(userObj.roles);
+                        userObj.roles = common.removePrivateRole(userObj.roles);
                         for (var j = userObj.roles.length - 1; j >= 0; j--) {
                             var role = userObj.roles[j];
                             var roleVal = returnResult[role];
@@ -446,7 +349,7 @@ var store = (function() {
             return returnResult;
         },
         getRolesForAppInstalled: function(package_identifier, platform) {
-            var query = buildDynamicQuery(platform, 1, getTenantID());
+            var query = buildDynamicQuery(platform, 1, common.getTenantID());
             var package_identifier = manipulatePackageId(package_identifier);
             var returnResult = {};
             query = driver.query(query, package_identifier);
@@ -458,7 +361,7 @@ var store = (function() {
                 if (userObj != undefined) {
                     if (userObj.roles != undefined) {
                         userObj.roles = parse(userObj.roles);
-                        userObj.roles = removePrivateRole(userObj.roles);
+                        userObj.roles = common.removePrivateRole(userObj.roles);
                         for (var j = userObj.roles.length - 1; j >= 0; j--) {
                             var role = userObj.roles[j];
                             var roleVal = returnResult[role];
@@ -479,7 +382,7 @@ var store = (function() {
             return returnResult;
         },
         getRolesForAppNotInstalled: function(package_identifier, platform) {
-            var query = buildDynamicQuery(platform, 2, getTenantID());
+            var query = buildDynamicQuery(platform, 2, common.getTenantID());
             var package_identifier = manipulatePackageId(package_identifier);
             var returnResult = {};
             query = driver.query(query, package_identifier);
@@ -491,7 +394,7 @@ var store = (function() {
                 if (userObj != undefined) {
                     if (userObj.roles != undefined) {
                         userObj.roles = parse(userObj.roles);
-                        userObj.roles = removePrivateRole(userObj.roles);
+                        userObj.roles = common.removePrivateRole(userObj.roles);
                         for (var j = userObj.roles.length - 1; j >= 0; j--) {
                             var role = userObj.roles[j];
                             var roleVal = returnResult[role];
@@ -512,16 +415,25 @@ var store = (function() {
             return returnResult;
         },
         uninstallApp: function(payload) {
-            payload = {devices: payload, operation: "UNINSTALLAPP"}
+            payload = {
+                devices: payload,
+                operation: "UNINSTALLAPP"
+            }
             device.sendToDevices(payload);
         },
         installApp: function(payload) {
-            payload = {devices: payload, operation: "INSTALLAPP"}
+            payload = {
+                devices: payload,
+                operation: "INSTALLAPP"
+            }
             device.sendToDevices(payload);
         },
         getAllAppFromDevice: function(ctx) {
             var deviceId = ctx.deviceId;
-            var last_notification = driver.query("select * from notifications where `device_id`=? and `feature_code`= '" + GET_APP_FEATURE_CODE + "' and `status`='R' and `id` = (select MAX(`id`) from notifications where `device_id`=? and `feature_code`= '" + GET_APP_FEATURE_CODE + "' and `status`='R')", deviceId, deviceId);
+            var last_notification = driver.query("select * from notifications where `device_id`=? 
+                and `feature_code`= '" + constants.GET_APP_FEATURE_CODE + "' and `status`='R' and `id` = 
+                (select MAX(`id`) from notifications where `device_id`=? and `feature_code`= '" + 
+                    constants.GET_APP_FEATURE_CODE + "' and `status`='R')", deviceId, deviceId);
             last_notification[0].received_data = JSON.parse(unescape(last_notification[0].received_data));
             return last_notification[0];
         },
@@ -543,7 +455,6 @@ var store = (function() {
                     var name = propertiesJsonObj.device;
                     var model = propertiesJsonObj.model;
                     var platforms = driver.query(sqlscripts.devices.select30, deviceID);
-                    log.debug("getAllDevicesFromEmail: SQL Check - injection >>>>>>>>> " + stringify(platforms));
                     var platform = platforms[0].platform
                     var packet = {};
                     packet.id = deviceID;
@@ -561,11 +472,9 @@ var store = (function() {
                 }).id;
                 var devices = driver.query(sqlscripts.devices.select29, userID);
                 var platforms = driver.query(sqlscripts.platforms.select2, ctx.data.platform);
-                log.debug("getAllDevicesFromEmail: SQL Check - injection >>>>>>>>> " + stringify(platforms));
                 devicesArray = new Array();
                 for (var j = 0; j < platforms.length; j++) {
                     var devices = driver.query(sqlscripts.devices.select31, userID, platforms[j].id);
-                    log.debug("getAllDevicesFromEmail: SQL Check - injection >>>>>>>>> " + stringify(devices));
                     for (var i = 0; i < devices.length; i++) {
                         var deviceID = devices[i].id;
                         var properties = devices[i].properties;
@@ -586,7 +495,6 @@ var store = (function() {
                     login: true
                 }).username;
                 var devices = driver.query(sqlscripts.devices.select29, String(userID));
-                log.debug("getAllDevicesFromEmail: SQL Check - injection >>>>>>>>> " + stringify(devices));
                 devicesArray = new Array();
                 for (var i = 0; i < devices.length; i++) {
                     var deviceID = devices[i].id;
@@ -595,7 +503,6 @@ var store = (function() {
                     var name = propertiesJsonObj.device;
                     var model = propertiesJsonObj.model;
                     var platforms = driver.query(sqlscripts.devices.select30, deviceID);
-                    log.debug("getAllDevicesFromEmail: SQL Check - injection >>>>>>>>> " + stringify(platforms));
                     var platform = platforms[0].platform
                     var packet = {};
                     packet.id = deviceID;
@@ -609,14 +516,11 @@ var store = (function() {
         },
         getAllAppFromDevice: function(ctx) {
             var deviceId = ctx.data.deviceId;
-            var GET_APP_FEATURE_CODE = '502A';
-            var last_notification = driver.query(sqlscripts.notifications.select12, deviceId, GET_APP_FEATURE_CODE, deviceId, GET_APP_FEATURE_CODE);
-            log.debug("getAllAppFromDevice: SQL Check - injection >>>>>>>>> " + stringify(last_notification));
+            var last_notification = driver.query(sqlscripts.notifications.select12, deviceId, 
+                constants.GET_APP_FEATURE_CODE, deviceId, constants.GET_APP_FEATURE_CODE);
             last_notification[0].received_data = JSON.parse(unescape(last_notification[0].received_data));
             return last_notification[0];
         }
-        
-        
     };
     // return module
     return module;
