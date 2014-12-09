@@ -57,7 +57,7 @@ class BlacklistedAppStream implements EMMStream {
 		                     jsonReader.read(Constants.PLATFORM), jsonReader.read(Constants.TYPE) };
 	}
 
-	public StreamDefinition getStreamDefinition() throws PublisherException {
+	public StreamDefinition getStreamDefinition() {
 		return streamDefinition;
 	}
 }

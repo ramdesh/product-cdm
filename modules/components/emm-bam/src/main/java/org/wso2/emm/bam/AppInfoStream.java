@@ -71,7 +71,7 @@ class AppInfoStream implements EMMStream {
 		                     jsonReader.read(Constants.ICON), jsonReader.read(Constants.APP_NAME) };
 	}
 
-	public StreamDefinition getStreamDefinition() throws PublisherException {
+	public StreamDefinition getStreamDefinition() {
 		return streamDefinition;
 	}
 }

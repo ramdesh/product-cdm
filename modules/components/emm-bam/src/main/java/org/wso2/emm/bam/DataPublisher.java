@@ -19,8 +19,7 @@ import org.apache.log4j.Logger;
 import org.wso2.carbon.databridge.agent.thrift.AsyncDataPublisher;
 import org.wso2.carbon.databridge.agent.thrift.exception.AgentException;
 import org.wso2.carbon.databridge.commons.StreamDefinition;
-import org.wso2.emm.bam.util.Constants;
-import org.wso2.emm.bam.util.EMMConfig;
+import org.wso2.emm.bam.util.Configurations;
 import org.wso2.emm.bam.util.JSONReader;
 
 /**
@@ -32,19 +31,30 @@ public class DataPublisher {
 	private static Logger logger = Logger.getLogger(DataPublisher.class);
 
 	public DataPublisher() throws PublisherException {
-		EMMConfig configurations = EMMConfig.getInstance();
-		asyncDataPublisher =
-		                     new AsyncDataPublisher(
-		                                            configurations.getConfigEntry(Constants.RECIEVER_URL_BAM),
-		                                            configurations.getConfigEntry(Constants.BAM_USERNAME),
-		                                            configurations.getConfigEntry(Constants.BAM_PASSWORD));
+		Configurations configurations = Configurations.getInstance();
+		if (asyncDataPublisher != null) {
+			asyncDataPublisher =
+			                     new AsyncDataPublisher(configurations.getBAMConfigurations()
+			                                                          .getRecieverUrlBAM(),
+			                                            configurations.getBAMConfigurations()
+			                                                          .getBAMUsername(),
+			                                            configurations.getBAMConfigurations()
+			                                                          .getBAMUsername());
+		}
 	}
 
+	/**
+	 * This can be called to publish data to BAM by providing the stream type
+	 * and a payload.
+	 * 
+	 * @param streamType the name of stream to be published.
+	 * @param jsonValue payload to be published.
+	 * @throws PublisherException
+	 */
 	public void publish(StreamType streamType, String jsonValue) throws PublisherException {
 		EMMStream stream = EMMStreamFactory.getStream(streamType);
 		Object[] payload = stream.getPayload(new JSONReader(jsonValue));
 		StreamDefinition definition = stream.getStreamDefinition();
-
 		if (!asyncDataPublisher.isStreamDefinitionAdded(definition.getName(),
 		                                                definition.getVersion())) {
 			asyncDataPublisher.addStreamDefinition(definition);
@@ -53,7 +63,7 @@ public class DataPublisher {
 			asyncDataPublisher.publish(definition.getName(), definition.getVersion(), null, null,
 			                           payload);
 		} catch (AgentException e) {
-			String message = "error while publishing " + definition.getName() + " to BAM ";
+			String message = "Error while publishing " + definition.getName() + " to BAM ";
 			logger.error(message, e);
 			throw new PublisherException(message, e);
 		}

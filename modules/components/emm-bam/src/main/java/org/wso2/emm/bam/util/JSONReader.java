@@ -35,9 +35,8 @@ public class JSONReader {
 	 * 
 	 * @param jsonStr
 	 *            JSON string that needs to be converted to a JSON object
-	 * @throws PublisherException
 	 */
-	public JSONReader(String jsonStr) throws PublisherException {
+	public JSONReader(String jsonStr) {
 		try {
 			json = new JSONObject(jsonStr);
 		} catch (JSONException e) {

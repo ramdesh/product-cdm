@@ -40,9 +40,9 @@ public class EMMStreamFactory {
 	 */
 	public static EMMStream getStream(StreamType streamType) throws PublisherException {
 		if (streamType == null) {
-			String message = "Stream type cannot be null";
+			String message = "Stream type cannot be null.";
 			log.error(message);
-			throw new PublisherException(message);
+			throw new IllegalArgumentException(message);
 		}
 		EMMStream stream = streams.get(streamType);
 		if (stream == null) {
@@ -77,7 +77,6 @@ public class EMMStreamFactory {
 					}
 				}
 			}
-
 		}
 		return stream;
 	}

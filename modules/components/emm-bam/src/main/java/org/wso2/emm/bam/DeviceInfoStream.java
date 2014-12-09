@@ -59,9 +59,9 @@ class DeviceInfoStream implements EMMStream {
 			streamDefinition.addPayloadData(Constants.OPERATOR, AttributeType.STRING);
 			streamDefinition.addPayloadData(Constants.BATTERY, AttributeType.STRING);
 		} catch (MalformedStreamDefinitionException e) {
-			String message = "Error getting stream definition for " + streamName +
-			                             "  , Version-" +
-			                             Constants.DEVICE_INFO_NOTIFICATIONS_STREAM_VERSION;
+			String message =
+			                 "Error getting stream definition for " + streamName + "  , Version-" +
+			                         Constants.DEVICE_INFO_NOTIFICATIONS_STREAM_VERSION;
 			log.error(message, e);
 			throw new PublisherException(message, e);
 		}

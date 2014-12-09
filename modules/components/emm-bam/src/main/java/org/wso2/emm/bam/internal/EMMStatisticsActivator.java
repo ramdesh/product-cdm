@@ -20,11 +20,12 @@ import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.component.ComponentContext;
 import org.wso2.emm.bam.DataPublisher;
 
-public class EMMStatisticsServiceComponent implements BundleActivator {
+public class EMMStatisticsActivator implements BundleActivator {
 
-	private static final Log log = LogFactory.getLog(EMMStatisticsServiceComponent.class);
+	private static final Log log = LogFactory.getLog(EMMStatisticsActivator.class);
 	private ServiceRegistration serviceRegistration;
 
 	/*

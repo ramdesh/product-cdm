@@ -58,10 +58,6 @@ class PolicyStream implements EMMStream {
 		}
 	}
 
-	public StreamDefinition getStreamDefinition() {
-		return streamDefinition;
-	}
-
 	public Object[] getPayload(JSONReader jsonReader) throws PublisherException {
 		return new Object[] { jsonReader.read(Constants.USERID), jsonReader.read(Constants.STATUS),
 		                     jsonReader.read(Constants.DEVICEID),
@@ -72,5 +68,9 @@ class PolicyStream implements EMMStream {
 		                     jsonReader.read(Constants.MESSAGE_ID),
 		                     jsonReader.read(Constants.GROUP_ID), jsonReader.read(Constants.CODE),
 		                     jsonReader.read(Constants.POLICY_STATUS) };
+	}
+
+	public StreamDefinition getStreamDefinition() {
+		return streamDefinition;
 	}
 }

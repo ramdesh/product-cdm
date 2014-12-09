@@ -29,9 +29,8 @@ public interface EMMStream {
 	 * implements the interface
 	 * 
 	 * @return org.wso2.carbon.databridge.commons.StreamDefinition
-	 * @throws PublisherException
 	 */
-	public StreamDefinition getStreamDefinition() throws PublisherException;
+	public StreamDefinition getStreamDefinition();
 
 	/**
 	 * When the pay load is passed as JSON String, it is converted a pay load
