@@ -16,6 +16,7 @@
 package org.wso2.emm.bam.util;
 
 import java.io.File;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -32,6 +33,10 @@ public class Configurations {
 
 	private static volatile Configurations configInstance = null;
 	private static final String EMM_CONFIG_XML = "emm-config.xml";
+	public static final String RECIEVER_URL_BAM = "RecieverUrlBAM";
+	public static final String BAM_USERNAME = "BAMUsername";
+	public static final String BAM_PASSWORD = "BAMPassword";
+	public static final String BAM_CONFIGURATIONS = "BAMConfigurations";
 	private static final Log logger = LogFactory.getLog(Configurations.class);
 
 	private Configurations() throws JAXBException {
@@ -68,18 +73,18 @@ public class Configurations {
 		return configInstance;
 	}
 
-	private BAMConfigurations BAMConfigurations;
+	private BAMConfiguration BAMConfigurations;
 
-	public BAMConfigurations getBAMConfigurations() {
+	public BAMConfiguration getBAMConfigurations() {
 		return BAMConfigurations;
 	}
 
-	@XmlElement(name = "BAMConfigurations")
-	public void setBAMConfigurations(BAMConfigurations DeviceMonitorFrequency) {
+	@XmlElement(name = BAM_CONFIGURATIONS)
+	public void setBAMConfigurations(BAMConfiguration DeviceMonitorFrequency) {
 		this.BAMConfigurations = DeviceMonitorFrequency;
 	}
 
-	public static class BAMConfigurations {
+	public static class BAMConfiguration {
 
 		String recieverUrlBAM;
 		String username;
@@ -89,7 +94,7 @@ public class Configurations {
 			return recieverUrlBAM;
 		}
 
-		@XmlElement(name = "RecieverUrlBAM")
+		@XmlElement(name = RECIEVER_URL_BAM)
 		public void setRecieverUrlBAM(String recieverUrlBAM) {
 			this.recieverUrlBAM = recieverUrlBAM;
 		}
@@ -98,7 +103,7 @@ public class Configurations {
 			return username;
 		}
 
-		@XmlElement(name = "BAMUsername")
+		@XmlElement(name = BAM_USERNAME)
 		public void setBAMUsername(String username) {
 			this.username = username;
 		}
@@ -107,7 +112,7 @@ public class Configurations {
 			return password;
 		}
 
-		@XmlElement(name = "BAMPassword")
+		@XmlElement(name = BAM_PASSWORD)
 		public void setBAMPassword(String password) {
 			this.password = password;
 		}

@@ -15,7 +15,8 @@
  */
 package org.wso2.emm.bam;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.databridge.agent.thrift.AsyncDataPublisher;
 import org.wso2.carbon.databridge.agent.thrift.exception.AgentException;
 import org.wso2.carbon.databridge.commons.StreamDefinition;
@@ -24,11 +25,11 @@ import org.wso2.emm.bam.util.JSONReader;
 
 /**
  * This can be used to publish different data streams to BAM.
- * This act as the entry point for any stream that needs to be published
+ * This act as the entry point for any stream that needs to be published.
  */
 public class DataPublisher {
 	private static AsyncDataPublisher asyncDataPublisher;
-	private static Logger logger = Logger.getLogger(DataPublisher.class);
+	private static Log logger = LogFactory.getLog(DataPublisher.class);
 
 	public DataPublisher() throws PublisherException {
 		Configurations configurations = Configurations.getInstance();
@@ -47,8 +48,10 @@ public class DataPublisher {
 	 * This can be called to publish data to BAM by providing the stream type
 	 * and a payload.
 	 * 
-	 * @param streamType the name of stream to be published.
-	 * @param jsonValue payload to be published.
+	 * @param streamType
+	 *            the name of stream to be published.
+	 * @param jsonValue
+	 *            payload to be published.
 	 * @throws PublisherException
 	 */
 	public void publish(StreamType streamType, String jsonValue) throws PublisherException {

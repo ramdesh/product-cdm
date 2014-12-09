@@ -20,7 +20,6 @@ import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.component.ComponentContext;
 import org.wso2.emm.bam.DataPublisher;
 
 public class EMMStatisticsActivator implements BundleActivator {
@@ -41,7 +40,7 @@ public class EMMStatisticsActivator implements BundleActivator {
 		                                              new DataPublisher(), null);
 
 		if (log.isDebugEnabled()) {
-			log.debug("EMM-BAM bundle is started");
+			log.debug("EMM to BAM statisctics publishing bundle started");
 		}
 
 	}
@@ -54,5 +53,8 @@ public class EMMStatisticsActivator implements BundleActivator {
 	 */
 	public void stop(BundleContext arg0) throws Exception {
 		serviceRegistration.unregister();
+		if (log.isDebugEnabled()) {
+			log.debug("EMM to BAM statisctics publishing bundle stoped");
+		}
 	}
 }

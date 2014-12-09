@@ -15,7 +15,8 @@
  */
 package org.wso2.emm.bam;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.databridge.commons.AttributeType;
 import org.wso2.carbon.databridge.commons.StreamDefinition;
 import org.wso2.carbon.databridge.commons.exception.MalformedStreamDefinitionException;
@@ -28,34 +29,36 @@ import org.wso2.emm.bam.util.JSONReader;
  */
 class DeviceOperationsStream implements EMMStream {
 
-	private static Logger log = Logger.getLogger(DeviceOperationsStream.class);
+	private static Log logger = LogFactory.getLog(DeviceOperationsStream.class);
 	private StreamDefinition streamDefinition;
 
 	public DeviceOperationsStream() throws PublisherException {
 		String streamName = StreamType.DEVICE_OPERATIONS.getStreamType();
 		try {
 			streamDefinition =
-			                   new StreamDefinition(streamName,
-			                                        Constants.DEVICE_OPERATIONS_STREAM_VERSION);
-			streamDefinition.addPayloadData(Constants.USERID, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.DEVICEID, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.RECEIVED_DATE, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.CODE, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.DATA, AttributeType.STRING);
+			                   new StreamDefinition(
+			                                        streamName,
+			                                        Constants.StreamVersion.DEVICE_OPERATIONS_STREAM_VERSION);
+			streamDefinition.addPayloadData(Constants.StreamKey.USERID, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.DEVICEID, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.RECEIVED_DATE, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.CODE, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.DATA, AttributeType.STRING);
 		} catch (MalformedStreamDefinitionException e) {
 			String message =
 			                 "Error getting stream definition for " + streamName + "  , Version-" +
-			                         Constants.DEVICE_OPERATIONS_STREAM_VERSION;
-			log.error(message, e);
+			                         Constants.StreamVersion.DEVICE_OPERATIONS_STREAM_VERSION;
+			logger.error(message, e);
 			throw new PublisherException(message, e);
 		}
 	}
 
 	public Object[] getPayload(JSONReader jsonReader) throws PublisherException {
-		return new Object[] { jsonReader.read(Constants.USERID),
-		                     jsonReader.read(Constants.DEVICEID),
-		                     jsonReader.read(Constants.RECEIVED_DATE),
-		                     jsonReader.read(Constants.CODE), jsonReader.read(Constants.DATA) };
+		return new Object[] { jsonReader.read(Constants.StreamKey.USERID),
+		                     jsonReader.read(Constants.StreamKey.DEVICEID),
+		                     jsonReader.read(Constants.StreamKey.RECEIVED_DATE),
+		                     jsonReader.read(Constants.StreamKey.CODE),
+		                     jsonReader.read(Constants.StreamKey.DATA) };
 	}
 
 	public StreamDefinition getStreamDefinition() {

@@ -15,7 +15,8 @@
  */
 package org.wso2.emm.bam;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.databridge.commons.AttributeType;
 import org.wso2.carbon.databridge.commons.StreamDefinition;
 import org.wso2.carbon.databridge.commons.exception.MalformedStreamDefinitionException;
@@ -28,47 +29,50 @@ import org.wso2.emm.bam.util.JSONReader;
  */
 class AppInfoStream implements EMMStream {
 
-	private static Logger log = Logger.getLogger(AppInfoStream.class);
+	private static Log logger = LogFactory.getLog(AppInfoStream.class);
 	private StreamDefinition streamDefinition;
 
 	public AppInfoStream() throws PublisherException {
 		String streamName = StreamType.APP_NOTIFICATIONS.getStreamType();
 		try {
 			streamDefinition =
-			                   new StreamDefinition(streamName,
-			                                        Constants.APP_NOTIFICATIONS_STREAM_VERSION);
-			streamDefinition.addPayloadData(Constants.USERID, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.STATUS, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.DEVICEID, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.SENT_DATE, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.RECEIVED_DATE, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.FEATURE_CODE, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.TENANT, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.MESSAGE_ID, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.GROUP_ID, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.PACKAGE_NAME, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.ICON, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.APP_NAME, AttributeType.STRING);
+			                   new StreamDefinition(
+			                                        streamName,
+			                                        Constants.StreamVersion.APP_NOTIFICATIONS_STREAM_VERSION);
+			streamDefinition.addPayloadData(Constants.StreamKey.USERID, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.STATUS, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.DEVICEID, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.SENT_DATE, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.RECEIVED_DATE, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.FEATURE_CODE, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.TENANT, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.MESSAGE_ID, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.GROUP_ID, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.PACKAGE_NAME, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.ICON, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.APP_NAME, AttributeType.STRING);
 		} catch (MalformedStreamDefinitionException e) {
 			String message =
 			                 "Error getting stream definition for " + streamName + "  , Version-" +
-			                         Constants.APP_NOTIFICATIONS_STREAM_VERSION;
-			log.error(message, e);
+			                         Constants.StreamVersion.APP_NOTIFICATIONS_STREAM_VERSION;
+			logger.error(message, e);
 			throw new PublisherException(message, e);
 		}
 	}
 
 	public Object[] getPayload(JSONReader jsonReader) throws PublisherException {
-		return new Object[] { jsonReader.read(Constants.USERID), jsonReader.read(Constants.STATUS),
-		                     jsonReader.read(Constants.DEVICEID),
-		                     jsonReader.read(Constants.SENT_DATE),
-		                     jsonReader.read(Constants.RECEIVED_DATE),
-		                     jsonReader.read(Constants.FEATURE_CODE),
-		                     jsonReader.read(Constants.TENANT),
-		                     jsonReader.read(Constants.MESSAGE_ID),
-		                     jsonReader.read(Constants.GROUP_ID),
-		                     jsonReader.read(Constants.PACKAGE_NAME),
-		                     jsonReader.read(Constants.ICON), jsonReader.read(Constants.APP_NAME) };
+		return new Object[] { jsonReader.read(Constants.StreamKey.USERID),
+		                     jsonReader.read(Constants.StreamKey.STATUS),
+		                     jsonReader.read(Constants.StreamKey.DEVICEID),
+		                     jsonReader.read(Constants.StreamKey.SENT_DATE),
+		                     jsonReader.read(Constants.StreamKey.RECEIVED_DATE),
+		                     jsonReader.read(Constants.StreamKey.FEATURE_CODE),
+		                     jsonReader.read(Constants.StreamKey.TENANT),
+		                     jsonReader.read(Constants.StreamKey.MESSAGE_ID),
+		                     jsonReader.read(Constants.StreamKey.GROUP_ID),
+		                     jsonReader.read(Constants.StreamKey.PACKAGE_NAME),
+		                     jsonReader.read(Constants.StreamKey.ICON),
+		                     jsonReader.read(Constants.StreamKey.APP_NAME) };
 	}
 
 	public StreamDefinition getStreamDefinition() {

@@ -15,7 +15,8 @@
  */
 package org.wso2.emm.bam;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.databridge.commons.AttributeType;
 import org.wso2.carbon.databridge.commons.StreamDefinition;
 import org.wso2.carbon.databridge.commons.exception.MalformedStreamDefinitionException;
@@ -28,44 +29,48 @@ import org.wso2.emm.bam.util.JSONReader;
  */
 class DeviceRegisterStream implements EMMStream {
 
-	private static Logger log = Logger.getLogger(DeviceRegisterStream.class);
+	private static Log logger = LogFactory.getLog(DeviceRegisterStream.class);
 	private StreamDefinition streamDefinition;
 
 	public DeviceRegisterStream() throws PublisherException {
 		String streamName = StreamType.DEVICE_REGISTRATIONS.getStreamType();
 		try {
-			streamDefinition = new StreamDefinition(streamName, Constants.DEVICE_STREAM_VERSION);
-			streamDefinition.addPayloadData(Constants.TENANT_ID, AttributeType.INT);
-			streamDefinition.addPayloadData(Constants.USERID, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.PLATFORM_ID, AttributeType.INT);
-			streamDefinition.addPayloadData(Constants.REG_ID, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.OS_VERSION, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.PROPERTIES, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.CREATED_DATE, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.BYOD, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.VENDOR, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.MAC, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.DEVICEID, AttributeType.STRING);
+			streamDefinition =
+			                   new StreamDefinition(streamName,
+			                                        Constants.StreamVersion.DEVICE_STREAM_VERSION);
+			streamDefinition.addPayloadData(Constants.StreamKey.TENANT_ID, AttributeType.INT);
+			streamDefinition.addPayloadData(Constants.StreamKey.USERID, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.PLATFORM_ID, AttributeType.INT);
+			streamDefinition.addPayloadData(Constants.StreamKey.REG_ID, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.OS_VERSION, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.PROPERTIES, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.CREATED_DATE, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.BYOD, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.VENDOR, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.MAC, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.DEVICEID, AttributeType.STRING);
 
 		} catch (MalformedStreamDefinitionException e) {
 			String message =
 			                 "Error getting stream definition for " + streamName + "  , Version-" +
-			                         Constants.DEVICE_OPERATIONS_STREAM_VERSION;
-			log.error(message, e);
+			                         Constants.StreamVersion.DEVICE_OPERATIONS_STREAM_VERSION;
+			logger.error(message, e);
 			throw new PublisherException(message, e);
 		}
 	}
 
 	public Object[] getPayload(JSONReader jsonReader) throws PublisherException {
-		return new Object[] { (Integer.parseInt(jsonReader.read(Constants.TENANT_ID))),
-		                     jsonReader.read(Constants.USERID),
-		                     (Integer.parseInt(jsonReader.read(Constants.PLATFORM_ID))),
-		                     jsonReader.read(Constants.REG_ID),
-		                     jsonReader.read(Constants.OS_VERSION),
-		                     jsonReader.read(Constants.PROPERTIES),
-		                     jsonReader.read(Constants.CREATED_DATE),
-		                     jsonReader.read(Constants.BYOD), jsonReader.read(Constants.VENDOR),
-		                     jsonReader.read(Constants.MAC), jsonReader.read(Constants.DEVICEID) };
+		return new Object[] { (Integer.parseInt(jsonReader.read(Constants.StreamKey.TENANT_ID))),
+		                     jsonReader.read(Constants.StreamKey.USERID),
+		                     (Integer.parseInt(jsonReader.read(Constants.StreamKey.PLATFORM_ID))),
+		                     jsonReader.read(Constants.StreamKey.REG_ID),
+		                     jsonReader.read(Constants.StreamKey.OS_VERSION),
+		                     jsonReader.read(Constants.StreamKey.PROPERTIES),
+		                     jsonReader.read(Constants.StreamKey.CREATED_DATE),
+		                     jsonReader.read(Constants.StreamKey.BYOD),
+		                     jsonReader.read(Constants.StreamKey.VENDOR),
+		                     jsonReader.read(Constants.StreamKey.MAC),
+		                     jsonReader.read(Constants.StreamKey.DEVICEID) };
 	}
 
 	public StreamDefinition getStreamDefinition() {

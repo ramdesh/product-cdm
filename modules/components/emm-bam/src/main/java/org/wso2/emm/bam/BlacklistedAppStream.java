@@ -15,7 +15,8 @@
  */
 package org.wso2.emm.bam;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.databridge.commons.AttributeType;
 import org.wso2.carbon.databridge.commons.StreamDefinition;
 import org.wso2.carbon.databridge.commons.exception.MalformedStreamDefinitionException;
@@ -28,33 +29,35 @@ import org.wso2.emm.bam.util.JSONReader;
  */
 class BlacklistedAppStream implements EMMStream {
 
-	private static Logger log = Logger.getLogger(BlacklistedAppStream.class);
+	private static Log logger = LogFactory.getLog(BlacklistedAppStream.class);
 	private StreamDefinition streamDefinition;
 
 	public BlacklistedAppStream() throws PublisherException {
 		String streamName = StreamType.BLACKLISTED_APPS.getStreamType();
 		try {
 			streamDefinition =
-			                   new StreamDefinition(streamName,
-			                                        Constants.BLACKLISTED_APPS_STREAM_VERSION);
-			streamDefinition.addPayloadData(Constants.PACKAGE_NAME, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.APP_NAME, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.PLATFORM, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.TYPE, AttributeType.STRING);
+			                   new StreamDefinition(
+			                                        streamName,
+			                                        Constants.StreamVersion.BLACKLISTED_APPS_STREAM_VERSION);
+			streamDefinition.addPayloadData(Constants.StreamKey.PACKAGE_NAME, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.APP_NAME, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.PLATFORM, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.TYPE, AttributeType.STRING);
 
 		} catch (MalformedStreamDefinitionException e) {
 			String message =
 			                 "Error getting stream definition for " + streamName + "  , Version-" +
-			                         Constants.BLACKLISTED_APPS_STREAM_VERSION;
-			log.error(message, e);
+			                         Constants.StreamVersion.BLACKLISTED_APPS_STREAM_VERSION;
+			logger.error(message, e);
 			throw new PublisherException(message, e);
 		}
 	}
 
 	public Object[] getPayload(JSONReader jsonReader) throws PublisherException {
-		return new Object[] { jsonReader.read(Constants.PACKAGE_NAME),
-		                     jsonReader.read(Constants.APP_NAME),
-		                     jsonReader.read(Constants.PLATFORM), jsonReader.read(Constants.TYPE) };
+		return new Object[] { jsonReader.read(Constants.StreamKey.PACKAGE_NAME),
+		                     jsonReader.read(Constants.StreamKey.APP_NAME),
+		                     jsonReader.read(Constants.StreamKey.PLATFORM),
+		                     jsonReader.read(Constants.StreamKey.TYPE) };
 	}
 
 	public StreamDefinition getStreamDefinition() {

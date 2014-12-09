@@ -18,7 +18,8 @@ package org.wso2.emm.bam;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Factory of EMM Streams, which can be used to generate new stream objects that
@@ -26,7 +27,7 @@ import org.apache.log4j.Logger;
  */
 public class EMMStreamFactory {
 
-	private static Logger log = Logger.getLogger(EMMStreamFactory.class);
+	private static Log logger = LogFactory.getLog(EMMStreamFactory.class);
 	private static Map<String, EMMStream> streams = new HashMap<String, EMMStream>();
 
 	/**
@@ -41,7 +42,7 @@ public class EMMStreamFactory {
 	public static EMMStream getStream(StreamType streamType) throws PublisherException {
 		if (streamType == null) {
 			String message = "Stream type cannot be null.";
-			log.error(message);
+			logger.error(message);
 			throw new IllegalArgumentException(message);
 		}
 		EMMStream stream = streams.get(streamType);
