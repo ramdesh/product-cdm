@@ -27,7 +27,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.emm.apkgenerator.util.Constants;
 import org.wso2.emm.apkgenerator.util.FileOperator;
 
@@ -37,7 +38,7 @@ import org.wso2.emm.apkgenerator.util.FileOperator;
  */
 public class KeyStoreGenerator {
 
-	private static Logger log = Logger.getLogger(KeyStoreGenerator.class);
+	private static Log log = LogFactory.getLog(KeyStoreGenerator.class);
 
 	/**
 	 * To inject certificates to correct key stores and to generate new key
@@ -131,10 +132,9 @@ public class KeyStoreGenerator {
 		try {
 			keyStore.setKeyEntry(alias, key, password.toCharArray(), cert);
 		} catch (KeyStoreException e) {
-			log.error("Generic KeyStore error while creating new JKS ," + e.getMessage(), e);
-			throw new CertificateGenerationException(
-			                                         "Generic KeyStore error while creating new JKS ," +
-			                                                 e.getMessage(), e);
+			String message = "Generic KeyStore error while creating new JKS.";
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		}
 		writKeyStoreToFile(resultFile, keyStore, storePass.toCharArray());
 
@@ -157,34 +157,31 @@ public class KeyStoreGenerator {
 		try {
 			fileOutputStream = new FileOutputStream(resultFile);
 		} catch (FileNotFoundException e) {
-			log.error("Cannot open the file ," + resultFile + ", " + e.getMessage(), e);
-			throw new CertificateGenerationException("Cannot open the file ," + resultFile + ", " +
-			                                         e.getMessage(), e);
+			String message = "Cannot open the file ," + resultFile;
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		}
 
 		try {
 			keyStore.store(fileOutputStream, storePass);
 		} catch (KeyStoreException e) {
-			log.error("Generic KeyStore error while creating new JKS ," + e.getMessage(), e);
-			throw new CertificateGenerationException(
-			                                         "Generic KeyStore error while creating new JKS ," +
-			                                                 e.getMessage(), e);
+			String message = "Generic KeyStore error while creating new JKS.";
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		} catch (NoSuchAlgorithmException e) {
-			log.error("Cryptographic algorithm is requested but" +
-			          " it is not available in the environment, " + e.getMessage(), e);
-			throw new CertificateGenerationException("Cryptographic algorithm is requested but" +
-			                                         " it is not available in the environment, " +
-			                                         e.getMessage(), e);
+			String message =
+			                 "Cryptographic algorithm is requested but"
+			                         + " it is not available in the environment.";
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		} catch (CertificateException e) {
-			log.error("Error working with certificate related to, " + resultFile + " , " +
-			                  e.getMessage(), e);
-			throw new CertificateGenerationException("Error working with certificate related to, " +
-			                                         resultFile + " , " + e.getMessage(), e);
+			String message = "Error working with certificate related to, " + resultFile;
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		} catch (IOException e) {
-			log.error("File error while working with file, " + resultFile + ", " + e.getMessage(),
-			          e);
-			throw new CertificateGenerationException("File error while working with files, " +
-			                                         resultFile + ", " + e.getMessage(), e);
+			String message = "File error while working with file, " + resultFile;
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		}
 
 		try {
@@ -192,9 +189,9 @@ public class KeyStoreGenerator {
 				fileOutputStream.close();
 			}
 		} catch (IOException e) {
-			log.error("File error while closing the file, " + resultFile + ", " + e.getMessage(), e);
-			throw new CertificateGenerationException("File error while closing the file, " +
-			                                         resultFile + ", " + e.getMessage(), e);
+			String message = "File error while closing the file.";
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		}
 	}
 
@@ -218,22 +215,19 @@ public class KeyStoreGenerator {
 		try {
 			keyStore.load(fileInputStream, storePass);
 		} catch (NoSuchAlgorithmException e) {
-			log.error(Constants.ALGORITHM + " cryptographic algorithm is requested but" +
-			          " it is not available in the environment, " + e.getMessage(), e);
-			throw new CertificateGenerationException(Constants.ALGORITHM +
-			                                         " cryptographic algorithm is requested but" +
-			                                         " it is not available in the environment, " +
-			                                         e.getMessage(), e);
+			String message =
+			                 Constants.ALGORITHM + " cryptographic algorithm is requested but" +
+			                         " it is not available in the environment.";
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		} catch (CertificateException e) {
-			log.error("Error working with certificate related to, " + resultFile + " , " +
-			                  e.getMessage(), e);
-			throw new CertificateGenerationException("Error working with certificate related to, " +
-			                                         resultFile + " , " + e.getMessage(), e);
+			String message = "Error working with certificate related to, " + resultFile;
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		} catch (IOException e) {
-			log.error("File error while working with file, " + resultFile + ", " + e.getMessage(),
-			          e);
-			throw new CertificateGenerationException("File error while working with files, " +
-			                                         resultFile + ", " + e.getMessage(), e);
+			String message = "File error while working with file, " + resultFile;
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		}
 
 		try {
@@ -241,9 +235,9 @@ public class KeyStoreGenerator {
 				fileInputStream.close();
 			}
 		} catch (IOException e) {
-			log.error("File error while closing the file, " + resultFile + ", " + e.getMessage(), e);
-			throw new CertificateGenerationException("File error while closing the file, " +
-			                                         resultFile + ", " + e.getMessage(), e);
+			String message = "File error while closing the file, " + resultFile;
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		}
 	}
 
@@ -281,25 +275,22 @@ public class KeyStoreGenerator {
 			try {
 				keyStore.setCertificateEntry(seconderyCertAlias, secondCert);
 			} catch (KeyStoreException e) {
-				log.error("KeyStore error while adding certificate with alias " +
-				          seconderyCertAlias + "to key store, " + e.getMessage(), e);
+				String message = "KeyStore error while adding certificate with alias " +
+				          seconderyCertAlias + "to key store.";
+				log.error(message, e);
 				throw new CertificateGenerationException(
-				                                         "KeyStore error while adding certificate with alias " +
-				                                                 seconderyCertAlias +
-				                                                 "to key store, " + e.getMessage(),
+				                                         message,
 				                                         e);
 			}
 		}
 		try {
 			keyStore.setKeyEntry(alias, key, password.toCharArray(), cert);
 		} catch (KeyStoreException e) {
-			log.error("KeyStore error while adding certificate chanin with alias " + alias +
-			          "to key store, " + e.getMessage(), e);
+			String message = "KeyStore error while adding certificate chanin with alias " + alias +
+			          "to key store.";
+			log.error(message, e);
 			throw new CertificateGenerationException(
-			                                         "KeyStore error while adding certificate chanin with alias " +
-			                                                 alias +
-			                                                 "to key store, " +
-			                                                 e.getMessage(), e);
+			                                         message, e);
 		}
 		writKeyStoreToFile(resultFile, keyStore, password.toCharArray());
 	}
@@ -314,9 +305,9 @@ public class KeyStoreGenerator {
 		try {
 			return KeyStore.getInstance(Constants.JKS);
 		} catch (KeyStoreException e) {
-			log.error("KeyStore error while creating new JKS ," + e.getMessage(), e);
-			throw new CertificateGenerationException("KeyStore error while creating new JKS ," +
-			                                         e.getMessage(), e);
+			String message = "KeyStore error while creating new JKS.";
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		}
 
 	}

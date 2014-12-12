@@ -28,18 +28,19 @@ import java.util.Random;
 
 import javax.security.auth.x500.X500Principal;
 
-import org.apache.log4j.Logger;
-import org.bouncycastle.asn1.x509.BasicConstraints;
-import org.bouncycastle.asn1.x509.Extension;
-import org.bouncycastle.asn1.x509.KeyUsage;
-import org.bouncycastle.cert.CertIOException;
-import org.bouncycastle.cert.X509v3CertificateBuilder;
-import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
-import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
-import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
-import org.bouncycastle.operator.ContentSigner;
-import org.bouncycastle.operator.OperatorCreationException;
-import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.spongycastle.asn1.x509.BasicConstraints;
+import org.spongycastle.asn1.x509.Extension;
+import org.spongycastle.asn1.x509.KeyUsage;
+import org.spongycastle.cert.CertIOException;
+import org.spongycastle.cert.X509v3CertificateBuilder;
+import org.spongycastle.cert.jcajce.JcaX509CertificateConverter;
+import org.spongycastle.cert.jcajce.JcaX509ExtensionUtils;
+import org.spongycastle.cert.jcajce.JcaX509v3CertificateBuilder;
+import org.spongycastle.operator.ContentSigner;
+import org.spongycastle.operator.OperatorCreationException;
+import org.spongycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.wso2.emm.apkgenerator.util.Constants;
 
 /**
@@ -48,7 +49,7 @@ import org.wso2.emm.apkgenerator.util.Constants;
  * the chain.
  */
 public class X509V3Certificates {
-	private static Logger log = Logger.getLogger(X509V3Certificates.class);
+	private static Log log = LogFactory.getLog(X509V3Certificates.class);
 
 	/**
 	 * Generate a self-signed root certificate (CA certificate)
@@ -80,25 +81,23 @@ public class X509V3Certificates {
 			sigGen =
 			         new JcaContentSignerBuilder(Constants.ENCRIPTION).setProvider(Constants.PROVIDER)
 			                                                          .build(pair.getPrivate());
-			// Make basic constraint true to tell this is a root CA.
 			certBldr.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
 			return new JcaX509CertificateConverter().setProvider(Constants.PROVIDER)
 			                                        .getCertificate(certBldr.build(sigGen));
 		} catch (OperatorCreationException e) {
-			log.error("Error creating ContentSigner with JcaContentSignerBuilder"
-			          + " with the private key provided", e);
-			throw new CertificateGenerationException(
-			                                         "Error creating ContentSigner with JcaContentSignerBuilder" +
-			                                                 " with the private key provided, " +
-			                                                 e.getMessage(), e);
+			String message =
+			                 "Error creating ContentSigner with JcaContentSignerBuilder"
+			                         + " with the private key provided.";
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		} catch (CertIOException e) {
-			log.error("Error adding extension BasicConstraints", e);
-			throw new CertificateGenerationException("Error adding extension BasicConstraints, " +
-			                                         e.getMessage(), e);
+			String message = "Error adding extension basic constraints";
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		} catch (CertificateException e) {
-			log.error("Error building certificate", e);
-			throw new CertificateGenerationException("Error building certificate ," +
-			                                         e.getMessage(), e);
+			String message = "Error building certificate.";
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		}
 	}
 
@@ -118,6 +117,7 @@ public class X509V3Certificates {
 	 *            is the parameters which is found in a CSR.
 	 * @param days
 	 *            that the certificate is valid
+	 *            
 	 * @return An intermediate certificate signed by a root certificate
 	 * @throws CertificateGenerationException
 	 */
@@ -137,11 +137,11 @@ public class X509V3Certificates {
 		try {
 			extUtils = new JcaX509ExtensionUtils();
 		} catch (NoSuchAlgorithmException e) {
-			log.error("Cryptographic algorithm is requested but" +
-			          " it is not available in the environment, " + e.getMessage(), e);
-			throw new CertificateGenerationException("Cryptographic algorithm is requested but" +
-			                                         " it is not available in the environment, " +
-			                                         e.getMessage(), e);
+			String message =
+			                 "Cryptographic algorithm is requested but"
+			                         + " it is not available in the environment.";
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		}
 		try {
 			if (type.equalsIgnoreCase(Constants.RA)) {
@@ -149,7 +149,6 @@ public class X509V3Certificates {
 				                      extUtils.createAuthorityKeyIdentifier(caCert))
 				        .addExtension(Extension.subjectKeyIdentifier, false,
 				                      extUtils.createSubjectKeyIdentifier(publicKey))
-				        // Mark it as a intermediate by setting constraint 0
 				        .addExtension(Extension.basicConstraints, true, new BasicConstraints(0))
 				        .addExtension(Extension.keyUsage,
 				                      true,
@@ -171,14 +170,13 @@ public class X509V3Certificates {
 				                                   KeyUsage.keyEncipherment));
 			}
 		} catch (CertificateEncodingException e) {
-			log.error("Certificate Encroding issue while adding extensions, " + e.getMessage(), e);
-			throw new CertificateGenerationException(
-			                                         "Certificate Encroding issue while adding extensions, " +
-			                                                 e.getMessage(), e);
+			String message = "Certificate Encroding issue while adding extensions.";
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		} catch (CertIOException e) {
-			log.error("Error adding extension BasicConstraints, " + e.getMessage(), e);
-			throw new CertificateGenerationException("Error adding extension BasicConstraints, " +
-			                                         e.getMessage(), e);
+			String message = "Error adding extension basic constraints.";
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		}
 
 		ContentSigner signer = null;
@@ -189,16 +187,15 @@ public class X509V3Certificates {
 			return new JcaX509CertificateConverter().setProvider(Constants.PROVIDER)
 			                                        .getCertificate(certBldr.build(signer));
 		} catch (OperatorCreationException e) {
-			log.error("Error creating ContentSigner with JcaContentSignerBuilder" +
-			          " with the private key provided ," + e.getMessage(), e);
-			throw new CertificateGenerationException(
-			                                         "Error creating ContentSigner with JcaContentSignerBuilder" +
-			                                                 " with the private key provided ," +
-			                                                 e.getMessage(), e);
+			String message =
+			                 "Error creating ContentSigner with JcaContentSignerBuilder"
+			                         + " with the private key provided.";
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		} catch (CertificateException e) {
-			log.error("Error building certificate, " + e.getMessage(), e);
-			throw new CertificateGenerationException("Error building certificate, " +
-			                                         e.getMessage(), e);
+			String message = "Error building certificate.";
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		}
 	}
 
@@ -231,7 +228,8 @@ public class X509V3Certificates {
 		int noOfDays = Integer.parseInt(days);
 		// Add days to current time to get the validity period.
 		Date validityEndDate = new Date(System.currentTimeMillis() + noOfDays * millisecondsInADay);
-		return new JcaX509v3CertificateBuilder(rootPrinciple, serial, new Date(System.currentTimeMillis()),
+		return new JcaX509v3CertificateBuilder(rootPrinciple, serial,
+		                                       new Date(System.currentTimeMillis()),
 		                                       validityEndDate, principal, publicKey);
 
 	}

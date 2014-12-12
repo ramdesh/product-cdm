@@ -17,7 +17,8 @@ package org.wso2.emm.apkgenerator.data;
 
 import java.io.Serializable;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.emm.apkgenerator.generators.CertificateGenerationException;
 import org.wso2.emm.apkgenerator.util.Constants;
 
@@ -38,7 +39,7 @@ public class CSRData implements Serializable {
 	private static final String LOCALITY_KEY = ", L=";
 	private static final String STATE_KEY = ", ST=";
 	private static final String COUNTRY_KEY = "C=";
-	private static Logger log = Logger.getLogger(CSRData.class);
+	private static Log log = LogFactory.getLog(CSRData.class);
 
 	/**
 	 * Read the Object passed and create a CRS object to hold data required

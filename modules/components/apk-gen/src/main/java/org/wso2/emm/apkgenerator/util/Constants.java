@@ -19,12 +19,10 @@ import java.io.File;
 
 /**
  * Constants used throughout the project
- * 
  */
 public class Constants {
 	public static final String jksFolder = "jks/";
 	public static final String BKS_File = "emm_truststore.bks";
-	public static final String PEM_file = "ca_cert.pem";
 	public static final String ANDROID_AGENT = "emm-agent-android";
 	public static final String COMMON_UTIL = ANDROID_AGENT + File.separator + "src" +
 	                                         File.separator + "org" + File.separator + "wso2" +
@@ -41,7 +39,7 @@ public class Constants {
 	public static final String WSO2EMM_JKS = "wso2emm.jks";
 	public static final String WSO2EMM_JKS_PASSWORD = "wso2carbon";
 	public static final String ALGORITHM = "RSA";
-	public static final String PROVIDER = "BC";
+	public static final String PROVIDER = "SC";
 	public static final String ENCRIPTION = "SHA1withRSA";
 	public static final String ANDROID_AGENT_RAW = ANDROID_AGENT + File.separator + "res" +
 	                                               File.separator + "raw" + File.separator;

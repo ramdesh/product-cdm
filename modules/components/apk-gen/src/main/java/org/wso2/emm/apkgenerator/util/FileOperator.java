@@ -20,12 +20,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.regex.Matcher;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import org.apache.log4j.Logger;
-import org.bouncycastle.openssl.PEMWriter;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.codehaus.plexus.util.FileUtils;
 import org.wso2.emm.apkgenerator.generators.CertificateGenerationException;
 
@@ -36,7 +36,7 @@ import org.wso2.emm.apkgenerator.generators.CertificateGenerationException;
  */
 public class FileOperator {
 
-	private static Logger log = Logger.getLogger(FileOperator.class);
+	private static Log log = LogFactory.getLog(FileOperator.class);
 
 	/**
 	 * Copy file from the source path to a destination.
@@ -52,13 +52,11 @@ public class FileOperator {
 		try {
 			FileUtils.copyFile(new File(source), new File(destination));
 		} catch (IOException e) {
-			log.error("Cannot find one of the files, while trying to copy file :" + source +
-			          ",  to its destination: " + destination + " ," + e.getMessage(), e);
-			throw new CertificateGenerationException(
-			                                         "Cannot find one of the files, while trying to copy file :" +
-			                                                 source +
-			                                                 ",  to its destination: " +
-			                                                 destination + " ," + e.getMessage(), e);
+			String message =
+			                 "Cannot find one of the files, while trying to copy file :" + source +
+			                         ",  to its destination: " + destination;
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		}
 	}
 
@@ -74,9 +72,9 @@ public class FileOperator {
 		try {
 			return FileUtils.fileRead(new File(path));
 		} catch (IOException e) {
-			log.error("Error reading file " + path + " ," + e.getMessage(), e);
-			throw new CertificateGenerationException("Error reading file " + path + " ," +
-			                                         e.getMessage(), e);
+			String message = "Error reading file " + path;
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		}
 	}
 
@@ -93,9 +91,9 @@ public class FileOperator {
 		try {
 			FileUtils.fileWrite(path, content);
 		} catch (IOException e) {
-			log.error("Error writing to file " + path + " ," + e.getMessage(), e);
-			throw new CertificateGenerationException("Error writing to file " + path + " ," +
-			                                         e.getMessage(), e);
+			String message = "Error writing to file " + path;
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		}
 	}
 
@@ -115,9 +113,9 @@ public class FileOperator {
 		try {
 			fileOut = new FileOutputStream(zipFilePath);
 		} catch (FileNotFoundException e) {
-			log.error("Error opening file " + zipFilePath + " ," + e.getMessage(), e);
-			throw new CertificateGenerationException("Error opening file " + zipFilePath + " ," +
-			                                         e.getMessage(), e);
+			String message = "Error opening file " + zipFilePath;
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		}
 		ZipOutputStream zipOutStream = new ZipOutputStream(fileOut);
 		for (int x = 0; x < files.length; x++) {
@@ -127,13 +125,13 @@ public class FileOperator {
 				inputStream = new FileInputStream(files[x]);
 				zipOutStream.putNextEntry(new ZipEntry(file.getName()));
 			} catch (FileNotFoundException e) {
-				log.error("Cannot open the file ," + files[x] + ", " + e.getMessage(), e);
-				throw new CertificateGenerationException("Cannot open the file ," + files[x] +
-				                                         ", " + e.getMessage(), e);
+				String message = "Cannot open the file ," + files[x] + " to zip.";
+				log.error(message, e);
+				throw new CertificateGenerationException(message, e);
 			} catch (IOException e) {
-				log.error("Error adding " + files[x] + "to zip , " + e.getMessage(), e);
-				throw new CertificateGenerationException("Error adding " + files[x] + "to zip , " +
-				                                         e.getMessage(), e);
+				String message = "Error adding " + files[x] + " to zip.";
+				log.error(message, e);
+				throw new CertificateGenerationException(message, e);
 			}
 
 			byte[] bytes = new byte[1024];
@@ -146,10 +144,9 @@ public class FileOperator {
 					inputStream.close();
 				}
 			} catch (IOException e) {
-				log.error("File error while closing the file, " + files[x] + ", " + e.getMessage(),
-				          e);
-				throw new CertificateGenerationException("File error while closing the file, " +
-				                                         files[x] + ", " + e.getMessage(), e);
+				String message = "File error while closing the file, " + files[x];
+				log.error(message, e);
+				throw new CertificateGenerationException(message, e);
 			}
 		}
 		try {
@@ -157,44 +154,9 @@ public class FileOperator {
 				zipOutStream.close();
 			}
 		} catch (IOException e) {
-			log.error("File error while closing the file, " + zipFilePath + ", " + e.getMessage(),
-			          e);
-			throw new CertificateGenerationException("File error while closing the file, " +
-			                                         zipFilePath + ", " + e.getMessage(), e);
-		}
-	}
-
-	/**
-	 * Write a passed PEM file object to a given path.
-	 * 
-	 * @param path
-	 *            of the file to be saved
-	 * @param file
-	 *            object that needs to be saved
-	 */
-	public static void writePem(String path, Object file) throws CertificateGenerationException {
-		FileOutputStream fileOutput = null;
-		try {
-			fileOutput = new FileOutputStream(path);
-			PEMWriter pemWriter3 = new PEMWriter(new PrintWriter(fileOutput));
-			pemWriter3.writeObject(file);
-			pemWriter3.flush();
-			pemWriter3.close();
-		} catch (IOException e) {
-			log.error("Error writing file to :" + path + ", " + e.getMessage(), e);
-			throw new CertificateGenerationException("Error writing file to :" + path + ", " +
-			                                         e.getMessage(), e);
-		} finally {
-			if (fileOutput != null) {
-				try {
-					fileOutput.close();
-				} catch (IOException e) {
-					log.error("File error while closing the file, " + path + ", " + e.getMessage(),
-					          e);
-					throw new CertificateGenerationException("File error while closing the file, " +
-					                                         path + ", " + e.getMessage(), e);
-				}
-			}
+			String message = "File error while closing the file, " + zipFilePath;
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		}
 	}
 
@@ -211,9 +173,9 @@ public class FileOperator {
 		try {
 			return new FileInputStream(sourceFile);
 		} catch (FileNotFoundException e) {
-			log.error("Cannot open the file ," + sourceFile + ", " + e.getMessage(), e);
-			throw new CertificateGenerationException("Cannot open the file ," + sourceFile + ", " +
-			                                         e.getMessage(), e);
+			String message = "Cannot open the file ," + sourceFile;
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		}
 	}
 
@@ -228,9 +190,9 @@ public class FileOperator {
 		try {
 			new File(path).mkdirs();
 		} catch (SecurityException e) {
-			log.error("Error when creating directory " + path + " ," + e.getMessage(), e);
-			throw new CertificateGenerationException("Error when creating directory " + path +
-			                                         " ," + e.getMessage(), e);
+			String message = "Error when creating directory " + path;
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		}
 	}
 
@@ -246,8 +208,9 @@ public class FileOperator {
 		try {
 			return path.replaceAll("/", Matcher.quoteReplacement(File.separator));
 		} catch (Exception e) {
-			log.error("Error when getting file path:" + path, e);
-			throw new CertificateGenerationException("Error when getting file path:" + path, e);
+			String message = "Error when getting file path: " + path;
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		}
 	}
 }

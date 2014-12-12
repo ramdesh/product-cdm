@@ -15,7 +15,8 @@
  */
 package org.wso2.emm.apkgenerator.data;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.wso2.emm.apkgenerator.generators.CertificateGenerationException;
@@ -27,7 +28,7 @@ import org.wso2.emm.apkgenerator.generators.CertificateGenerationException;
 public class ObjectReader {
 
 	private JSONObject json = null;
-	private static Logger log = Logger.getLogger(ObjectReader.class);
+	private static Log log = LogFactory.getLog(ObjectReader.class);
 
 	/**
 	 * Create a JSON object that represent the JSON string passed as a
@@ -35,17 +36,14 @@ public class ObjectReader {
 	 * 
 	 * @param jsonStr
 	 *            JSON string that needs to be converted to a JSON object
-	 * @throws CertificateGenerationException
 	 */
-	public ObjectReader(String jsonStr) throws CertificateGenerationException {
+	public ObjectReader(String jsonStr) {
 		try {
 			json = new JSONObject(jsonStr);
 		} catch (JSONException e) {
-			log.error("Error in converting String to JSONObject- object is:" + jsonStr, e);
-			throw new CertificateGenerationException(
-			                                         "Error in converting String to JSONObject- object is:" +
-			                                                 jsonStr, e);
-
+			String message = "Error in converting String to JSONObject- object is:" + jsonStr;
+			log.error(message);
+			throw new IllegalArgumentException(message);
 		}
 	}
 
@@ -61,9 +59,9 @@ public class ObjectReader {
 		try {
 			return json.getString(key);
 		} catch (JSONException e) {
-			log.error("Error in getting String " + key + " from JSONObject, " + e.getMessage(), e);
-			throw new CertificateGenerationException("Error in getting String " + key +
-			                                         " from JSONObject, " + e.getMessage(), e);
+			String message = "Error in getting String " + key + " from JSONObject.";
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		}
 	}
 }

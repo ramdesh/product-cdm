@@ -21,7 +21,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
 import org.apache.maven.shared.invoker.DefaultInvoker;
 import org.apache.maven.shared.invoker.InvocationRequest;
@@ -30,12 +31,13 @@ import org.wso2.emm.apkgenerator.util.Constants;
 import org.wso2.emm.apkgenerator.util.FileOperator;
 
 /**
- * Using the BKS created and the EMM agent source included, apk file can be
- * generated with this class. Also the final zip output is generated here.
+ * Using the BKS created earlier and the EMM agent source included, apk file can
+ * be
+ * generated with this class. Also the final .zip output is generated here.
  */
 public class Apk {
 
-	private static Logger log = Logger.getLogger(Apk.class);
+	private static Log log = LogFactory.getLog(Apk.class);
 
 	/**
 	 * Carry out the sequence of tasks necessary to generate the APK.
@@ -47,7 +49,7 @@ public class Apk {
 	 * @param password
 	 *            of BKS store
 	 * @param zipFileName
-	 *            is the name of the Zip output file.
+	 *            is the name of the .zip output file.
 	 * @param zipPath
 	 *            folder which holds all the temporary files and final zip
 	 * @return The output path
@@ -65,7 +67,7 @@ public class Apk {
 		String clienTruststore = ApkGenerator.workingDir + Constants.CLIENT_TRUST_JKS;
 		String emmJKS = ApkGenerator.workingDir + Constants.WSO2EMM_JKS;
 
-		// Zip the above four files and create a zip file in the output folder.
+		// .zip the above four files and create a zip file in the output folder.
 		FileOperator.createZip(zipPath + zipFileName, new String[] { apkPath, wso2Carbon,
 		                                                            clienTruststore, emmJKS });
 
@@ -87,8 +89,8 @@ public class Apk {
 	 *            of the BKS store
 	 * @throws FileNotFoundException
 	 */
-	private static void changeContent(String commonUtilPath, String hostName, String password)
-	                                                                                          throws CertificateGenerationException {
+	public static void changeContent(String commonUtilPath, String hostName, String password)
+	                                                                                         throws CertificateGenerationException {
 
 		String content = FileOperator.readFile(commonUtilPath);
 		int startIndex = content.indexOf(Constants.SERVER_IP_ANDROID);
@@ -122,16 +124,15 @@ public class Apk {
 			invoker.setMavenHome(new File(getMavenHome(Constants.ENVIRONMENT_VARIABLE)));
 			invoker.execute(request);
 		} catch (NullPointerException e) {
-			log.error("Could not find MAVEN_HOME, please set it globally, so that" +
-			          " the user that starts java can access it. " + e.getMessage(), e);
-			throw new CertificateGenerationException(
-			                                         "Could not find MAVEN_HOME, please set it globally, so that" +
-			                                                 " the user that starts java can access it. " +
-			                                                 e.getMessage(), e);
+			String message =
+			                 "Could not find MAVEN_HOME, please set it globally, so that"
+			                         + " the user that starts java can access it.";
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		} catch (MavenInvocationException e) {
-			log.error("Error while executing maven invoker:" + e.getMessage(), e);
-			throw new CertificateGenerationException("Error while executing maven invoker:" +
-			                                         e.getMessage(), e);
+			String message = "Error while executing maven invoker.";
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		}
 	}
 

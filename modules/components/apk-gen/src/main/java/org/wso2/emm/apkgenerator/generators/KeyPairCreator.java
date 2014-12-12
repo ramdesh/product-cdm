@@ -21,7 +21,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.emm.apkgenerator.util.Constants;
 
 /**
@@ -29,7 +30,7 @@ import org.wso2.emm.apkgenerator.util.Constants;
  */
 public class KeyPairCreator {
 
-	private static Logger log = Logger.getLogger(KeyPairCreator.class);
+	private static Log log = LogFactory.getLog(KeyPairCreator.class);
 
 	/**
 	 * Generate a public and a private key pair set.
@@ -39,7 +40,7 @@ public class KeyPairCreator {
 	 */
 	public static KeyPair getKeyPair() throws CertificateGenerationException {
 		if (log.isDebugEnabled()) {
-			log.debug("Generating key pair");
+			log.debug("Generating key pair.");
 		}
 		KeyPairGenerator keyPairGenerator;
 		try {
@@ -48,25 +49,22 @@ public class KeyPairCreator {
 			keyPairGenerator.initialize(1024, new SecureRandom());
 			return keyPairGenerator.generateKeyPair();
 		} catch (NoSuchAlgorithmException e) {
-			log.error(Constants.ALGORITHM + " cryptographic algorithm is requested but" +
-			          " it is not available in the environment", e);
-			throw new CertificateGenerationException(Constants.ALGORITHM +
-			                                         " cryptographic algorithm is requested but" +
-			                                         " it is not available in the environment ," +
-			                                         e.getMessage(), e);
+			String message =
+			                 Constants.ALGORITHM + " cryptographic algorithm is requested but" +
+			                         " it is not available in the environment.";
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		} catch (NoSuchProviderException e) {
-			log.error(Constants.PROVIDER +
-			          " security provider is requested but it is not available in " +
-			          "the environment. ", e);
-			throw new CertificateGenerationException(
-			                                         Constants.PROVIDER +
-			                                                 " security provider is requested but it is not available in " +
-			                                                 "the environment ," + e.getMessage(),
-			                                         e);
+			String message =
+			                 Constants.PROVIDER +
+			                         " security provider is requested but it is not available in " +
+			                         "the environment.";
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		} catch (Exception e) {
-			log.error("Error while generating keys, " + e.getMessage(), e);
-			throw new CertificateGenerationException("Error while generating keys, " +
-			                                         e.getMessage(), e);
+			String message = "Error while generating keys.";
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		}
 	}
 }

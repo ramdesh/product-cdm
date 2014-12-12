@@ -21,8 +21,6 @@ package org.wso2.emm.apkgenerator.generators;
  */
 public class CertificateGenerationException extends Exception {
 
-	private static final long serialVersionUID = 1L;
-
 	public CertificateGenerationException(String message) {
 		super(message);
 	}

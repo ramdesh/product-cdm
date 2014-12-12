@@ -20,11 +20,11 @@ import java.io.IOException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.Provider;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.emm.apkgenerator.util.Constants;
 
 /**
@@ -32,9 +32,9 @@ import org.wso2.emm.apkgenerator.util.Constants;
  * This class can be used to generate BKS and insert certificates to it.
  * 
  */
-public class BksGenerator {
+public class Bks {
 
-	private static Logger log = Logger.getLogger(BksGenerator.class);
+	private static Log log = LogFactory.getLog(Bks.class);
 
 	/**
 	 * @param cert
@@ -42,37 +42,39 @@ public class BksGenerator {
 	 *            inserted.
 	 * @throws CertificateGenerationException
 	 */
-	public static void generateBKS(X509Certificate cert) throws CertificateGenerationException {
+	public static void generateBKS(X509Certificate cert, String bksFilePath,
+	                               String truststorePassword) throws CertificateGenerationException {
 		KeyStore keystore;
-		String bksFile = ApkGenerator.workingDir + Constants.BKS_File;
 		try {
 
-			Provider bcProvider = new org.bouncycastle.jce.provider.BouncyCastleProvider();
-			keystore = KeyStore.getInstance(Constants.BKS, bcProvider);
+			keystore =
+			           KeyStore.getInstance(Constants.BKS,
+			                                new org.spongycastle.jce.provider.BouncyCastleProvider());
 			keystore.load(null);
 			keystore.setCertificateEntry(Constants.BKS_ALIAS, cert);
 
-			FileOutputStream fos = new FileOutputStream(bksFile);
-			keystore.store(fos, ApkGenerator.truststorePassword.toCharArray());
+			FileOutputStream fos = new FileOutputStream(bksFilePath);
+			keystore.store(fos, truststorePassword.toCharArray());
 			fos.close();
 		} catch (KeyStoreException e) {
-			log.error("KeyStore error while creating new BKS ," + e.getMessage(), e);
-			throw new CertificateGenerationException("KeyStore error while creating new BKS ," +
-			                                         e.getMessage(), e);
+			String message = "KeyStore error while creating new BKS.";
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		} catch (NoSuchAlgorithmException e) {
-			log.error("Cryptographic algorithm is requested but" +
-			          " it is not available in the environment, " + e.getMessage(), e);
-			throw new CertificateGenerationException("Cryptographic algorithm is requested but" +
-			                                         " it is not available in the environment, " +
-			                                         e.getMessage(), e);
+			String message =
+			                 "Cryptographic algorithm is requested but"
+			                         + " it is not available in the environment.";
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		} catch (CertificateException e) {
 			log.error("Error working with certificate, " + e.getMessage(), e);
 			throw new CertificateGenerationException("Error working with certificate, " +
 			                                         e.getMessage(), e);
 		} catch (IOException e) {
-			log.error("File error while working with file, " + e.getMessage(), e);
+			log.error("File error while working with files, " + bksFilePath + ", " + e.getMessage(),
+			          e);
 			throw new CertificateGenerationException("File error while working with files, " +
-			                                         bksFile + ", " + e.getMessage(), e);
+			                                         bksFilePath + ", " + e.getMessage(), e);
 		}
 	}
 }

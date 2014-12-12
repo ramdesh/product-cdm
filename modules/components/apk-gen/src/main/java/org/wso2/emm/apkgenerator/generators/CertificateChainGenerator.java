@@ -18,10 +18,7 @@ package org.wso2.emm.apkgenerator.generators;
 import java.security.cert.X509Certificate;
 import java.security.KeyPair;
 import java.security.Security;
-
 import org.wso2.emm.apkgenerator.data.CSRData;
-import org.wso2.emm.apkgenerator.util.Constants;
-import org.wso2.emm.apkgenerator.util.FileOperator;
 
 /**
  * This class coordinates the certificate generation process which must happen
@@ -30,10 +27,10 @@ import org.wso2.emm.apkgenerator.util.FileOperator;
 public class CertificateChainGenerator {
 
 	private CSRData csrData;
-	public KeyPair keyPairCA, keyPairRA, keyPairSSL;
-	public X509Certificate caCert, raCert, sslCert;
+	private KeyPair keyPairCA, keyPairRA, keyPairSSL;
+	private X509Certificate caCert, raCert, sslCert;
 	static {
-		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+		Security.addProvider(new org.spongycastle.jce.provider.BouncyCastleProvider());
 	}
 
 	/**
@@ -52,28 +49,71 @@ public class CertificateChainGenerator {
 	 */
 	public void generate() throws CertificateGenerationException {
 		// Generate CA cert and keys.
-		keyPairCA = KeyPairCreator.getKeyPair();
-		caCert =
-		         X509V3Certificates.generateCACert(csrData.getDaysCA(),
-		                                           csrData.getCADistinguishedName(), keyPairCA);
+		setKeyPairCA(KeyPairCreator.getKeyPair());
+		setCaCert(X509V3Certificates.generateCACert(csrData.getDaysCA(),
+		                                   csrData.getCADistinguishedName(), getKeyPairCA()));
 
 		// Generate RA cert and keys.
-		keyPairRA = KeyPairCreator.getKeyPair();
-		raCert =
-		         X509V3Certificates.buildIntermediateCert("RA", keyPairRA.getPublic(),
-		                                                  keyPairCA.getPrivate(), caCert,
-		                                                  csrData.getRADistinguishedName(),
-		                                                  csrData.getDaysRA());
+		setKeyPairRA(KeyPairCreator.getKeyPair());
+		setRaCert(X509V3Certificates.buildIntermediateCert("RA", getKeyPairRA().getPublic(),
+		                                          getKeyPairCA().getPrivate(), getCaCert(),
+		                                          csrData.getRADistinguishedName(),
+		                                          csrData.getDaysRA()));
 
 		// Generate SSL cert and keys.
-		keyPairSSL = KeyPairCreator.getKeyPair();
-		sslCert =
-		          X509V3Certificates.buildIntermediateCert("SSL", keyPairSSL.getPublic(),
-		                                                   keyPairCA.getPrivate(), caCert,
-		                                                   csrData.getSSLDistinguishedName(),
-		                                                   csrData.getDaysSSL());
+		setKeyPairSSL(KeyPairCreator.getKeyPair());
+		setSslCert(X509V3Certificates.buildIntermediateCert("SSL", getKeyPairSSL().getPublic(),
+		                                           getKeyPairCA().getPrivate(), getCaCert(),
+		                                           csrData.getSSLDistinguishedName(),
+		                                           csrData.getDaysSSL()));
 
-		// CA certificate is written to a file for later usage.
-		FileOperator.writePem(ApkGenerator.workingDir + Constants.PEM_file, caCert);
 	}
+
+	public KeyPair getKeyPairCA() {
+	    return keyPairCA;
+    }
+
+	public void setKeyPairCA(KeyPair keyPairCA) {
+	    this.keyPairCA = keyPairCA;
+    }
+
+	public KeyPair getKeyPairSSL() {
+	    return keyPairSSL;
+    }
+
+	public void setKeyPairSSL(KeyPair keyPairSSL) {
+	    this.keyPairSSL = keyPairSSL;
+    }
+
+	public KeyPair getKeyPairRA() {
+	    return keyPairRA;
+    }
+
+	public void setKeyPairRA(KeyPair keyPairRA) {
+	    this.keyPairRA = keyPairRA;
+    }
+
+	public X509Certificate getCaCert() {
+	    return caCert;
+    }
+
+	public void setCaCert(X509Certificate caCert) {
+	    this.caCert = caCert;
+    }
+
+	public X509Certificate getSslCert() {
+	    return sslCert;
+    }
+
+	public void setSslCert(X509Certificate sslCert) {
+	    this.sslCert = sslCert;
+    }
+
+	public X509Certificate getRaCert() {
+	    return raCert;
+    }
+
+	public void setRaCert(X509Certificate raCert) {
+	    this.raCert = raCert;
+    }
 }

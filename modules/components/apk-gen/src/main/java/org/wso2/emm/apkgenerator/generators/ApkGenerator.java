@@ -15,7 +15,8 @@
  */
 package org.wso2.emm.apkgenerator.generators;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.emm.apkgenerator.data.CSRData;
 import org.wso2.emm.apkgenerator.data.ObjectReader;
 import org.wso2.emm.apkgenerator.util.Constants;
@@ -29,13 +30,13 @@ import org.wso2.emm.apkgenerator.util.FileOperator;
 public class ApkGenerator {
 
 	private ObjectReader reader;
-	private static Logger log = Logger.getLogger(ApkGenerator.class);
+	private static Log log = LogFactory.getLog(ApkGenerator.class);
 	public static String workingDir;
-	public static String truststorePassword;
+	private static String truststorePassword;
 
 	/**
 	 * This is used to perform the sequence of actions necessary to generate
-	 * certificates, key stores, and apk
+	 * certificates, key stores, and apk.
 	 * 
 	 * @param jsonStr
 	 *            is the JSON coming from the client.
@@ -45,7 +46,7 @@ public class ApkGenerator {
 	public String generateApk(String jsonStr) throws CertificateGenerationException {
 		CertificateChainGenerator generator;
 		if (log.isDebugEnabled()) {
-			log.debug("Call to generate Certificates and APK");
+			log.debug("Call to generate Certificates and APK.");
 		}
 		reader = new ObjectReader(jsonStr);
 		// Directory of the running Jaggery app needs to be sent from the
@@ -56,23 +57,24 @@ public class ApkGenerator {
 		String zipFileName =
 		                     reader.read(Constants.USERSNAME) + "_" +
 		                             reader.read(Constants.COMPANY) + Constants.ARCHIEVE_TYPE;
-		CSRData csrDate = new CSRData(reader);
-		// Generate the certificates
-		generator = new CertificateChainGenerator(csrDate);
+		CSRData csrData = new CSRData(reader);
+		// Generate the certificates.
+		generator = new CertificateChainGenerator(csrData);
 		generator.generate();
-		// Convert generated certificates and keys to JKS
-		KeyStoreGenerator.convertCertsToKeyStore(generator.keyPairCA, generator.keyPairRA,
-		                                         generator.keyPairSSL, generator.caCert,
-		                                         generator.raCert, generator.sslCert);
-		// Generate BKS using CA pem
-		BksGenerator.generateBKS(generator.caCert);
-		// Copy BKS to Android source folder
+		// Convert generated certificates and keys to JKS.
+		KeyStoreGenerator.convertCertsToKeyStore(generator.getKeyPairCA(), generator.getKeyPairRA(),
+		                                         generator.getKeyPairSSL(), generator.getCaCert(),
+		                                         generator.getRaCert(), generator.getSslCert());
+		// Generate BKS using CA pem.
+		Bks.generateBKS(generator.getCaCert(), ApkGenerator.workingDir + Constants.BKS_File,
+		                         truststorePassword);
+		// Copy BKS to Android source folder.
 		FileOperator.copyFile(ApkGenerator.workingDir + Constants.BKS_File,
 		                      ApkGenerator.workingDir + Constants.ANDROID_AGENT_RAW +
 		                              Constants.BKS_File);
 		String zipFolderPath = reader.read("zipPath") + Constants.APK_FOLDER;
 		FileOperator.makeFolder(zipFolderPath);
-		// Generate APK using Maven and create a zip
+		// Generate APK using Maven and create a zip.
 		return Apk.compileApk(ApkGenerator.workingDir + Constants.COMMON_UTIL,
 		                      reader.read("serverIp"), truststorePassword, zipFileName,
 		                      zipFolderPath);
