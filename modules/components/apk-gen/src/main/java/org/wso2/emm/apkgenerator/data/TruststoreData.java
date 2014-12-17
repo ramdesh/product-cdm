@@ -15,13 +15,14 @@
  */
 package org.wso2.emm.apkgenerator.data;
 
-import java.io.Serializable;
-
-import org.wso2.emm.apkgenerator.generators.CertificateGenerationException;
+import org.wso2.emm.apkgenerator.generators.ApkGenerationException;
 import org.wso2.emm.apkgenerator.util.Constants;
 
+import java.io.Serializable;
+
 /**
- * Details related to truststore data.
+ * Details related to truststore data that are useful when injecting certificates
+ * to relevant stores.
  */
 public class TruststoreData implements Serializable {
 
@@ -35,19 +36,20 @@ public class TruststoreData implements Serializable {
 	private String passwordClientTruststore;
 	private String aliasWSO2Carbon;
 	private String passwordWSO2Carbon;
-	
-	public TruststoreData(ObjectReader reader) throws CertificateGenerationException {
-		setPasswordPK12CA(reader.read(Constants.PASSWORD_PK12_CA));
-		setPasswordPK12RA(reader.read(Constants.PASSWORD_PK12_RA));
-		setAliasPK12CA(reader.read(Constants.ALIAS_PK12_CA));
-		setAliasPK12RA(reader.read(Constants.ALIAS_PK12_RA));
-		setPasswordWSO2EMMJKS(reader.read(Constants.PASSWORD_WSO2_EMM_JKS));
-		setAliasClientTruststore(reader.read(Constants.ALIAS__CLIENT_TRUSTSTORE));
-		setPasswordClientTruststore(reader.read(Constants.PASSWORD_CLIENT_TRUSTSTORE));
-		setAliasWSO2Carbon(reader.read(Constants.ALIAS_WSO2_CARBON));
-		setPasswordWSO2Carbon(reader.read(Constants.PASSWORD_WSO2_CARBON));
+
+	public TruststoreData(ObjectReader reader) throws ApkGenerationException {
+		setPasswordPK12CA(reader.read(Constants.TruststoreKeys.PASSWORD_PK12_CA));
+		setPasswordPK12RA(reader.read(Constants.TruststoreKeys.PASSWORD_PK12_RA));
+		setAliasPK12CA(reader.read(Constants.TruststoreKeys.ALIAS_PK12_CA));
+		setAliasPK12RA(reader.read(Constants.TruststoreKeys.ALIAS_PK12_RA));
+		setPasswordWSO2EMMJKS(reader.read(Constants.TruststoreKeys.PASSWORD_WSO2_EMM_JKS));
+		setAliasClientTruststore(reader.read(Constants.TruststoreKeys.ALIAS__CLIENT_TRUSTSTORE));
+		setPasswordClientTruststore(
+				reader.read(Constants.TruststoreKeys.PASSWORD_CLIENT_TRUSTSTORE));
+		setAliasWSO2Carbon(reader.read(Constants.TruststoreKeys.ALIAS_WSO2_CARBON));
+		setPasswordWSO2Carbon(reader.read(Constants.TruststoreKeys.PASSWORD_WSO2_CARBON));
 	}
-	
+
 	public String getPasswordPK12CA() {
 		return passwordPK12CA;
 	}

@@ -1,12 +1,12 @@
 /**
  * Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,17 +15,16 @@
  */
 package org.wso2.emm.apkgenerator.data;
 
-import java.io.Serializable;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.emm.apkgenerator.generators.CertificateGenerationException;
+import org.wso2.emm.apkgenerator.generators.ApkGenerationException;
 import org.wso2.emm.apkgenerator.util.Constants;
+
+import java.io.Serializable;
 
 /**
  * Store data needed to create certificates. Using these data, distinguished
  * named for certificates can be created
- * 
  */
 public class CSRData implements Serializable {
 
@@ -44,33 +43,33 @@ public class CSRData implements Serializable {
 	/**
 	 * Read the Object passed and create a CRS object to hold data required
 	 * during certificate generation.
-	 * 
+	 *
 	 * @param {@link ObjectReader} reader holds the parameters necessary to
-	 *        create CSR data
-	 * @throws CertificateGenerationException
+	 *               create CSR data
+	 * @throws ApkGenerationException
 	 */
-	public CSRData(ObjectReader reader) throws CertificateGenerationException {
-		setCountryCA(reader.read(Constants.COUNTRY_CA));
-		setStateCA(reader.read(Constants.STATE_CA));
-		setLocalityCA(reader.read(Constants.LOCALITY_CA));
-		setOrganizationCA(reader.read(Constants.ORGANIZATION_CA));
-		setOrganizationUCA(reader.read(Constants.ORGANIZATION_UNIT_CA));
-		setDaysCA(reader.read(Constants.DAYS_CA));
-		setCommonNameCA(reader.read(Constants.COMMON_NAME_CA));
-		setCountryRA(reader.read(Constants.COUNTRY_RA));
-		setStateRA(reader.read(Constants.STATE_RA));
-		setLocalityRA(reader.read(Constants.LOCALITY_RA));
-		setOrganizationRA(reader.read(Constants.ORGANIZATION_RA));
-		setOrganizationURA(reader.read(Constants.ORGANIZATION_UNIT_RA));
-		setDaysRA(reader.read(Constants.DAYS_RA));
-		setCommonNameRA(reader.read(Constants.COMMON_NAME_RA));
-		setCountrySSL(reader.read(Constants.COUNTRY_SSL));
-		setStateSSL(reader.read(Constants.STATE_SSL));
-		setLocalitySSL(reader.read(Constants.LOCALITY_SSL));
-		setOrganizationSSL(reader.read(Constants.ORGANIZATION_SSL));
-		setOrganizationUSSL(reader.read(Constants.ORGANIZATION_UNIT_SSL));
-		setDaysSSL(reader.read(Constants.DAYS_SSL));
-		setCommonNameSSL(reader.read(Constants.SERVER_IP));
+	public CSRData(ObjectReader reader) throws ApkGenerationException {
+		setCountryCA(reader.read(Constants.CSRDataKeys.COUNTRY_CA));
+		setStateCA(reader.read(Constants.CSRDataKeys.STATE_CA));
+		setLocalityCA(reader.read(Constants.CSRDataKeys.LOCALITY_CA));
+		setOrganizationCA(reader.read(Constants.CSRDataKeys.ORGANIZATION_CA));
+		setOrganizationUCA(reader.read(Constants.CSRDataKeys.ORGANIZATION_UNIT_CA));
+		setDaysCA(reader.read(Constants.CSRDataKeys.DAYS_CA));
+		setCommonNameCA(reader.read(Constants.CSRDataKeys.COMMON_NAME_CA));
+		setCountryRA(reader.read(Constants.CSRDataKeys.COUNTRY_RA));
+		setStateRA(reader.read(Constants.CSRDataKeys.STATE_RA));
+		setLocalityRA(reader.read(Constants.CSRDataKeys.LOCALITY_RA));
+		setOrganizationRA(reader.read(Constants.CSRDataKeys.ORGANIZATION_RA));
+		setOrganizationURA(reader.read(Constants.CSRDataKeys.ORGANIZATION_UNIT_RA));
+		setDaysRA(reader.read(Constants.CSRDataKeys.DAYS_RA));
+		setCommonNameRA(reader.read(Constants.CSRDataKeys.COMMON_NAME_RA));
+		setCountrySSL(reader.read(Constants.CSRDataKeys.COUNTRY_SSL));
+		setStateSSL(reader.read(Constants.CSRDataKeys.STATE_SSL));
+		setLocalitySSL(reader.read(Constants.CSRDataKeys.LOCALITY_SSL));
+		setOrganizationSSL(reader.read(Constants.CSRDataKeys.ORGANIZATION_SSL));
+		setOrganizationUSSL(reader.read(Constants.CSRDataKeys.ORGANIZATION_UNIT_SSL));
+		setDaysSSL(reader.read(Constants.CSRDataKeys.DAYS_SSL));
+		setCommonNameSSL(reader.read(Constants.CSRDataKeys.SERVER_IP));
 
 	}
 
