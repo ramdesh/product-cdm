@@ -1,12 +1,12 @@
 /**
  * Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,18 +36,18 @@ class DeviceOperationsStream implements EMMStream {
 		String streamName = StreamType.DEVICE_OPERATIONS.getStreamType();
 		try {
 			streamDefinition =
-			                   new StreamDefinition(
-			                                        streamName,
-			                                        Constants.StreamVersion.DEVICE_OPERATIONS_STREAM_VERSION);
+					new StreamDefinition(
+							streamName,
+							Constants.StreamVersion.DEVICE_OPERATIONS_STREAM_VERSION);
 			streamDefinition.addPayloadData(Constants.StreamKey.USERID, AttributeType.STRING);
 			streamDefinition.addPayloadData(Constants.StreamKey.DEVICEID, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.StreamKey.RECEIVED_DATE, AttributeType.STRING);
+			streamDefinition
+					.addPayloadData(Constants.StreamKey.RECEIVED_DATE, AttributeType.STRING);
 			streamDefinition.addPayloadData(Constants.StreamKey.CODE, AttributeType.STRING);
 			streamDefinition.addPayloadData(Constants.StreamKey.DATA, AttributeType.STRING);
 		} catch (MalformedStreamDefinitionException e) {
-			String message =
-			                 "Error getting stream definition for " + streamName + "  , Version-" +
-			                         Constants.StreamVersion.DEVICE_OPERATIONS_STREAM_VERSION;
+			String message = "Error getting stream definition for " + streamName + "  , Version-" +
+			                 Constants.StreamVersion.DEVICE_OPERATIONS_STREAM_VERSION;
 			logger.error(message, e);
 			throw new PublisherException(message, e);
 		}
@@ -55,10 +55,10 @@ class DeviceOperationsStream implements EMMStream {
 
 	public Object[] getPayload(JSONReader jsonReader) throws PublisherException {
 		return new Object[] { jsonReader.read(Constants.StreamKey.USERID),
-		                     jsonReader.read(Constants.StreamKey.DEVICEID),
-		                     jsonReader.read(Constants.StreamKey.RECEIVED_DATE),
-		                     jsonReader.read(Constants.StreamKey.CODE),
-		                     jsonReader.read(Constants.StreamKey.DATA) };
+		                      jsonReader.read(Constants.StreamKey.DEVICEID),
+		                      jsonReader.read(Constants.StreamKey.RECEIVED_DATE),
+		                      jsonReader.read(Constants.StreamKey.CODE),
+		                      jsonReader.read(Constants.StreamKey.DATA) };
 	}
 
 	public StreamDefinition getStreamDefinition() {
