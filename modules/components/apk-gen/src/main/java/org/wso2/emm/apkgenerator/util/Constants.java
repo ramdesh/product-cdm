@@ -21,23 +21,16 @@ import java.io.File;
  * Constants used throughout the project
  */
 public class Constants {
-	public static final String jksFolder = "jks/";
-	public static final String BKS_File = "emm_truststore.bks";
+	public static final String BKS_FILE = "emm_truststore.bks";
 	public static final String ANDROID_AGENT = "emm-agent-android";
 	public static final String COMMON_UTIL = ANDROID_AGENT + File.separator + "src" +
 	                                         File.separator + "org" + File.separator + "wso2" +
 	                                         File.separator + "emm" + File.separator + "agent" +
 	                                         File.separator + "utils" + File.separator +
 	                                         "CommonUtilities.java";
-	public static final String PK12_CA_PASSWORD = "cacert";
-	public static final String PK12_RA_PASSWORD = "racert";
-	public static final String PK12_CA_ALIAS = "cacert";
-	public static final String PK12_RA_ALIAS = "racert";
-	public static final String WSO2CARBON = "wso2carbon";
 	public static final String WSO2CARBON_JKS = "wso2carbon.jks";
 	public static final String CLIENT_TRUST_JKS = "client-truststore.jks";
 	public static final String WSO2EMM_JKS = "wso2emm.jks";
-	public static final String WSO2EMM_JKS_PASSWORD = "wso2carbon";
 	public static final String ALGORITHM = "RSA";
 	public static final String PROVIDER = "SC";
 	public static final String ENCRIPTION = "SHA1withRSA";
@@ -48,12 +41,13 @@ public class Constants {
 	public static final String ANDROID_AGENT_POM = ANDROID_AGENT + File.separator + "pom.xml";
 	public static final String ANDROID_AGENT_APK = ANDROID_AGENT + File.separator + "target" +
 	                                               File.separator + "MDMAgent.apk";
-	public static final String RA = "RA";
+	public static final String REGISTRATION_AUTHORITY = "RA";
 	public static final String BKS = "BKS";
 	public static final String BKS_ALIAS = "cert-alias";
 	public static final String JKS = "JKS";
 	public static final String SSL = "SSL";
-	public static final String APK_FOLDER = "/Apk/";
+	public static final String APK_FOLDER = "Apk";
+	public static final String JKS_FOLDER = "jks";
 	public static final String COUNTRY_CA = "countryCA";
 	public static final String STATE_CA = "stateCA";
 	public static final String LOCALITY_CA = "localityCA";
@@ -87,4 +81,14 @@ public class Constants {
 	public static final String ENVIRONMENT_VARIABLE = "MAVEN_HOME";
 	public static final String BIN_PATH = "/bin/mvn";
 	public static final String ARCHIEVE_TYPE = ".zip";
+
+	public static final String PASSWORD_PK12_CA = "passwordPK12CA";
+	public static final String PASSWORD_PK12_RA = "passwordPK12RA";
+	public static final String ALIAS_PK12_CA = "aliasPK12CA";
+	public static final String ALIAS_PK12_RA = "aliasPK12RA";
+	public static final String PASSWORD_WSO2_EMM_JKS = "passwordWSO2EMMJKS";
+	public static final String ALIAS__CLIENT_TRUSTSTORE= "aliasClientTruststore";
+	public static final String PASSWORD_CLIENT_TRUSTSTORE = "passwordClientTruststore";
+	public static final String ALIAS_WSO2_CARBON = "aliasWSO2Carbon";
+	public static final String PASSWORD_WSO2_CARBON = "passwordWSO2Carbon";
 }

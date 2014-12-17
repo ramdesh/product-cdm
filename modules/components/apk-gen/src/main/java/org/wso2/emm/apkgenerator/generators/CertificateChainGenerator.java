@@ -18,7 +18,9 @@ package org.wso2.emm.apkgenerator.generators;
 import java.security.cert.X509Certificate;
 import java.security.KeyPair;
 import java.security.Security;
+
 import org.wso2.emm.apkgenerator.data.CSRData;
+import org.wso2.emm.apkgenerator.util.Constants;
 
 /**
  * This class coordinates the certificate generation process which must happen
@@ -49,20 +51,20 @@ public class CertificateChainGenerator {
 	 */
 	public void generate() throws CertificateGenerationException {
 		// Generate CA cert and keys.
-		setKeyPairCA(KeyPairCreator.getKeyPair());
+		setKeyPairCA(KeyPairCreator.getKeyPair(Constants.ALGORITHM, Constants.PROVIDER));
 		setCaCert(X509V3Certificates.generateCACert(csrData.getDaysCA(),
 		                                   csrData.getCADistinguishedName(), getKeyPairCA()));
 
 		// Generate RA cert and keys.
-		setKeyPairRA(KeyPairCreator.getKeyPair());
-		setRaCert(X509V3Certificates.buildIntermediateCert("RA", getKeyPairRA().getPublic(),
+		setKeyPairRA(KeyPairCreator.getKeyPair(Constants.ALGORITHM, Constants.PROVIDER));
+		setRaCert(X509V3Certificates.buildIntermediateCert(Constants.REGISTRATION_AUTHORITY, getKeyPairRA().getPublic(),
 		                                          getKeyPairCA().getPrivate(), getCaCert(),
 		                                          csrData.getRADistinguishedName(),
 		                                          csrData.getDaysRA()));
 
 		// Generate SSL cert and keys.
-		setKeyPairSSL(KeyPairCreator.getKeyPair());
-		setSslCert(X509V3Certificates.buildIntermediateCert("SSL", getKeyPairSSL().getPublic(),
+		setKeyPairSSL(KeyPairCreator.getKeyPair(Constants.ALGORITHM, Constants.PROVIDER));
+		setSslCert(X509V3Certificates.buildIntermediateCert(Constants.SSL, getKeyPairSSL().getPublic(),
 		                                           getKeyPairCA().getPrivate(), getCaCert(),
 		                                           csrData.getSSLDistinguishedName(),
 		                                           csrData.getDaysSSL()));

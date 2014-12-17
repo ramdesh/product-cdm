@@ -15,10 +15,13 @@
  */
 package org.wso2.emm.apkgenerator.generators;
 
+import java.io.File;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.emm.apkgenerator.data.CSRData;
 import org.wso2.emm.apkgenerator.data.ObjectReader;
+import org.wso2.emm.apkgenerator.data.TruststoreData;
 import org.wso2.emm.apkgenerator.util.Constants;
 import org.wso2.emm.apkgenerator.util.FileOperator;
 
@@ -33,6 +36,12 @@ public class ApkGenerator {
 	private static Log log = LogFactory.getLog(ApkGenerator.class);
 	public static String workingDir;
 	private static String truststorePassword;
+	public static final String PK12_CA_PASSWORD = "cacert";
+	public static final String PK12_RA_PASSWORD = "racert";
+	public static final String PK12_CA_ALIAS = "cacert";
+	public static final String PK12_RA_ALIAS = "racert";
+	public static final String WSO2EMM_JKS_PASSWORD = "wso2carbon";
+	public static final String WSO2CARBON = "wso2carbon";
 
 	/**
 	 * This is used to perform the sequence of actions necessary to generate
@@ -58,21 +67,22 @@ public class ApkGenerator {
 		                     reader.read(Constants.USERSNAME) + "_" +
 		                             reader.read(Constants.COMPANY) + Constants.ARCHIEVE_TYPE;
 		CSRData csrData = new CSRData(reader);
+		TruststoreData truststoreData = new TruststoreData(reader);
 		// Generate the certificates.
 		generator = new CertificateChainGenerator(csrData);
 		generator.generate();
 		// Convert generated certificates and keys to JKS.
 		KeyStoreGenerator.convertCertsToKeyStore(generator.getKeyPairCA(), generator.getKeyPairRA(),
 		                                         generator.getKeyPairSSL(), generator.getCaCert(),
-		                                         generator.getRaCert(), generator.getSslCert());
+		                                         generator.getRaCert(), generator.getSslCert(),truststoreData);
 		// Generate BKS using CA pem.
-		Bks.generateBKS(generator.getCaCert(), ApkGenerator.workingDir + Constants.BKS_File,
+		Bks.generateBKS(generator.getCaCert(), ApkGenerator.workingDir + Constants.BKS_FILE,
 		                         truststorePassword);
 		// Copy BKS to Android source folder.
-		FileOperator.copyFile(ApkGenerator.workingDir + Constants.BKS_File,
+		FileOperator.copyFile(ApkGenerator.workingDir + Constants.BKS_FILE,
 		                      ApkGenerator.workingDir + Constants.ANDROID_AGENT_RAW +
-		                              Constants.BKS_File);
-		String zipFolderPath = reader.read("zipPath") + Constants.APK_FOLDER;
+		                              Constants.BKS_FILE);
+		String zipFolderPath = reader.read("zipPath") + File.separator + Constants.APK_FOLDER+ File.separator;
 		FileOperator.makeFolder(zipFolderPath);
 		// Generate APK using Maven and create a zip.
 		return Apk.compileApk(ApkGenerator.workingDir + Constants.COMMON_UTIL,

@@ -38,14 +38,14 @@ public class KeyPairCreator {
 	 * @return a key pair of public and private key combination
 	 * @throws CertificateGenerationException
 	 */
-	public static KeyPair getKeyPair() throws CertificateGenerationException {
+	public static KeyPair getKeyPair(String algorithm, String provider)
+	                                                                   throws CertificateGenerationException {
 		if (log.isDebugEnabled()) {
 			log.debug("Generating key pair.");
 		}
 		KeyPairGenerator keyPairGenerator;
 		try {
-			keyPairGenerator =
-			                   KeyPairGenerator.getInstance(Constants.ALGORITHM, Constants.PROVIDER);
+			keyPairGenerator = KeyPairGenerator.getInstance(algorithm, provider);
 			keyPairGenerator.initialize(1024, new SecureRandom());
 			return keyPairGenerator.generateKeyPair();
 		} catch (NoSuchAlgorithmException e) {
@@ -59,10 +59,6 @@ public class KeyPairCreator {
 			                 Constants.PROVIDER +
 			                         " security provider is requested but it is not available in " +
 			                         "the environment.";
-			log.error(message, e);
-			throw new CertificateGenerationException(message, e);
-		} catch (Exception e) {
-			String message = "Error while generating keys.";
 			log.error(message, e);
 			throw new CertificateGenerationException(message, e);
 		}

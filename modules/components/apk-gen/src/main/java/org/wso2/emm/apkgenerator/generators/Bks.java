@@ -30,7 +30,6 @@ import org.wso2.emm.apkgenerator.util.Constants;
 /**
  * BKS is a key store which is commonly used in Android to hold certificates.
  * This class can be used to generate BKS and insert certificates to it.
- * 
  */
 public class Bks {
 
@@ -67,14 +66,13 @@ public class Bks {
 			log.error(message, e);
 			throw new CertificateGenerationException(message, e);
 		} catch (CertificateException e) {
-			log.error("Error working with certificate, " + e.getMessage(), e);
-			throw new CertificateGenerationException("Error working with certificate, " +
-			                                         e.getMessage(), e);
+			String message = "Error working with certificates.";
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		} catch (IOException e) {
-			log.error("File error while working with files, " + bksFilePath + ", " + e.getMessage(),
-			          e);
-			throw new CertificateGenerationException("File error while working with files, " +
-			                                         bksFilePath + ", " + e.getMessage(), e);
+			String message = "File error while working with files - " + bksFilePath;
+			log.error(message, e);
+			throw new CertificateGenerationException(message, e);
 		}
 	}
 }

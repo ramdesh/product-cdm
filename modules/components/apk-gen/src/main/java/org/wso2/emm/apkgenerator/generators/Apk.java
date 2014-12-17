@@ -32,8 +32,7 @@ import org.wso2.emm.apkgenerator.util.FileOperator;
 
 /**
  * Using the BKS created earlier and the EMM agent source included, apk file can
- * be
- * generated with this class. Also the final .zip output is generated here.
+ * be generated with this class. Also the final .zip output is generated here.
  */
 public class Apk {
 
@@ -113,12 +112,12 @@ public class Apk {
 	 */
 	static void buildApk() throws CertificateGenerationException {
 		try {
-			List<String> PUBLISH_GOALS = Arrays.asList(Constants.ACTION, Constants.GOAL);
+			List<String> buildGoals = Arrays.asList(Constants.ACTION, Constants.GOAL);
 			InvocationRequest request = new DefaultInvocationRequest();
 			// provide POM file to invoker
 			request.setPomFile(new File(ApkGenerator.workingDir + Constants.ANDROID_AGENT +
 			                            File.separator));
-			request.setGoals(PUBLISH_GOALS);
+			request.setGoals(buildGoals);
 			DefaultInvoker invoker = new DefaultInvoker();
 			// retrieve Maven home
 			invoker.setMavenHome(new File(getMavenHome(Constants.ENVIRONMENT_VARIABLE)));

@@ -117,7 +117,7 @@ public class X509V3Certificates {
 	 *            is the parameters which is found in a CSR.
 	 * @param days
 	 *            that the certificate is valid
-	 *            
+	 * 
 	 * @return An intermediate certificate signed by a root certificate
 	 * @throws CertificateGenerationException
 	 */
@@ -144,7 +144,7 @@ public class X509V3Certificates {
 			throw new CertificateGenerationException(message, e);
 		}
 		try {
-			if (type.equalsIgnoreCase(Constants.RA)) {
+			if (type.equalsIgnoreCase(Constants.REGISTRATION_AUTHORITY)) {
 				certBldr.addExtension(Extension.authorityKeyIdentifier, false,
 				                      extUtils.createAuthorityKeyIdentifier(caCert))
 				        .addExtension(Extension.subjectKeyIdentifier, false,

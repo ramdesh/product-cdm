@@ -29,7 +29,7 @@ import org.wso2.emm.apkgenerator.util.Constants;
  */
 public class CSRData implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 13793037383988323L;
 	String countryCA, stateCA, localityCA, organizationCA, organizationUCA, daysCA, commonNameCA;
 	String countryRA, stateRA, localityRA, organizationRA, organizationURA, daysRA, commonNameRA;
 	String countrySSL, stateSSL, localitySSL, organizationSSL, organizationUSSL, daysSSL, serverIp;
