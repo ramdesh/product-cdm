@@ -17,6 +17,7 @@ package org.wso2.emm.apkgenerator.generators;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.emm.apkgenerator.exception.ApkGenerationException;
 import org.wso2.emm.apkgenerator.util.Constants;
 
 import java.io.FileOutputStream;

@@ -19,7 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.wso2.emm.apkgenerator.generators.ApkGenerationException;
+import org.wso2.emm.apkgenerator.exception.ApkGenerationException;
 
 /**
  * This class accepts the data coming in JSON form and translate them to java

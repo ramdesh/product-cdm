@@ -17,6 +17,7 @@ package org.wso2.emm.apkgenerator.generators;
 
 import org.wso2.emm.apkgenerator.data.CSRData;
 import org.wso2.emm.apkgenerator.data.CertificateData;
+import org.wso2.emm.apkgenerator.exception.ApkGenerationException;
 import org.wso2.emm.apkgenerator.util.Constants;
 
 import java.security.Security;
@@ -43,9 +44,9 @@ public class CertificateChainGenerator {
 		certificateData.setKeyPairCA(
 				KeyPairCreator.generateKeyPair(Constants.ALGORITHM, Constants.PROVIDER));
 		certificateData.setCaCert(CertificateUtil.generateCACert(csrData.getDaysCA(),
-		                                                            csrData.getCADistinguishedName(),
-		                                                            certificateData
-				                                                            .getKeyPairCA()
+		                                                         csrData.getCADistinguishedName(),
+		                                                         certificateData
+				                                                         .getKeyPairCA()
 		));
 
 		// Generate RA certificate and keys.
@@ -53,12 +54,12 @@ public class CertificateChainGenerator {
 				KeyPairCreator.generateKeyPair(Constants.ALGORITHM, Constants.PROVIDER));
 		certificateData.setRaCert(
 				CertificateUtil.buildIntermediateCert(Constants.REGISTRATION_AUTHORITY,
-				                                         certificateData.getKeyPairRA().getPublic(),
-				                                         certificateData.getKeyPairCA()
-				                                                        .getPrivate(),
-				                                         certificateData.getCaCert(),
-				                                         csrData.getRADistinguishedName(),
-				                                         csrData.getDaysRA()
+				                                      certificateData.getKeyPairRA().getPublic(),
+				                                      certificateData.getKeyPairCA()
+				                                                     .getPrivate(),
+				                                      certificateData.getCaCert(),
+				                                      csrData.getRADistinguishedName(),
+				                                      csrData.getDaysRA()
 				)
 		);
 
@@ -67,13 +68,13 @@ public class CertificateChainGenerator {
 				KeyPairCreator.generateKeyPair(Constants.ALGORITHM, Constants.PROVIDER));
 		certificateData.setSslCert(
 				CertificateUtil.buildIntermediateCert(Constants.SSL,
-				                                         certificateData.getKeyPairSSL()
-				                                                        .getPublic(),
-				                                         certificateData.getKeyPairCA()
-				                                                        .getPrivate(),
-				                                         certificateData.getCaCert(),
-				                                         csrData.getSSLDistinguishedName(),
-				                                         csrData.getDaysSSL()
+				                                      certificateData.getKeyPairSSL()
+				                                                     .getPublic(),
+				                                      certificateData.getKeyPairCA()
+				                                                     .getPrivate(),
+				                                      certificateData.getCaCert(),
+				                                      csrData.getSSLDistinguishedName(),
+				                                      csrData.getDaysSSL()
 				)
 		);
 

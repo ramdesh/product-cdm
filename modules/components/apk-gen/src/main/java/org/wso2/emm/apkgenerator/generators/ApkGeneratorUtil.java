@@ -17,10 +17,12 @@ package org.wso2.emm.apkgenerator.generators;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.osgi.signedcontent.InvalidContentException;
 import org.wso2.emm.apkgenerator.data.CSRData;
 import org.wso2.emm.apkgenerator.data.CertificateData;
 import org.wso2.emm.apkgenerator.data.ObjectReader;
 import org.wso2.emm.apkgenerator.data.TruststoreData;
+import org.wso2.emm.apkgenerator.exception.ApkGenerationException;
 import org.wso2.emm.apkgenerator.util.Constants;
 import org.wso2.emm.apkgenerator.util.FileOperator;
 
@@ -44,7 +46,8 @@ public class ApkGeneratorUtil {
 	 * @return the path of the final zip file
 	 * @throws ApkGenerationException
 	 */
-	public static String generateApk(String jsonPayload) throws ApkGenerationException {
+	public static String generateApk(String jsonPayload)
+			throws ApkGenerationException, InvalidContentException {
 		CertificateData certificateData;
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Call to generate Certificates and APK.");
@@ -52,7 +55,7 @@ public class ApkGeneratorUtil {
 		reader = new ObjectReader(jsonPayload);
 		// Directory of the running Jaggery app needs to be sent from the
 		// Jaggery UI along with the trust store password to be used
-		String workingDir = FileOperator.getPath(reader.read(Constants.FilePath.WORKING_DIR));
+		String workingDir = reader.read(Constants.FilePath.WORKING_DIR);
 		String truststorePassword = reader.read(Constants.CSRDataKeys.PASSWORD);
 		// Construct a name for the zip file to store final output
 		String zipFileName =
@@ -72,19 +75,21 @@ public class ApkGeneratorUtil {
 		                                         truststoreData, workingDir);
 		// Generate BKS using CA pem.
 		BksUtil.generateBKS(certificateData.getCaCert(),
-		                workingDir + Constants.FilePath.BKS_FILE,
-		                truststorePassword);
+		                    workingDir + Constants.FilePath.BKS_FILE,
+		                    truststorePassword);
 		// Copy BKS to Android source folder.
 		FileOperator.copyFile(workingDir + Constants.FilePath.BKS_FILE,
 		                      workingDir + Constants.FilePath.ANDROID_AGENT_RAW +
 		                      Constants.FilePath.BKS_FILE
 		);
 		String zipFolderPath =
-				reader.read(Constants.FilePath.ZIP_PATH) + File.separator + Constants.FilePath.APK_FOLDER +
+				reader.read(Constants.FilePath.ZIP_PATH) + File.separator +
+				Constants.FilePath.APK_FOLDER +
 				File.separator;
 		FileOperator.makeFolder(zipFolderPath);
 		// Generate APK using Maven and create a zip.
-		ApkUtil.compileApk(reader.read("serverIp"), truststorePassword, zipFolderPath + zipFileName,
+		ApkUtil.compileApk(reader.read(Constants.CSRDataKeys.SERVER_IP), truststorePassword,
+		                   zipFolderPath + zipFileName,
 		                   workingDir);
 		return zipFolderPath + zipFileName;
 	}

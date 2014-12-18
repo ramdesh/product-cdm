@@ -28,6 +28,7 @@ import org.spongycastle.cert.jcajce.JcaX509v3CertificateBuilder;
 import org.spongycastle.operator.ContentSigner;
 import org.spongycastle.operator.OperatorCreationException;
 import org.spongycastle.operator.jcajce.JcaContentSignerBuilder;
+import org.wso2.emm.apkgenerator.exception.ApkGenerationException;
 import org.wso2.emm.apkgenerator.util.Constants;
 
 import javax.security.auth.x500.X500Principal;

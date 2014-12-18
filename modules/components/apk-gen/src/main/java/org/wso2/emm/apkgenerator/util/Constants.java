@@ -92,6 +92,7 @@ public class Constants {
 		public static final String PASSWORD = "password";
 		public static final String USERSNAME = "usersname";
 		public static final String COMPANY = "company";
+		
 	}
 
 	public static class TruststoreKeys {

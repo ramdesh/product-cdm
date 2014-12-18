@@ -18,10 +18,9 @@ package org.wso2.emm.apkgenerator.util;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.plexus.util.FileUtils;
-import org.wso2.emm.apkgenerator.generators.ApkGenerationException;
+import org.wso2.emm.apkgenerator.exception.ApkGenerationException;
 
 import java.io.*;
-import java.util.regex.Matcher;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -99,12 +98,12 @@ public class FileOperator {
 			throws ApkGenerationException {
 		FileOutputStream fileOut;
 		File fileToCopy;
-		ZipOutputStream zipOutStream=null;
+		ZipOutputStream zipOutStream = null;
 		FileInputStream inputStream = null;
 		byte[] bytes = new byte[1024];
 		int count;
 		int x = 0;
-		
+
 		try {
 			fileOut = new FileOutputStream(zipFilePath);
 		} catch (FileNotFoundException e) {
@@ -115,7 +114,7 @@ public class FileOperator {
 
 		try {
 			zipOutStream = new ZipOutputStream(fileOut);
-			for (x=0; x<files.length ; x++) {
+			for (x = 0; x < files.length; x++) {
 				fileToCopy = new File(files[x]);
 				inputStream = new FileInputStream(files[x]);
 				zipOutStream.putNextEntry(new ZipEntry(fileToCopy.getName()));
@@ -132,7 +131,7 @@ public class FileOperator {
 			String message = "Cannot write file ," + files[x] + " to zip.";
 			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
-        }finally {
+		} finally {
 			if (inputStream != null) {
 				try {
 					inputStream.close();
@@ -186,15 +185,5 @@ public class FileOperator {
 			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		}
-	}
-
-	/**
-	 * Convert the path sent to a platform specific path.
-	 *
-	 * @param path of the file/folder
-	 * @return The platform specific path
-	 */
-	public static String getPath(String path) {
-		return path.replaceAll("/", Matcher.quoteReplacement(File.separator));
 	}
 }

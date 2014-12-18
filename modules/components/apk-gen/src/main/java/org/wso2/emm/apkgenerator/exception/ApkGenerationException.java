@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wso2.emm.apkgenerator.generators;
+package org.wso2.emm.apkgenerator.exception;
 
 /**
  * Custom exception handling class, to handle the issue that come up during
