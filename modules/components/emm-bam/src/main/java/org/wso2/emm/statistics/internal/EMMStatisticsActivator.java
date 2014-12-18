@@ -13,18 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wso2.emm.bam.internal;
+package org.wso2.emm.statistics.internal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
-import org.wso2.emm.bam.DataPublisher;
+import org.wso2.emm.statistics.DataPublisher;
+import org.wso2.emm.statistics.EMMStatisticsPublisher;
+import org.wso2.emm.statistics.PublisherException;
 
 public class EMMStatisticsActivator implements BundleActivator {
 
-	private static final Log log = LogFactory.getLog(EMMStatisticsActivator.class);
+	private static final Log LOG = LogFactory.getLog(EMMStatisticsActivator.class);
 	private ServiceRegistration serviceRegistration;
 
 	/*
@@ -35,12 +37,16 @@ public class EMMStatisticsActivator implements BundleActivator {
 	 * )
 	 */
 	public void start(BundleContext context) throws Exception {
-		serviceRegistration =
-				context.registerService(DataPublisher.class.getName(),
-				                        new DataPublisher(), null);
+		try {
+			serviceRegistration =
+					context.registerService(EMMStatisticsPublisher.class.getName(),
+					                        new DataPublisher(), null);
+		} catch (PublisherException e) {
+			LOG.error("Error while starting the EMM to BAM statisctics publishing bundle.", e);
+		}
 
-		if (log.isDebugEnabled()) {
-			log.debug("EMM to BAM statisctics publishing bundle started");
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("EMM to BAM statisctics publishing bundle started");
 		}
 
 	}
@@ -53,8 +59,8 @@ public class EMMStatisticsActivator implements BundleActivator {
 	 */
 	public void stop(BundleContext arg0) throws Exception {
 		serviceRegistration.unregister();
-		if (log.isDebugEnabled()) {
-			log.debug("EMM to BAM statisctics publishing bundle stoped");
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("EMM to BAM statisctics publishing bundle stoped");
 		}
 	}
 }

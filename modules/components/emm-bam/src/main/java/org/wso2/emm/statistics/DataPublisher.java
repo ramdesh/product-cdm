@@ -13,46 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wso2.emm.bam;
+package org.wso2.emm.statistics;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.databridge.agent.thrift.AsyncDataPublisher;
 import org.wso2.carbon.databridge.agent.thrift.exception.AgentException;
 import org.wso2.carbon.databridge.commons.StreamDefinition;
-import org.wso2.emm.bam.util.Configurations;
-import org.wso2.emm.bam.util.JSONReader;
+import org.wso2.emm.statistics.util.Configurations;
+import org.wso2.emm.statistics.util.JSONReader;
 
 /**
  * This can be used to publish different data streams to BAM.
  * This act as the entry point for any stream that needs to be published.
  */
-public class DataPublisher {
+public class DataPublisher implements EMMStatisticsPublisher {
 	private static AsyncDataPublisher asyncDataPublisher;
-	private static Log logger = LogFactory.getLog(DataPublisher.class);
+	private static final Log LOG = LogFactory.getLog(DataPublisher.class);
 
 	public DataPublisher() throws PublisherException {
 		Configurations configurations = Configurations.getInstance();
 		if (asyncDataPublisher != null) {
 			asyncDataPublisher =
-			                     new AsyncDataPublisher(configurations.getBAMConfigurations()
-			                                                          .getRecieverUrlBAM(),
-			                                            configurations.getBAMConfigurations()
-			                                                          .getBAMUsername(),
-			                                            configurations.getBAMConfigurations()
-			                                                          .getBAMUsername());
+			                     new AsyncDataPublisher(configurations.getBAMConfigurations().
+			                                                           getRecieverUrlBAM(),
+			                                            configurations.getBAMConfigurations().
+			                                                           getBAMUsername(),
+			                                            configurations.getBAMConfigurations().
+			                                                           getBAMUsername());
 		}
 	}
 
-	/**
-	 * This can be called to publish data to BAM by providing the stream type
-	 * and a payload.
-	 * 
-	 * @param streamType
-	 *            the name of stream to be published.
-	 * @param jsonValue
-	 *            payload to be published.
-	 * @throws PublisherException
+	/* (non-Javadoc)
+	 * @see org.wso2.emm.bam.EMMStatisticsPublisher#publish(org.wso2.emm.bam.StreamType, java.lang.String)
 	 */
 	public void publish(StreamType streamType, String jsonValue) throws PublisherException {
 		EMMStream stream = EMMStreamFactory.getStream(streamType);
@@ -67,7 +60,7 @@ public class DataPublisher {
 			                           payload);
 		} catch (AgentException e) {
 			String message = "Error while publishing " + definition.getName() + " to BAM ";
-			logger.error(message, e);
+			LOG.error(message, e);
 			throw new PublisherException(message, e);
 		}
 	}

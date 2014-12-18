@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wso2.emm.bam;
+package org.wso2.emm.statistics;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,7 +27,7 @@ import java.util.Map;
  */
 public class EMMStreamFactory {
 
-	private static Log logger = LogFactory.getLog(EMMStreamFactory.class);
+	private static final Log LOG = LogFactory.getLog(EMMStreamFactory.class);
 	private static Map<String, EMMStream> streams = new HashMap<String, EMMStream>();
 
 	/**
@@ -42,7 +42,7 @@ public class EMMStreamFactory {
 	public static EMMStream getStream(StreamType streamType) throws PublisherException {
 		if (streamType == null) {
 			String message = "Stream type cannot be null.";
-			logger.error(message);
+			LOG.error(message);
 			throw new IllegalArgumentException(message);
 		}
 		EMMStream stream = streams.get(streamType);
@@ -75,6 +75,10 @@ public class EMMStreamFactory {
 							stream = new PolicyStream();
 							streams.put(streamName, stream);
 							break;
+						default:
+							String message = "Stream type " + streamType + " is not defined";
+							LOG.error(message);
+							throw new IllegalArgumentException(message);
 					}
 				}
 			}

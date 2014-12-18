@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wso2.emm.bam.util;
+package org.wso2.emm.statistics.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.wso2.emm.bam.PublisherException;
+import org.wso2.emm.statistics.PublisherException;
 
 /**
  * This class accepts the data coming as a JSON string and translate them to
@@ -27,7 +27,7 @@ import org.wso2.emm.bam.PublisherException;
  */
 public class JSONReader {
 	private JSONObject json;
-	private static Log log = LogFactory.getLog(JSONReader.class);
+	private static final Log LOG = LogFactory.getLog(JSONReader.class);
 
 	/**
 	 * Create a JSON object the represent the JSON string coming as a parameter.
@@ -40,7 +40,7 @@ public class JSONReader {
 			json = new JSONObject(jsonStr);
 		} catch (JSONException e) {
 			String message = "Error in converting String to JSONObject- object is:" + jsonStr;
-			log.error(message);
+			LOG.error(message);
 			throw new IllegalArgumentException(message);
 
 		}
@@ -59,7 +59,7 @@ public class JSONReader {
 			return json.getString(key);
 		} catch (JSONException e) {
 			String message = "Error in getting String " + key + " from JSONObject";
-			log.error(message, e);
+			LOG.error(message, e);
 			throw new PublisherException(message, e);
 		}
 	}

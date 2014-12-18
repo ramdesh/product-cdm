@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wso2.emm.bam.util;
+package org.wso2.emm.statistics.util;
 
 /**
  * Constants used throughout the publisher are mentioned here.

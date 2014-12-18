@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wso2.emm.bam;
+package org.wso2.emm.statistics;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.databridge.commons.AttributeType;
 import org.wso2.carbon.databridge.commons.StreamDefinition;
 import org.wso2.carbon.databridge.commons.exception.MalformedStreamDefinitionException;
-import org.wso2.emm.bam.util.Constants;
-import org.wso2.emm.bam.util.JSONReader;
+import org.wso2.emm.statistics.util.Constants;
+import org.wso2.emm.statistics.util.JSONReader;
 
 /**
  * Defines the stream definition and the pay load format when publishing Device
@@ -29,15 +29,14 @@ import org.wso2.emm.bam.util.JSONReader;
  */
 class DeviceRegisterStream implements EMMStream {
 
-	private static Log logger = LogFactory.getLog(DeviceRegisterStream.class);
+	private static final Log LOG = LogFactory.getLog(DeviceRegisterStream.class);
 	private StreamDefinition streamDefinition;
 
 	public DeviceRegisterStream() throws PublisherException {
 		String streamName = StreamType.DEVICE_REGISTRATIONS.getStreamType();
 		try {
 			streamDefinition =
-					new StreamDefinition(streamName,
-					                     Constants.StreamVersion.DEVICE_STREAM_VERSION);
+					new StreamDefinition(streamName, Constants.StreamVersion.DEVICE_STREAM_VERSION);
 			streamDefinition.addPayloadData(Constants.StreamKey.TENANT_ID, AttributeType.INT);
 			streamDefinition.addPayloadData(Constants.StreamKey.USERID, AttributeType.STRING);
 			streamDefinition.addPayloadData(Constants.StreamKey.PLATFORM_ID, AttributeType.INT);
@@ -53,7 +52,7 @@ class DeviceRegisterStream implements EMMStream {
 		} catch (MalformedStreamDefinitionException e) {
 			String message = "Error getting stream definition for " + streamName + "  , Version-" +
 			                 Constants.StreamVersion.DEVICE_OPERATIONS_STREAM_VERSION;
-			logger.error(message, e);
+			LOG.error(message, e);
 			throw new PublisherException(message, e);
 		}
 	}

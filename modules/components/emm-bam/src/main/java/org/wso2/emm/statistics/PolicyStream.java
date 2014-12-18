@@ -13,33 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wso2.emm.bam;
+package org.wso2.emm.statistics;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.databridge.commons.AttributeType;
 import org.wso2.carbon.databridge.commons.StreamDefinition;
 import org.wso2.carbon.databridge.commons.exception.MalformedStreamDefinitionException;
-import org.wso2.emm.bam.util.Constants;
-import org.wso2.emm.bam.util.JSONReader;
+import org.wso2.emm.statistics.util.Constants;
+import org.wso2.emm.statistics.util.JSONReader;
 
 /**
- * Defines the stream definition and the pay load format when publishing Device
- * related information such as its current GPS coordinates, memory, battery
- * level coming from devices to BAM.
+ * Policy stream holds the device policy compliance details published by devices
+ * time to time
  */
-class DeviceInfoStream implements EMMStream {
+class PolicyStream implements EMMStream {
 
-	private static Log logger = LogFactory.getLog(DeviceInfoStream.class);
+	private static final Log LOG = LogFactory.getLog(PolicyStream.class);
 	private StreamDefinition streamDefinition;
 
-	public DeviceInfoStream() throws PublisherException {
-		String streamName = StreamType.DEVICE_INFO_NOTIFICATIONS.getStreamType();
+	public PolicyStream() throws PublisherException {
+		String streamName = StreamType.POLICY_NOTIFICATIONS.getStreamType();
 		try {
-			streamDefinition =
-					new StreamDefinition(
-							streamName,
-							Constants.StreamVersion.DEVICE_INFO_NOTIFICATIONS_STREAM_VERSION);
+			streamDefinition = new StreamDefinition(streamName,
+			                                        Constants.StreamVersion.POLICY_NOTIFICATIONS_STREAM_VERSION);
 			streamDefinition.addPayloadData(Constants.StreamKey.USERID, AttributeType.STRING);
 			streamDefinition.addPayloadData(Constants.StreamKey.STATUS, AttributeType.STRING);
 			streamDefinition.addPayloadData(Constants.StreamKey.DEVICEID, AttributeType.STRING);
@@ -50,22 +47,14 @@ class DeviceInfoStream implements EMMStream {
 			streamDefinition.addPayloadData(Constants.StreamKey.TENANT, AttributeType.STRING);
 			streamDefinition.addPayloadData(Constants.StreamKey.MESSAGE_ID, AttributeType.STRING);
 			streamDefinition.addPayloadData(Constants.StreamKey.GROUP_ID, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.StreamKey.INTERNAL_MEMORY_TOTAL,
-			                                AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.StreamKey.INTERNAL_MEMORY_AVAILABLE,
-			                                AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.StreamKey.LATITUDE, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.StreamKey.LONGITUDE, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.StreamKey.EXTERNAL_MEMORY_TOTAL,
-			                                AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.StreamKey.EXTERNAL_MEMORY_AVAILABLE,
-			                                AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.StreamKey.OPERATOR, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.StreamKey.BATTERY, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.CODE, AttributeType.STRING);
+			streamDefinition
+					.addPayloadData(Constants.StreamKey.POLICY_STATUS, AttributeType.STRING);
+
 		} catch (MalformedStreamDefinitionException e) {
 			String message = "Error getting stream definition for " + streamName + "  , Version-" +
-			                 Constants.StreamVersion.DEVICE_INFO_NOTIFICATIONS_STREAM_VERSION;
-			logger.error(message, e);
+			                 Constants.StreamVersion.POLICY_NOTIFICATIONS_STREAM_VERSION;
+			LOG.error(message, e);
 			throw new PublisherException(message, e);
 		}
 	}
@@ -80,18 +69,11 @@ class DeviceInfoStream implements EMMStream {
 		                      jsonReader.read(Constants.StreamKey.TENANT),
 		                      jsonReader.read(Constants.StreamKey.MESSAGE_ID),
 		                      jsonReader.read(Constants.StreamKey.GROUP_ID),
-		                      jsonReader.read(Constants.StreamKey.INTERNAL_MEMORY_TOTAL),
-		                      jsonReader.read(Constants.StreamKey.INTERNAL_MEMORY_AVAILABLE),
-		                      jsonReader.read(Constants.StreamKey.LATITUDE),
-		                      jsonReader.read(Constants.StreamKey.LONGITUDE),
-		                      jsonReader.read(Constants.StreamKey.EXTERNAL_MEMORY_TOTAL),
-		                      jsonReader.read(Constants.StreamKey.EXTERNAL_MEMORY_AVAILABLE),
-		                      jsonReader.read(Constants.StreamKey.OPERATOR),
-		                      jsonReader.read(Constants.StreamKey.BATTERY) };
+		                      jsonReader.read(Constants.StreamKey.CODE),
+		                      jsonReader.read(Constants.StreamKey.POLICY_STATUS) };
 	}
 
 	public StreamDefinition getStreamDefinition() {
 		return streamDefinition;
 	}
-
 }

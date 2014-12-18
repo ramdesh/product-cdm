@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wso2.emm.bam.util;
+package org.wso2.emm.statistics.util;
 
 import java.io.File;
 
@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.utils.CarbonUtils;
-import org.wso2.emm.bam.PublisherException;
+import org.wso2.emm.statistics.PublisherException;
 
 @XmlRootElement(name = "EnterpriseMobilityManager")
 public class Configurations {
@@ -37,7 +37,7 @@ public class Configurations {
 	public static final String BAM_USERNAME = "BAMUsername";
 	public static final String BAM_PASSWORD = "BAMPassword";
 	public static final String BAM_CONFIGURATIONS = "BAMConfigurations";
-	private static final Log logger = LogFactory.getLog(Configurations.class);
+	private static final Log LOG = LogFactory.getLog(Configurations.class);
 
 	private Configurations() throws JAXBException {
 	}
@@ -52,7 +52,7 @@ public class Configurations {
 			return (Configurations) jaxbUnmarshaller.unmarshal(file);
 		} catch (JAXBException e) {
 			String message = "error while initializing Configurations";
-			logger.error(message, e);
+			LOG.error(message, e);
 			throw new PublisherException(message, e);
 		}
 	}

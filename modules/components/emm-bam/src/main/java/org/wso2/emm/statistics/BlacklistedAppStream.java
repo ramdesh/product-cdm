@@ -13,52 +13,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wso2.emm.bam;
+package org.wso2.emm.statistics;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.databridge.commons.AttributeType;
 import org.wso2.carbon.databridge.commons.StreamDefinition;
 import org.wso2.carbon.databridge.commons.exception.MalformedStreamDefinitionException;
-import org.wso2.emm.bam.util.Constants;
-import org.wso2.emm.bam.util.JSONReader;
+import org.wso2.emm.statistics.util.Constants;
+import org.wso2.emm.statistics.util.JSONReader;
 
 /**
  * Defines the stream definition and the pay load format when publishing
- * operations performed on a device, such as mute, lock, set password, etc.
+ * BlackListed Application related data to BAM.
  */
-class DeviceOperationsStream implements EMMStream {
+class BlacklistedAppStream implements EMMStream {
 
-	private static Log logger = LogFactory.getLog(DeviceOperationsStream.class);
+	private static final Log LOG = LogFactory.getLog(BlacklistedAppStream.class);
 	private StreamDefinition streamDefinition;
 
-	public DeviceOperationsStream() throws PublisherException {
-		String streamName = StreamType.DEVICE_OPERATIONS.getStreamType();
+	public BlacklistedAppStream() throws PublisherException {
+		String streamName = StreamType.BLACKLISTED_APPS.getStreamType();
 		try {
 			streamDefinition =
 					new StreamDefinition(
-							streamName,
-							Constants.StreamVersion.DEVICE_OPERATIONS_STREAM_VERSION);
-			streamDefinition.addPayloadData(Constants.StreamKey.USERID, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.StreamKey.DEVICEID, AttributeType.STRING);
-			streamDefinition
-					.addPayloadData(Constants.StreamKey.RECEIVED_DATE, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.StreamKey.CODE, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.StreamKey.DATA, AttributeType.STRING);
+							streamName, Constants.StreamVersion.BLACKLISTED_APPS_STREAM_VERSION);
+			streamDefinition.addPayloadData(Constants.StreamKey.PACKAGE_NAME, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.APP_NAME, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.PLATFORM, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.TYPE, AttributeType.STRING);
+
 		} catch (MalformedStreamDefinitionException e) {
 			String message = "Error getting stream definition for " + streamName + "  , Version-" +
-			                 Constants.StreamVersion.DEVICE_OPERATIONS_STREAM_VERSION;
-			logger.error(message, e);
+			                 Constants.StreamVersion.BLACKLISTED_APPS_STREAM_VERSION;
+			LOG.error(message, e);
 			throw new PublisherException(message, e);
 		}
 	}
 
 	public Object[] getPayload(JSONReader jsonReader) throws PublisherException {
-		return new Object[] { jsonReader.read(Constants.StreamKey.USERID),
-		                      jsonReader.read(Constants.StreamKey.DEVICEID),
-		                      jsonReader.read(Constants.StreamKey.RECEIVED_DATE),
-		                      jsonReader.read(Constants.StreamKey.CODE),
-		                      jsonReader.read(Constants.StreamKey.DATA) };
+		return new Object[] { jsonReader.read(Constants.StreamKey.PACKAGE_NAME),
+		                      jsonReader.read(Constants.StreamKey.APP_NAME),
+		                      jsonReader.read(Constants.StreamKey.PLATFORM),
+		                      jsonReader.read(Constants.StreamKey.TYPE) };
 	}
 
 	public StreamDefinition getStreamDefinition() {

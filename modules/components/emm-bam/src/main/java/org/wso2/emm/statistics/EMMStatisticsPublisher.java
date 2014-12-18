@@ -13,26 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wso2.emm.bam;
+package org.wso2.emm.statistics;
 
 /**
- * This defines the names of the streams which can be used to identify streams
+ * This can be used to create a publisher, where stream types can be sent
+ * along with payloads that can be published.
  */
-public enum StreamType {
+public interface EMMStatisticsPublisher {
 
-	APP_NOTIFICATIONS("app_notifications_stream"), BLACKLISTED_APPS("blacklisted_apps_stream"),
-	DEVICE_INFO_NOTIFICATIONS("device_info_notifications_stream"),
-	DEVICE_OPERATIONS("device_operations_stream"),
-	DEVICE_REGISTRATIONS("device_register_streamz2"),
-	POLICY_NOTIFICATIONS("policy_info_notifications_stream");
+	/**
+	 * This can be called to publish data to BAM by providing the stream type
+	 * and a payload.
+	 *
+	 * @param streamType the name of stream to be published.
+	 * @param jsonValue  payload to be published.
+	 * @throws PublisherException
+	 */
+	public void publish(StreamType streamType, String jsonValue) throws PublisherException;
 
-	private String streamType;
-
-	private StreamType(String streamType) {
-		this.streamType = streamType;
-	}
-
-	public String getStreamType() {
-		return streamType;
-	}
 }

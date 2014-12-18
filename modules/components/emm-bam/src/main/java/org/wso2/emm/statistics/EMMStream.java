@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wso2.emm.bam;
+package org.wso2.emm.statistics;
 
 import org.wso2.carbon.databridge.commons.StreamDefinition;
-import org.wso2.emm.bam.util.JSONReader;
+import org.wso2.emm.statistics.util.JSONReader;
 
 /**
  * This is the interface that provides generalization of a stream. It holds the
