@@ -28,12 +28,11 @@ import org.wso2.emm.statistics.util.JSONReader;
  * This act as the entry point for any stream that needs to be published.
  */
 public class DataPublisher implements EMMStatisticsPublisher {
-	private static AsyncDataPublisher asyncDataPublisher;
+	AsyncDataPublisher asyncDataPublisher;
 	private static final Log LOG = LogFactory.getLog(DataPublisher.class);
 
 	public DataPublisher() throws PublisherException {
 		Configurations configurations = Configurations.getInstance();
-		if (asyncDataPublisher != null) {
 			asyncDataPublisher =
 			                     new AsyncDataPublisher(configurations.getBAMConfigurations().
 			                                                           getRecieverUrlBAM(),
@@ -41,7 +40,6 @@ public class DataPublisher implements EMMStatisticsPublisher {
 			                                                           getBAMUsername(),
 			                                            configurations.getBAMConfigurations().
 			                                                           getBAMUsername());
-		}
 	}
 
 	/* (non-Javadoc)
