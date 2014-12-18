@@ -137,8 +137,7 @@ public class FileOperator {
 					inputStream.close();
 				} catch (IOException e) {
 					String message = "File error while closing the file, " + files[x];
-					LOG.error(message, e);
-					throw new ApkGenerationException(message, e);
+					LOG.warn(message, e);
 				}
 			}
 			if (zipOutStream != null) {
@@ -146,8 +145,7 @@ public class FileOperator {
 					zipOutStream.close();
 				} catch (IOException e) {
 					String message = "File error while closing the file, " + zipFilePath;
-					LOG.error(message, e);
-					throw new ApkGenerationException(message, e);
+					LOG.warn(message, e);
 				}
 			}
 		}

@@ -145,15 +145,9 @@ public class KeyStoreGenerator {
 	public static void writKeyStoreToFile(String resultFile, KeyStore keyStore, char[] storePass)
 			throws ApkGenerationException {
 		FileOutputStream fileOutputStream = null;
+		
 		try {
 			fileOutputStream = new FileOutputStream(resultFile);
-		} catch (FileNotFoundException e) {
-			String message = "Cannot open the file ," + resultFile;
-			LOG.error(message, e);
-			throw new ApkGenerationException(message, e);
-		}
-
-		try {
 			keyStore.store(fileOutputStream, storePass);
 		} catch (KeyStoreException e) {
 			String message = "Generic KeyStore error while creating new JKS.";
@@ -173,8 +167,8 @@ public class KeyStoreGenerator {
 			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		}
-
-		try {
+		finally{
+			try{
 			if (fileOutputStream != null) {
 				fileOutputStream.close();
 			}
@@ -182,6 +176,7 @@ public class KeyStoreGenerator {
 			String message = "File error while closing the file.";
 			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
+		}
 		}
 	}
 
@@ -196,11 +191,12 @@ public class KeyStoreGenerator {
 	public static void loadToStore(KeyStore keyStore, char[] storePass, String resultFile)
 			throws ApkGenerationException {
 		FileInputStream fileInputStream = null;
-		if (resultFile != null) {
-			fileInputStream = FileOperator.getFileInputStream(resultFile);
-		}
+		
 		try {
-			keyStore.load(fileInputStream, storePass);
+			if (resultFile != null) {
+				fileInputStream = FileOperator.getFileInputStream(resultFile);
+				keyStore.load(fileInputStream, storePass);
+			}
 		} catch (NoSuchAlgorithmException e) {
 			String message = Constants.ALGORITHM + " cryptographic algorithm is requested but" +
 			                 " it is not available in the environment.";
@@ -215,15 +211,16 @@ public class KeyStoreGenerator {
 			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		}
-
-		try {
-			if (fileInputStream != null) {
-				fileInputStream.close();
+		finally{
+			try {
+				if (fileInputStream != null) {
+					fileInputStream.close();
+				}
+			} catch (IOException e) {
+				String message = "File error while closing the file, " + resultFile;
+				LOG.error(message, e);
+				throw new ApkGenerationException(message, e);
 			}
-		} catch (IOException e) {
-			String message = "File error while closing the file, " + resultFile;
-			LOG.error(message, e);
-			throw new ApkGenerationException(message, e);
 		}
 	}
 
