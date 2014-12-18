@@ -28,20 +28,20 @@ import org.wso2.emm.apkgenerator.generators.ApkGenerationException;
 public class ObjectReader {
 
 	private JSONObject json = null;
-	private static Log log = LogFactory.getLog(ObjectReader.class);
+	private static final Log LOG = LogFactory.getLog(ObjectReader.class);
 
 	/**
 	 * Create a JSON object that represent the JSON string passed as a
 	 * parameter.
 	 *
-	 * @param jsonStr JSON string that needs to be converted to a JSON object
+	 * @param jsonPayload JSON string that needs to be converted to a JSON object
 	 */
-	public ObjectReader(String jsonStr) {
+	public ObjectReader(String jsonPayload) {
 		try {
-			json = new JSONObject(jsonStr);
+			json = new JSONObject(jsonPayload);
 		} catch (JSONException e) {
-			String message = "Error in converting String to JSONObject- object is:" + jsonStr;
-			log.error(message);
+			String message = "Error in converting String to JSONObject- object is:" + jsonPayload;
+			LOG.error(message);
 			throw new IllegalArgumentException(message);
 		}
 	}
@@ -58,7 +58,7 @@ public class ObjectReader {
 			return json.getString(key);
 		} catch (JSONException e) {
 			String message = "Error in getting String " + key + " from JSONObject.";
-			log.error(message, e);
+			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		}
 	}

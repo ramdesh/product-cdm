@@ -26,7 +26,7 @@ import java.security.*;
  */
 public class KeyPairCreator {
 
-	private static Log log = LogFactory.getLog(KeyPairCreator.class);
+	private static final Log LOG = LogFactory.getLog(KeyPairCreator.class);
 
 	/**
 	 * Generate a public and a private key pair set.
@@ -40,10 +40,10 @@ public class KeyPairCreator {
 	 * @return a key pair of public and private key combination
 	 * @throws ApkGenerationException
 	 */
-	public static KeyPair getKeyPair(String algorithm, String provider)
+	public static KeyPair generateKeyPair(String algorithm, String provider)
 			throws ApkGenerationException {
-		if (log.isDebugEnabled()) {
-			log.debug("Generating key pair.");
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Generating key pair.");
 		}
 		KeyPairGenerator keyPairGenerator;
 		try {
@@ -51,17 +51,14 @@ public class KeyPairCreator {
 			keyPairGenerator.initialize(1024, new SecureRandom());
 			return keyPairGenerator.generateKeyPair();
 		} catch (NoSuchAlgorithmException e) {
-			String message =
-					Constants.ALGORITHM + " cryptographic algorithm is requested but" +
-					" it is not available in the environment.";
-			log.error(message, e);
+			String message = Constants.ALGORITHM + " cryptographic algorithm is requested but" +
+			                 " it is not available in the environment.";
+			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		} catch (NoSuchProviderException e) {
-			String message =
-					Constants.PROVIDER +
-					" security provider is requested but it is not available in " +
-					"the environment.";
-			log.error(message, e);
+			String message = Constants.PROVIDER +
+			                 " security provider is requested but it is not available in the environment.";
+			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		}
 	}

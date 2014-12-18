@@ -32,7 +32,7 @@ import java.security.cert.X509Certificate;
  */
 public class KeyStoreGenerator {
 
-	private static Log log = LogFactory.getLog(KeyStoreGenerator.class);
+	private static final Log LOG = LogFactory.getLog(KeyStoreGenerator.class);
 
 	/**
 	 * To inject certificates to correct key stores and to generate new key
@@ -46,46 +46,49 @@ public class KeyStoreGenerator {
 	 * @param raCert         RA certificate content
 	 * @param sslCert        SSL certificate content
 	 * @param truststoreData Holds details that are relevant to keystores.
+	 * @param workingDir	 path of the working directory 
 	 * @throws ApkGenerationException
 	 */
 	public static void convertCertsToKeyStore(KeyPair keyPairCA, KeyPair keyPairRA,
 	                                          KeyPair keyPairSSL, X509Certificate caCert,
 	                                          X509Certificate raCert, X509Certificate sslCert,
-	                                          TruststoreData truststoreData)
+	                                          TruststoreData truststoreData, String workingDir)
 			throws ApkGenerationException {
 
 		// Insert CA and RA to emm JKS.
-		generateMobileEMM(keyPairCA.getPrivate(), new X509Certificate[] { caCert },
+		generateEMMTruststore(keyPairCA.getPrivate(), new X509Certificate[] { caCert },
 		                  truststoreData.getPasswordPK12CA(), Constants.FilePath.WSO2EMM_JKS,
 		                  truststoreData.getAliasPK12CA(), true,
-		                  truststoreData.getPasswordWSO2EMMJKS());
-		generateMobileEMM(keyPairRA.getPrivate(), new X509Certificate[] { raCert, caCert },
+		                  truststoreData.getPasswordWSO2EMMJKS(), workingDir);
+		generateEMMTruststore(keyPairRA.getPrivate(), new X509Certificate[] { raCert, caCert },
 		                  truststoreData.getPasswordPK12RA(), Constants.FilePath.WSO2EMM_JKS,
 		                  truststoreData.getAliasPK12RA(), false,
-		                  truststoreData.getPasswordWSO2EMMJKS());
+		                  truststoreData.getPasswordWSO2EMMJKS(), workingDir);
 
 		// Take a copy of jks files in the jks Folder which is the temp
 		// folder and and copy to working dir. This is to avoid original
 		// files getting corrupted in case.
-		FileOperator
-				.copyFile(ApkGenerator.workingDir + Constants.FilePath.JKS_FOLDER + File.separator +
-				          Constants.FilePath.CLIENT_TRUST_JKS, ApkGenerator.workingDir +
-				                                               Constants.FilePath.CLIENT_TRUST_JKS);
-		FileOperator
-				.copyFile(ApkGenerator.workingDir + Constants.FilePath.JKS_FOLDER + File.separator +
-				          Constants.FilePath.WSO2CARBON_JKS, ApkGenerator.workingDir +
-				                                             Constants.FilePath.WSO2CARBON_JKS);
+		FileOperator.copyFile(
+				workingDir + Constants.FilePath.JKS_FOLDER + File.separator +
+				Constants.FilePath.CLIENT_TRUST_JKS, workingDir +
+				                                     Constants.FilePath.CLIENT_TRUST_JKS
+		);
+		FileOperator.copyFile(
+				workingDir + Constants.FilePath.JKS_FOLDER + File.separator +
+				Constants.FilePath.WSO2CARBON_JKS, workingDir +
+				                                   Constants.FilePath.WSO2CARBON_JKS
+		);
 		// Insert SSL cert to client trust store JKS and wso2carbon JKS.
-		generateCarbonJksFiles(keyPairSSL.getPrivate(), new X509Certificate[] { sslCert },
+		generateSecurityTruststore(keyPairSSL.getPrivate(), new X509Certificate[] { sslCert },
 		                       truststoreData.getPasswordClientTruststore(),
 		                       Constants.FilePath.CLIENT_TRUST_JKS,
 		                       truststoreData.getAliasClientTruststore(), caCert,
-		                       truststoreData.getAliasPK12CA());
-		generateCarbonJksFiles(keyPairSSL.getPrivate(), new X509Certificate[] { sslCert },
+		                       truststoreData.getAliasPK12CA(), workingDir);
+		generateSecurityTruststore(keyPairSSL.getPrivate(), new X509Certificate[] { sslCert },
 		                       truststoreData.getPasswordWSO2Carbon(),
 		                       Constants.FilePath.WSO2CARBON_JKS,
 		                       truststoreData.getAliasWSO2Carbon(), caCert,
-		                       truststoreData.getAliasPK12CA());
+		                       truststoreData.getAliasPK12CA(), workingDir);
 	}
 
 	/**
@@ -102,14 +105,15 @@ public class KeyStoreGenerator {
 	 *                  one mentioned @param outFile. Value is true if it is needed to
 	 *                  create a new store, false in order to use the same store.
 	 * @param storePass is the password of the key store
+	 * @param workingDir path of the working directory 
 	 * @throws ApkGenerationException
 	 */
-	public static void generateMobileEMM(Key key, X509Certificate[] cert, String password,
+	public static void generateEMMTruststore(Key key, X509Certificate[] cert, String password,
 	                                     String outFile, String alias, boolean createJks,
-	                                     String storePass) throws ApkGenerationException {
+	                                     String storePass, String workingDir) throws ApkGenerationException {
 
 		KeyStore keyStore = getKeyStore();
-		String resultFile = ApkGenerator.workingDir + outFile;
+		String resultFile = workingDir + outFile;
 		// Create a new store
 		if (createJks == false) {
 			loadToStore(keyStore, storePass.toCharArray(), resultFile);
@@ -121,7 +125,7 @@ public class KeyStoreGenerator {
 			keyStore.setKeyEntry(alias, key, password.toCharArray(), cert);
 		} catch (KeyStoreException e) {
 			String message = "Generic KeyStore error while creating new JKS.";
-			log.error(message, e);
+			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		}
 		writKeyStoreToFile(resultFile, keyStore, storePass.toCharArray());
@@ -143,7 +147,7 @@ public class KeyStoreGenerator {
 			fileOutputStream = new FileOutputStream(resultFile);
 		} catch (FileNotFoundException e) {
 			String message = "Cannot open the file ," + resultFile;
-			log.error(message, e);
+			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		}
 
@@ -151,21 +155,20 @@ public class KeyStoreGenerator {
 			keyStore.store(fileOutputStream, storePass);
 		} catch (KeyStoreException e) {
 			String message = "Generic KeyStore error while creating new JKS.";
-			log.error(message, e);
+			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		} catch (NoSuchAlgorithmException e) {
-			String message =
-					"Cryptographic algorithm is requested but"
-					+ " it is not available in the environment.";
-			log.error(message, e);
+			String message = "Cryptographic algorithm is requested but"
+			                 + " it is not available in the environment.";
+			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		} catch (CertificateException e) {
 			String message = "Error working with certificate related to, " + resultFile;
-			log.error(message, e);
+			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		} catch (IOException e) {
 			String message = "File error while working with file, " + resultFile;
-			log.error(message, e);
+			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		}
 
@@ -175,7 +178,7 @@ public class KeyStoreGenerator {
 			}
 		} catch (IOException e) {
 			String message = "File error while closing the file.";
-			log.error(message, e);
+			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		}
 	}
@@ -197,18 +200,17 @@ public class KeyStoreGenerator {
 		try {
 			keyStore.load(fileInputStream, storePass);
 		} catch (NoSuchAlgorithmException e) {
-			String message =
-					Constants.ALGORITHM + " cryptographic algorithm is requested but" +
-					" it is not available in the environment.";
-			log.error(message, e);
+			String message = Constants.ALGORITHM + " cryptographic algorithm is requested but" +
+			                 " it is not available in the environment.";
+			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		} catch (CertificateException e) {
 			String message = "Error working with certificate related to, " + resultFile;
-			log.error(message, e);
+			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		} catch (IOException e) {
 			String message = "File error while working with file, " + resultFile;
-			log.error(message, e);
+			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		}
 
@@ -218,7 +220,7 @@ public class KeyStoreGenerator {
 			}
 		} catch (IOException e) {
 			String message = "File error while closing the file, " + resultFile;
-			log.error(message, e);
+			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		}
 	}
@@ -235,14 +237,15 @@ public class KeyStoreGenerator {
 	 * @param alias              is the alias name
 	 * @param secondCert         any other certificate other than the main certificate chain
 	 * @param seconderyCertAlias alias name of the secondary certificate
+	 * @param workingDir 		 path of the working directory 
 	 * @throws ApkGenerationException
 	 */
-	public static void generateCarbonJksFiles(Key key, X509Certificate[] cert, String password,
+	public static void generateSecurityTruststore(Key key, X509Certificate[] cert, String password,
 	                                          String outFile, String alias,
-	                                          X509Certificate secondCert, String seconderyCertAlias)
+	                                          X509Certificate secondCert, String seconderyCertAlias, String workingDir)
 			throws ApkGenerationException {
 
-		String resultFile = ApkGenerator.workingDir + outFile;
+		String resultFile = workingDir + outFile;
 		KeyStore keyStore = getKeyStore();
 		loadToStore(keyStore, password.toCharArray(), resultFile);
 
@@ -250,20 +253,18 @@ public class KeyStoreGenerator {
 			try {
 				keyStore.setCertificateEntry(seconderyCertAlias, secondCert);
 			} catch (KeyStoreException e) {
-				String message =
-						"KeyStore error while adding certificate with alias " +
-						seconderyCertAlias + "to key store.";
-				log.error(message, e);
+				String message = "KeyStore error while adding certificate with alias " +
+				                 seconderyCertAlias + "to key store.";
+				LOG.error(message, e);
 				throw new ApkGenerationException(message, e);
 			}
 		}
 		try {
 			keyStore.setKeyEntry(alias, key, password.toCharArray(), cert);
 		} catch (KeyStoreException e) {
-			String message =
-					"KeyStore error while adding certificate chanin with alias " + alias +
-					"to key store.";
-			log.error(message, e);
+			String message = "KeyStore error while adding certificate chanin with alias " + alias +
+			                 "to key store.";
+			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		}
 		writKeyStoreToFile(resultFile, keyStore, password.toCharArray());
@@ -280,7 +281,7 @@ public class KeyStoreGenerator {
 			return KeyStore.getInstance(Constants.JKS);
 		} catch (KeyStoreException e) {
 			String message = "KeyStore error while creating new JKS.";
-			log.error(message, e);
+			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		}
 

@@ -33,7 +33,7 @@ import java.security.cert.X509Certificate;
  */
 public class Bks {
 
-	private static Log log = LogFactory.getLog(Bks.class);
+	private static final Log LOG = LogFactory.getLog(Bks.class);
 
 	/**
 	 * @param cert the {@link X509Certificate} certificate that needs to be
@@ -56,21 +56,20 @@ public class Bks {
 			fos.close();
 		} catch (KeyStoreException e) {
 			String message = "KeyStore error while creating new BKS.";
-			log.error(message, e);
+			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		} catch (NoSuchAlgorithmException e) {
-			String message =
-					"Cryptographic algorithm is requested but"
-					+ " it is not available in the environment.";
-			log.error(message, e);
+			String message = "Cryptographic algorithm is requested but"
+			                 + " it is not available in the environment.";
+			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		} catch (CertificateException e) {
 			String message = "Error working with certificates.";
-			log.error(message, e);
+			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		} catch (IOException e) {
 			String message = "File error while working with files - " + bksFilePath;
-			log.error(message, e);
+			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		}
 	}

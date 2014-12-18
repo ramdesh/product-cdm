@@ -48,7 +48,7 @@ import java.util.Random;
  * the chain.
  */
 public class X509V3Certificates {
-	private static Log log = LogFactory.getLog(X509V3Certificates.class);
+	private static final Log LOG = LogFactory.getLog(X509V3Certificates.class);
 
 	/**
 	 * Generate a self-signed root certificate (CA certificate)
@@ -82,18 +82,17 @@ public class X509V3Certificates {
 			return new JcaX509CertificateConverter().setProvider(Constants.PROVIDER)
 			                                        .getCertificate(certBldr.build(sigGen));
 		} catch (OperatorCreationException e) {
-			String message =
-					"Error creating ContentSigner with JcaContentSignerBuilder"
-					+ " with the private key provided.";
-			log.error(message, e);
+			String message = "Error creating ContentSigner with JcaContentSignerBuilder"
+			                 + " with the private key provided.";
+			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		} catch (CertIOException e) {
 			String message = "Error adding extension basic constraints";
-			log.error(message, e);
+			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		} catch (CertificateException e) {
 			String message = "Error building certificate.";
-			log.error(message, e);
+			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		}
 	}
@@ -124,54 +123,56 @@ public class X509V3Certificates {
 				                       BigInteger.valueOf(1), publicKey
 				);
 
-		JcaX509ExtensionUtils extUtils = null;
+		JcaX509ExtensionUtils extUtils;
+		ContentSigner signer;
 		try {
 			extUtils = new JcaX509ExtensionUtils();
 		} catch (NoSuchAlgorithmException e) {
-			String message =
-					"Cryptographic algorithm is requested but"
-					+ " it is not available in the environment.";
-			log.error(message, e);
+			String message = "Cryptographic algorithm is requested but it is not available in " +
+			                 "the environment.";
+			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		}
 		try {
 			if (type.equalsIgnoreCase(Constants.REGISTRATION_AUTHORITY)) {
 				certBldr.addExtension(Extension.authorityKeyIdentifier, false,
 				                      extUtils.createAuthorityKeyIdentifier(caCert)).
-				        addExtension(Extension.subjectKeyIdentifier, false,
-				                      extUtils.createSubjectKeyIdentifier(publicKey)).
-				        addExtension(Extension.basicConstraints, true, new BasicConstraints(0)).
-				        addExtension(Extension.keyUsage,
-				                      true,
-				                      new KeyUsage(KeyUsage.digitalSignature |
-				                                   KeyUsage.keyCertSign | KeyUsage.cRLSign |
-				                                   KeyUsage.dataEncipherment |
-				                                   KeyUsage.keyAgreement | KeyUsage.keyEncipherment)
-				        );
+						        addExtension(Extension.subjectKeyIdentifier, false,
+						                     extUtils.createSubjectKeyIdentifier(publicKey)).
+						        addExtension(Extension.basicConstraints, true,
+						                     new BasicConstraints(0)).
+						        addExtension(Extension.keyUsage,
+						                     true,
+						                     new KeyUsage(KeyUsage.digitalSignature |
+						                                  KeyUsage.keyCertSign | KeyUsage.cRLSign |
+						                                  KeyUsage.dataEncipherment |
+						                                  KeyUsage.keyAgreement |
+						                                  KeyUsage.keyEncipherment)
+						        );
 			} else if (type.equalsIgnoreCase(Constants.SSL)) {
 				certBldr.addExtension(Extension.authorityKeyIdentifier, false,
 				                      extUtils.createAuthorityKeyIdentifier(caCert)).
-						addExtension(Extension.subjectKeyIdentifier, false,
-						              extUtils.createSubjectKeyIdentifier(publicKey)).
-								// Mark it as an end certificate by setting constraint false
-						addExtension(Extension.basicConstraints, true, new BasicConstraints(false)).
-						addExtension(Extension.keyUsage,
-						              true,
-						              new KeyUsage(KeyUsage.digitalSignature |
-						                           KeyUsage.keyEncipherment)
-						);
+						        addExtension(Extension.subjectKeyIdentifier, false,
+						                     extUtils.createSubjectKeyIdentifier(publicKey)).
+						        // Mark it as an end certificate by setting constraint false
+								        addExtension(Extension.basicConstraints, true,
+								                     new BasicConstraints(false)).
+						        addExtension(Extension.keyUsage,
+						                     true,
+						                     new KeyUsage(KeyUsage.digitalSignature |
+						                                  KeyUsage.keyEncipherment)
+						        );
 			}
 		} catch (CertificateEncodingException e) {
 			String message = "Certificate Encroding issue while adding extensions.";
-			log.error(message, e);
+			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		} catch (CertIOException e) {
 			String message = "Error adding extension basic constraints.";
-			log.error(message, e);
+			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		}
 
-		ContentSigner signer = null;
 		try {
 			signer =
 					new JcaContentSignerBuilder(Constants.ENCRIPTION)
@@ -183,11 +184,11 @@ public class X509V3Certificates {
 			String message =
 					"Error creating ContentSigner with JcaContentSignerBuilder"
 					+ " with the private key provided.";
-			log.error(message, e);
+			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		} catch (CertificateException e) {
 			String message = "Error building certificate.";
-			log.error(message, e);
+			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		}
 	}

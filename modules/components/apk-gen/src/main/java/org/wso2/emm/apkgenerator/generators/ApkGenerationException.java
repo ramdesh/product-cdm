@@ -21,8 +21,6 @@ package org.wso2.emm.apkgenerator.generators;
  */
 public class ApkGenerationException extends Exception {
 
-	private static final long serialVersionUID = 2345435345435345L;
-
 	public ApkGenerationException(String message) {
 		super(message);
 	}

@@ -32,12 +32,12 @@ import java.util.zip.ZipOutputStream;
  */
 public class FileOperator {
 
-	private static Log log = LogFactory.getLog(FileOperator.class);
+	private static final Log LOG = LogFactory.getLog(FileOperator.class);
 
 	/**
 	 * Copy file from the source path to a destination.
 	 *
-	 * @param source source file path
+	 * @param source      source file path
 	 * @param destination destination file path
 	 * @throws ApkGenerationException
 	 */
@@ -49,7 +49,7 @@ public class FileOperator {
 			String message =
 					"Cannot find one of the files, while trying to copy file :" + source +
 					",  to its destination: " + destination;
-			log.error(message, e);
+			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		}
 	}
@@ -66,7 +66,7 @@ public class FileOperator {
 			return FileUtils.fileRead(new File(path));
 		} catch (IOException e) {
 			String message = "Error reading file " + path;
-			log.error(message, e);
+			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		}
 	}
@@ -83,7 +83,7 @@ public class FileOperator {
 			FileUtils.fileWrite(path, content);
 		} catch (IOException e) {
 			String message = "Error writing to file " + path;
-			log.error(message, e);
+			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		}
 	}
@@ -102,7 +102,7 @@ public class FileOperator {
 			fileOut = new FileOutputStream(zipFilePath);
 		} catch (FileNotFoundException e) {
 			String message = "Error opening file " + zipFilePath;
-			log.error(message, e);
+			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		}
 		ZipOutputStream zipOutStream = new ZipOutputStream(fileOut);
@@ -114,11 +114,11 @@ public class FileOperator {
 				zipOutStream.putNextEntry(new ZipEntry(file.getName()));
 			} catch (FileNotFoundException e) {
 				String message = "Cannot open the file ," + files[x] + " to zip.";
-				log.error(message, e);
+				LOG.error(message, e);
 				throw new ApkGenerationException(message, e);
 			} catch (IOException e) {
 				String message = "Error adding " + files[x] + " to zip.";
-				log.error(message, e);
+				LOG.error(message, e);
 				throw new ApkGenerationException(message, e);
 			}
 
@@ -133,7 +133,7 @@ public class FileOperator {
 				}
 			} catch (IOException e) {
 				String message = "File error while closing the file, " + files[x];
-				log.error(message, e);
+				LOG.error(message, e);
 				throw new ApkGenerationException(message, e);
 			}
 		}
@@ -143,7 +143,7 @@ public class FileOperator {
 			}
 		} catch (IOException e) {
 			String message = "File error while closing the file, " + zipFilePath;
-			log.error(message, e);
+			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		}
 	}
@@ -161,7 +161,7 @@ public class FileOperator {
 			return new FileInputStream(sourceFile);
 		} catch (FileNotFoundException e) {
 			String message = "Cannot open the file ," + sourceFile;
-			log.error(message, e);
+			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		}
 	}
@@ -177,7 +177,7 @@ public class FileOperator {
 			new File(path).mkdirs();
 		} catch (SecurityException e) {
 			String message = "Error when creating directory " + path;
-			log.error(message, e);
+			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		}
 	}
@@ -194,7 +194,7 @@ public class FileOperator {
 			return path.replaceAll("/", Matcher.quoteReplacement(File.separator));
 		} catch (Exception e) {
 			String message = "Error when getting file path: " + path;
-			log.error(message, e);
+			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		}
 	}

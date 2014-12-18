@@ -15,11 +15,6 @@
  */
 package org.wso2.emm.apkgenerator.data;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.wso2.emm.apkgenerator.generators.ApkGenerationException;
-import org.wso2.emm.apkgenerator.util.Constants;
-
 import java.io.Serializable;
 
 /**
@@ -28,50 +23,19 @@ import java.io.Serializable;
  */
 public class CSRData implements Serializable {
 
-	private static final long serialVersionUID = 13793037383988323L;
-	String countryCA, stateCA, localityCA, organizationCA, organizationUCA, daysCA, commonNameCA;
-	String countryRA, stateRA, localityRA, organizationRA, organizationURA, daysRA, commonNameRA;
-	String countrySSL, stateSSL, localitySSL, organizationSSL, organizationUSSL, daysSSL, serverIp;
+	private static final long serialVersionUID = 13793037383987823L;
+	private String countryCA, stateCA, localityCA, organizationCA, organizationUCA, daysCA,
+			commonNameCA;
+	private String countryRA, stateRA, localityRA, organizationRA, organizationURA, daysRA,
+			commonNameRA;
+	private String countrySSL, stateSSL, localitySSL, organizationSSL, organizationUSSL, daysSSL,
+			serverIp;
 	private static final String COMMON_NAME_KEY = ", CN=";
 	private static final String ORGANIZATION_UNIT_KEY = ", OU=";
 	private static final String ORGANIZATION_KEY = ", O=";
 	private static final String LOCALITY_KEY = ", L=";
 	private static final String STATE_KEY = ", ST=";
 	private static final String COUNTRY_KEY = "C=";
-	private static Log log = LogFactory.getLog(CSRData.class);
-
-	/**
-	 * Read the Object passed and create a CRS object to hold data required
-	 * during certificate generation.
-	 *
-	 * @param {@link ObjectReader} reader holds the parameters necessary to
-	 *               create CSR data
-	 * @throws ApkGenerationException
-	 */
-	public CSRData(ObjectReader reader) throws ApkGenerationException {
-		setCountryCA(reader.read(Constants.CSRDataKeys.COUNTRY_CA));
-		setStateCA(reader.read(Constants.CSRDataKeys.STATE_CA));
-		setLocalityCA(reader.read(Constants.CSRDataKeys.LOCALITY_CA));
-		setOrganizationCA(reader.read(Constants.CSRDataKeys.ORGANIZATION_CA));
-		setOrganizationUCA(reader.read(Constants.CSRDataKeys.ORGANIZATION_UNIT_CA));
-		setDaysCA(reader.read(Constants.CSRDataKeys.DAYS_CA));
-		setCommonNameCA(reader.read(Constants.CSRDataKeys.COMMON_NAME_CA));
-		setCountryRA(reader.read(Constants.CSRDataKeys.COUNTRY_RA));
-		setStateRA(reader.read(Constants.CSRDataKeys.STATE_RA));
-		setLocalityRA(reader.read(Constants.CSRDataKeys.LOCALITY_RA));
-		setOrganizationRA(reader.read(Constants.CSRDataKeys.ORGANIZATION_RA));
-		setOrganizationURA(reader.read(Constants.CSRDataKeys.ORGANIZATION_UNIT_RA));
-		setDaysRA(reader.read(Constants.CSRDataKeys.DAYS_RA));
-		setCommonNameRA(reader.read(Constants.CSRDataKeys.COMMON_NAME_RA));
-		setCountrySSL(reader.read(Constants.CSRDataKeys.COUNTRY_SSL));
-		setStateSSL(reader.read(Constants.CSRDataKeys.STATE_SSL));
-		setLocalitySSL(reader.read(Constants.CSRDataKeys.LOCALITY_SSL));
-		setOrganizationSSL(reader.read(Constants.CSRDataKeys.ORGANIZATION_SSL));
-		setOrganizationUSSL(reader.read(Constants.CSRDataKeys.ORGANIZATION_UNIT_SSL));
-		setDaysSSL(reader.read(Constants.CSRDataKeys.DAYS_SSL));
-		setCommonNameSSL(reader.read(Constants.CSRDataKeys.SERVER_IP));
-
-	}
 
 	public String getCountryCA() {
 		return countryCA;
@@ -259,9 +223,6 @@ public class CSRData implements Serializable {
 		builder.append(COMMON_NAME_KEY);
 		builder.append(getCommonNameCA());
 		String distinguishedNameCA = builder.toString();
-		if (log.isDebugEnabled()) {
-			log.debug("CA Distinguish Name: " + distinguishedNameCA);
-		}
 		return distinguishedNameCA;
 
 	}
@@ -284,9 +245,6 @@ public class CSRData implements Serializable {
 		builder.append(COMMON_NAME_KEY);
 		builder.append(getCommonNameRA());
 		String distinguishedNameRA = builder.toString();
-		if (log.isDebugEnabled()) {
-			log.debug("RA Distinguish Name: " + distinguishedNameRA);
-		}
 		return distinguishedNameRA;
 	}
 
@@ -308,9 +266,6 @@ public class CSRData implements Serializable {
 		builder.append(COMMON_NAME_KEY);
 		builder.append(getCommonNameSSL());
 		String distinguishedNameSSL = builder.toString();
-		if (log.isDebugEnabled()) {
-			log.debug("SSL Distinguish Name: " + distinguishedNameSSL);
-		}
 		return distinguishedNameSSL;
 	}
 
