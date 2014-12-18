@@ -48,7 +48,8 @@ public class ApkUtil {
 	 * @return The output path
 	 * @throws ApkGenerationException
 	 */
-	public static void compileApk(String serverIp, String password, String zipPath, String workingDir)
+	public static void compileApk(String serverIp, String password, String zipPath,
+	                              String workingDir)
 			throws ApkGenerationException {
 		changeContent(workingDir + Constants.FilePath.COMMON_UTIL, serverIp, password);
 		buildApk(workingDir);
@@ -61,7 +62,8 @@ public class ApkUtil {
 
 		// .zip the above four files and create a zip file in the output folder.
 		FileOperator.createZip(zipPath, new String[] { apkPath, securityTruststorePath,
-		                                                             clienTruststorePath, emmSecurityTruststorePath });
+		                                               clienTruststorePath,
+		                                               emmSecurityTruststorePath });
 	}
 
 	/**
@@ -97,8 +99,8 @@ public class ApkUtil {
 	/**
 	 * Build the apk using maven. This is where the actual android source
 	 * compilation happens.
-	 * @param workingDir 
 	 *
+	 * @param workingDir
 	 * @throws ApkGenerationException
 	 */
 	public static void buildApk(String workingDir) throws ApkGenerationException {
@@ -113,11 +115,6 @@ public class ApkUtil {
 			// retrieve Maven home
 			invoker.setMavenHome(new File(getMavenHome(Constants.ENVIRONMENT_VARIABLE)));
 			invoker.execute(request);
-		} catch (NullPointerException e) {
-			String message = "Could not find MAVEN_HOME, please set it globally, so that"
-			                 + " the user that starts java can access it.";
-			LOG.error(message, e);
-			throw new ApkGenerationException(message, e);
 		} catch (MavenInvocationException e) {
 			String message = "Error while executing maven invoker.";
 			LOG.error(message, e);

@@ -42,35 +42,39 @@ public class CertificateChainGenerator {
 		// Generate CA certificate and keys.
 		certificateData.setKeyPairCA(
 				KeyPairCreator.generateKeyPair(Constants.ALGORITHM, Constants.PROVIDER));
-		certificateData.setCaCert(X509V3Certificates.generateCACert(csrData.getDaysCA(),
+		certificateData.setCaCert(CertificateUtil.generateCACert(csrData.getDaysCA(),
 		                                                            csrData.getCADistinguishedName(),
 		                                                            certificateData
-				                                                            .getKeyPairCA()));
+				                                                            .getKeyPairCA()
+		));
 
 		// Generate RA certificate and keys.
 		certificateData.setKeyPairRA(
 				KeyPairCreator.generateKeyPair(Constants.ALGORITHM, Constants.PROVIDER));
 		certificateData.setRaCert(
-				X509V3Certificates.buildIntermediateCert(Constants.REGISTRATION_AUTHORITY,
+				CertificateUtil.buildIntermediateCert(Constants.REGISTRATION_AUTHORITY,
 				                                         certificateData.getKeyPairRA().getPublic(),
 				                                         certificateData.getKeyPairCA()
 				                                                        .getPrivate(),
 				                                         certificateData.getCaCert(),
 				                                         csrData.getRADistinguishedName(),
-				                                         csrData.getDaysRA()));
+				                                         csrData.getDaysRA()
+				)
+		);
 
 		// Generate SSL certificate and keys.
 		certificateData.setKeyPairSSL(
 				KeyPairCreator.generateKeyPair(Constants.ALGORITHM, Constants.PROVIDER));
 		certificateData.setSslCert(
-				X509V3Certificates.buildIntermediateCert(Constants.SSL,
+				CertificateUtil.buildIntermediateCert(Constants.SSL,
 				                                         certificateData.getKeyPairSSL()
 				                                                        .getPublic(),
 				                                         certificateData.getKeyPairCA()
 				                                                        .getPrivate(),
 				                                         certificateData.getCaCert(),
 				                                         csrData.getSSLDistinguishedName(),
-				                                         csrData.getDaysSSL())
+				                                         csrData.getDaysSSL()
+				)
 		);
 
 		return certificateData;

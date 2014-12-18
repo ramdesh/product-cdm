@@ -31,9 +31,9 @@ import java.security.cert.X509Certificate;
  * BKS is a key store which is commonly used in Android to hold certificates.
  * This class can be used to generate BKS and insert certificates to it.
  */
-public class Bks {
+public class BksUtil {
 
-	private static final Log LOG = LogFactory.getLog(Bks.class);
+	private static final Log LOG = LogFactory.getLog(BksUtil.class);
 
 	/**
 	 * @param cert the {@link X509Certificate} certificate that needs to be

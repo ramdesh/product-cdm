@@ -27,7 +27,7 @@ import org.wso2.emm.apkgenerator.generators.ApkGenerationException;
  */
 public class ObjectReader {
 
-	private JSONObject json = null;
+	private JSONObject json;
 	private static final Log LOG = LogFactory.getLog(ObjectReader.class);
 
 	/**

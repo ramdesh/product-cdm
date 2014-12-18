@@ -47,8 +47,8 @@ import java.util.Random;
  * intermediate certificates are signed from the root certificate to generate
  * the chain.
  */
-public class X509V3Certificates {
-	private static final Log LOG = LogFactory.getLog(X509V3Certificates.class);
+public class CertificateUtil {
+	private static final Log LOG = LogFactory.getLog(CertificateUtil.class);
 
 	/**
 	 * Generate a self-signed root certificate (CA certificate)

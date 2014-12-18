@@ -46,7 +46,7 @@ public class KeyStoreGenerator {
 	 * @param raCert         RA certificate content
 	 * @param sslCert        SSL certificate content
 	 * @param truststoreData Holds details that are relevant to keystores.
-	 * @param workingDir	 path of the working directory 
+	 * @param workingDir     path of the working directory
 	 * @throws ApkGenerationException
 	 */
 	public static void convertCertsToKeyStore(KeyPair keyPairCA, KeyPair keyPairRA,
@@ -57,13 +57,13 @@ public class KeyStoreGenerator {
 
 		// Insert CA and RA to emm JKS.
 		generateEMMTruststore(keyPairCA.getPrivate(), new X509Certificate[] { caCert },
-		                  truststoreData.getPasswordPK12CA(), Constants.FilePath.WSO2EMM_JKS,
-		                  truststoreData.getAliasPK12CA(), true,
-		                  truststoreData.getPasswordWSO2EMMJKS(), workingDir);
+		                      truststoreData.getPasswordPK12CA(), Constants.FilePath.WSO2EMM_JKS,
+		                      truststoreData.getAliasPK12CA(), true,
+		                      truststoreData.getPasswordWSO2EMMJKS(), workingDir);
 		generateEMMTruststore(keyPairRA.getPrivate(), new X509Certificate[] { raCert, caCert },
-		                  truststoreData.getPasswordPK12RA(), Constants.FilePath.WSO2EMM_JKS,
-		                  truststoreData.getAliasPK12RA(), false,
-		                  truststoreData.getPasswordWSO2EMMJKS(), workingDir);
+		                      truststoreData.getPasswordPK12RA(), Constants.FilePath.WSO2EMM_JKS,
+		                      truststoreData.getAliasPK12RA(), false,
+		                      truststoreData.getPasswordWSO2EMMJKS(), workingDir);
 
 		// Take a copy of jks files in the jks Folder which is the temp
 		// folder and and copy to working dir. This is to avoid original
@@ -80,37 +80,38 @@ public class KeyStoreGenerator {
 		);
 		// Insert SSL cert to client trust store JKS and wso2carbon JKS.
 		generateSecurityTruststore(keyPairSSL.getPrivate(), new X509Certificate[] { sslCert },
-		                       truststoreData.getPasswordClientTruststore(),
-		                       Constants.FilePath.CLIENT_TRUST_JKS,
-		                       truststoreData.getAliasClientTruststore(), caCert,
-		                       truststoreData.getAliasPK12CA(), workingDir);
+		                           truststoreData.getPasswordClientTruststore(),
+		                           Constants.FilePath.CLIENT_TRUST_JKS,
+		                           truststoreData.getAliasClientTruststore(), caCert,
+		                           truststoreData.getAliasPK12CA(), workingDir);
 		generateSecurityTruststore(keyPairSSL.getPrivate(), new X509Certificate[] { sslCert },
-		                       truststoreData.getPasswordWSO2Carbon(),
-		                       Constants.FilePath.WSO2CARBON_JKS,
-		                       truststoreData.getAliasWSO2Carbon(), caCert,
-		                       truststoreData.getAliasPK12CA(), workingDir);
+		                           truststoreData.getPasswordWSO2Carbon(),
+		                           Constants.FilePath.WSO2CARBON_JKS,
+		                           truststoreData.getAliasWSO2Carbon(), caCert,
+		                           truststoreData.getAliasPK12CA(), workingDir);
 	}
 
 	/**
 	 * Create new JKS keystore or an exiting key store is opened and a
 	 * certificate chain can be added.
 	 *
-	 * @param key       is the private key of certificate to be inserted
-	 * @param cert      is an array of {@link X509Certificate} which needs to be
-	 *                  inserted
-	 * @param password  of the key store
-	 * @param outFile   name of the output file
-	 * @param alias     is the alias name
-	 * @param createJks this means instead of creating a new store, use the existing
-	 *                  one mentioned @param outFile. Value is true if it is needed to
-	 *                  create a new store, false in order to use the same store.
-	 * @param storePass is the password of the key store
-	 * @param workingDir path of the working directory 
+	 * @param key        is the private key of certificate to be inserted
+	 * @param cert       is an array of {@link X509Certificate} which needs to be
+	 *                   inserted
+	 * @param password   of the key store
+	 * @param outFile    name of the output file
+	 * @param alias      is the alias name
+	 * @param createJks  this means instead of creating a new store, use the existing
+	 *                   one mentioned @param outFile. Value is true if it is needed to
+	 *                   create a new store, false in order to use the same store.
+	 * @param storePass  is the password of the key store
+	 * @param workingDir path of the working directory
 	 * @throws ApkGenerationException
 	 */
 	public static void generateEMMTruststore(Key key, X509Certificate[] cert, String password,
-	                                     String outFile, String alias, boolean createJks,
-	                                     String storePass, String workingDir) throws ApkGenerationException {
+	                                         String outFile, String alias, boolean createJks,
+	                                         String storePass, String workingDir)
+			throws ApkGenerationException {
 
 		KeyStore keyStore = getKeyStore();
 		String resultFile = workingDir + outFile;
@@ -237,12 +238,13 @@ public class KeyStoreGenerator {
 	 * @param alias              is the alias name
 	 * @param secondCert         any other certificate other than the main certificate chain
 	 * @param seconderyCertAlias alias name of the secondary certificate
-	 * @param workingDir 		 path of the working directory 
+	 * @param workingDir         path of the working directory
 	 * @throws ApkGenerationException
 	 */
 	public static void generateSecurityTruststore(Key key, X509Certificate[] cert, String password,
-	                                          String outFile, String alias,
-	                                          X509Certificate secondCert, String seconderyCertAlias, String workingDir)
+	                                              String outFile, String alias,
+	                                              X509Certificate secondCert,
+	                                              String seconderyCertAlias, String workingDir)
 			throws ApkGenerationException {
 
 		String resultFile = workingDir + outFile;

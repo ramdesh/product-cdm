@@ -31,11 +31,10 @@ import java.io.File;
  * provide the data collected thought the EMM Wizard interface, to generate
  * Android APK with BKS injected and certificates.
  */
-public class ApkGenerator {
+public class ApkGeneratorUtil {
 
 	private static ObjectReader reader;
-	private static final Log LOG = LogFactory.getLog(ApkGenerator.class);
-	private static String truststorePassword;
+	private static final Log LOG = LogFactory.getLog(ApkGeneratorUtil.class);
 
 	/**
 	 * This is used to perform the sequence of actions necessary to generate
@@ -54,7 +53,7 @@ public class ApkGenerator {
 		// Directory of the running Jaggery app needs to be sent from the
 		// Jaggery UI along with the trust store password to be used
 		String workingDir = FileOperator.getPath(reader.read(Constants.FilePath.WORKING_DIR));
-		truststorePassword = reader.read(Constants.CSRDataKeys.PASSWORD);
+		String truststorePassword = reader.read(Constants.CSRDataKeys.PASSWORD);
 		// Construct a name for the zip file to store final output
 		String zipFileName =
 				reader.read(Constants.CSRDataKeys.USERSNAME) + "_" +
@@ -72,7 +71,7 @@ public class ApkGenerator {
 		                                         certificateData.getSslCert(),
 		                                         truststoreData, workingDir);
 		// Generate BKS using CA pem.
-		Bks.generateBKS(certificateData.getCaCert(),
+		BksUtil.generateBKS(certificateData.getCaCert(),
 		                workingDir + Constants.FilePath.BKS_FILE,
 		                truststorePassword);
 		// Copy BKS to Android source folder.
@@ -81,12 +80,12 @@ public class ApkGenerator {
 		                      Constants.FilePath.BKS_FILE
 		);
 		String zipFolderPath =
-				reader.read("zipPath") + File.separator + Constants.FilePath.APK_FOLDER +
+				reader.read(Constants.FilePath.ZIP_PATH) + File.separator + Constants.FilePath.APK_FOLDER +
 				File.separator;
 		FileOperator.makeFolder(zipFolderPath);
 		// Generate APK using Maven and create a zip.
-		ApkUtil.compileApk(reader.read("serverIp"), truststorePassword, zipFolderPath+zipFileName,
-		                           workingDir);
+		ApkUtil.compileApk(reader.read("serverIp"), truststorePassword, zipFolderPath + zipFileName,
+		                   workingDir);
 		return zipFolderPath + zipFileName;
 	}
 

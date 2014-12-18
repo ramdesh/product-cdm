@@ -45,6 +45,7 @@ public class Constants {
 		public static final String JKS_FOLDER = "jks";
 		public static final String BIN_PATH = File.separator + "bin" + File.separator + "mvn";
 		public static final String WORKING_DIR = "workingDir";
+		public static final String ZIP_PATH = "zipPath";
 	}
 
 	public static final String ALGORITHM = "RSA";
