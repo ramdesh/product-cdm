@@ -85,9 +85,9 @@ public class ApkGenerator {
 				File.separator;
 		FileOperator.makeFolder(zipFolderPath);
 		// Generate APK using Maven and create a zip.
-		return ApkUtil.compileApk(workingDir + Constants.FilePath.COMMON_UTIL,
-		                          reader.read("serverIp"), truststorePassword, zipFileName,
-		                          zipFolderPath);
+		ApkUtil.compileApk(reader.read("serverIp"), truststorePassword, zipFolderPath+zipFileName,
+		                           workingDir);
+		return zipFolderPath + zipFileName;
 	}
 
 	private static CSRData getCSRData(ObjectReader reader) throws ApkGenerationException {
