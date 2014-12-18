@@ -42,11 +42,11 @@ public class EMMStatisticsActivator implements BundleActivator {
 					context.registerService(EMMStatisticsPublisher.class.getName(),
 					                        new DataPublisher(), null);
 		} catch (PublisherException e) {
-			LOG.error("Error while starting the EMM to BAM statisctics publishing bundle.", e);
+			LOG.error("Error while starting the EMM to BAM statistics publishing bundle.", e);
 		}
 
 		if (LOG.isDebugEnabled()) {
-			LOG.debug("EMM to BAM statisctics publishing bundle started");
+			LOG.debug("EMM to BAM statistics publishing bundle started");
 		}
 
 	}
@@ -60,7 +60,7 @@ public class EMMStatisticsActivator implements BundleActivator {
 	public void stop(BundleContext arg0) throws Exception {
 		serviceRegistration.unregister();
 		if (LOG.isDebugEnabled()) {
-			LOG.debug("EMM to BAM statisctics publishing bundle stoped");
+			LOG.debug("EMM to BAM statistics publishing bundle stoped");
 		}
 	}
 }

@@ -39,7 +39,7 @@ public class JSONReader {
 		try {
 			json = new JSONObject(jsonStr);
 		} catch (JSONException e) {
-			String message = "Error in converting String to JSONObject- object is:" + jsonStr;
+			String message = "Error in converting String to JSON Object- the object is:" + jsonStr;
 			LOG.error(message);
 			throw new IllegalArgumentException(message);
 

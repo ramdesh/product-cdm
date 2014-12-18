@@ -37,6 +37,7 @@ public class Configurations {
 	public static final String BAM_USERNAME = "BAMUsername";
 	public static final String BAM_PASSWORD = "BAMPassword";
 	public static final String BAM_CONFIGURATIONS = "BAMConfigurations";
+	private BAMConfiguration BAMConfigurations;
 	private static final Log LOG = LogFactory.getLog(Configurations.class);
 
 	private Configurations() throws JAXBException {
@@ -73,7 +74,6 @@ public class Configurations {
 		return configInstance;
 	}
 
-	private BAMConfiguration BAMConfigurations;
 
 	public BAMConfiguration getBAMConfigurations() {
 		return BAMConfigurations;
