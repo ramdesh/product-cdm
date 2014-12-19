@@ -71,10 +71,10 @@ public class FileOperator {
 	}
 
 	/**
-	 * Write a PEM content to a physical PEM file
+	 * Write content to a physical file
 	 *
 	 * @param path    the destination file path
-	 * @param content of the PEM file
+	 * @param content data to be saved
 	 * @throws ApkGenerationException
 	 */
 	public static void fileWrite(String path, String content) throws ApkGenerationException {

@@ -17,7 +17,7 @@ package org.wso2.emm.apkgenerator.exception;
 
 /**
  * Custom exception handling class, to handle the issue that come up during
- * execution of certificate generation.
+ * execution of Apk and certificate generation.
  */
 public class ApkGenerationException extends Exception {
 

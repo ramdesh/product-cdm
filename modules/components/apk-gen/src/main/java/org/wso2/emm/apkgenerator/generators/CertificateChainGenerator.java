@@ -35,7 +35,7 @@ public class CertificateChainGenerator {
 	 * Generate CA,RA and SSL certificates respectively.
 	 *
 	 * @param csrData data needed to create certificates.
-	 * @return
+	 * @return Data related to certificates generated
 	 * @throws ApkGenerationException
 	 */
 	public static CertificateData generate(CSRData csrData) throws ApkGenerationException {

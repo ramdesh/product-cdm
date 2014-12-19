@@ -29,7 +29,7 @@ import org.wso2.emm.apkgenerator.util.FileOperator;
 import java.io.File;
 
 /**
- * This is the class that provides access for the Jaggery app to communicate and
+ * This is the class that provides access for the Jaggery application to communicate and
  * provide the data collected thought the EMM Wizard interface, to generate
  * Android APK with BKS injected and certificates.
  */
@@ -127,15 +127,15 @@ public class ApkGeneratorUtil {
 		truststoreData.setPasswordPK12RA(reader.read(Constants.TruststoreKeys.PASSWORD_PK12_RA));
 		truststoreData.setAliasPK12CA(reader.read(Constants.TruststoreKeys.ALIAS_PK12_CA));
 		truststoreData.setAliasPK12RA(reader.read(Constants.TruststoreKeys.ALIAS_PK12_RA));
-		truststoreData
-				.setPasswordWSO2EMMJKS(reader.read(Constants.TruststoreKeys.PASSWORD_WSO2_EMM_JKS));
+		truststoreData.
+				setPasswordWSO2EMMJKS(reader.read(Constants.TruststoreKeys.PASSWORD_WSO2_EMM_JKS));
 		truststoreData.setAliasClientTruststore(
 				reader.read(Constants.TruststoreKeys.ALIAS__CLIENT_TRUSTSTORE));
 		truststoreData.setPasswordClientTruststore(
 				reader.read(Constants.TruststoreKeys.PASSWORD_CLIENT_TRUSTSTORE));
 		truststoreData.setAliasWSO2Carbon(reader.read(Constants.TruststoreKeys.ALIAS_WSO2_CARBON));
-		truststoreData
-				.setPasswordWSO2Carbon(reader.read(Constants.TruststoreKeys.PASSWORD_WSO2_CARBON));
+		truststoreData.
+				setPasswordWSO2Carbon(reader.read(Constants.TruststoreKeys.PASSWORD_WSO2_CARBON));
 		return truststoreData;
 
 	}
