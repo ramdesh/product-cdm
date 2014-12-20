@@ -173,7 +173,7 @@ public class KeyStoreGenerator {
 				fileOutputStream.close();
 			}
 		} catch (IOException e) {
-			String message = "File error while closing the file.";
+			String message = "File error while closing the file, "+resultFile;
 			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		}

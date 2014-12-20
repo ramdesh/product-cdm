@@ -44,6 +44,7 @@ public class BksUtil {
 	public static void generateBKS(X509Certificate cert, String bksFilePath,
 	                               String truststorePassword) throws ApkGenerationException {
 		KeyStore keystore;
+		FileOutputStream fileOutputStream = null;
 		try {
 
 			keystore =
@@ -52,9 +53,9 @@ public class BksUtil {
 			keystore.load(null);
 			keystore.setCertificateEntry(Constants.BKS_ALIAS, cert);
 
-			FileOutputStream fos = new FileOutputStream(bksFilePath);
-			keystore.store(fos, truststorePassword.toCharArray());
-			fos.close();
+			fileOutputStream = new FileOutputStream(bksFilePath);
+			keystore.store(fileOutputStream, truststorePassword.toCharArray());
+			fileOutputStream.close();
 		} catch (KeyStoreException e) {
 			String message = "KeyStore error while creating new BKS.";
 			LOG.error(message, e);
@@ -73,5 +74,17 @@ public class BksUtil {
 			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		}
+		finally{
+			try{
+			if (fileOutputStream != null) {
+				fileOutputStream.close();
+			}
+		} catch (IOException e) {
+			String message = "File error while closing the file.";
+			LOG.error(message, e);
+			throw new ApkGenerationException(message, e);
+		}
+		}
+
 	}
 }

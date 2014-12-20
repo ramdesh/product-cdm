@@ -62,7 +62,7 @@ public class ApkUtil {
 		String clienTruststorePath = workingDir + Constants.FilePath.CLIENT_TRUST_JKS;
 		String emmSecurityTruststorePath = workingDir + Constants.FilePath.WSO2EMM_JKS;
 
-		// .zip the above four files and create a zip file in the output folder.
+		// zip the above four files and create a zip file in the output folder.
 		FileOperator.createZip(zipPath, new String[] { apkPath, securityTruststorePath,
 		                                               clienTruststorePath,
 		                                               emmSecurityTruststorePath });
