@@ -21,6 +21,7 @@ import java.security.cert.X509Certificate;
 
 /**
  * Data related to certificates to be generated such as CA,RA and SSL
+ * are stored here.
  */
 public class CertificateData implements Serializable {
 
@@ -74,10 +75,6 @@ public class CertificateData implements Serializable {
 
 	public void setSslCert(X509Certificate sslCert) {
 		this.sslCert = sslCert;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
 	}
 
 }

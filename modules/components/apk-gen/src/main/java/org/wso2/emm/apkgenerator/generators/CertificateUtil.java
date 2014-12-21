@@ -54,41 +54,44 @@ public class CertificateUtil {
 	/**
 	 * Generate a self-signed root certificate (CA certificate)
 	 *
-	 * @param days             that the certificate is valid
-	 * @param distinguisedName is the parameters which is found in a CSR.
-	 * @param pair             is a key pair generated for CA certificate to use. This is a
-	 *                         combination of public and private key.
-	 * @return A self-signed CA certificate
+	 * @param days              Number of days the certificate is valid.
+	 * @param distinguishedName Parameters which is found in a CSR(subject).
+	 * @param pair              A key pair generated for CA certificate to use. This is a
+	 *                          combination of public and private key.
+	 * @return A self-signed CA certificate.
 	 * @throws ApkGenerationException
 	 */
-	public static X509Certificate generateCACert(String days, String distinguisedName, KeyPair pair)
+	public static X509Certificate generateCACert(String days, String distinguishedName,
+	                                             KeyPair pair)
 			throws ApkGenerationException {
 
 		Random rand = new Random();
 		int randomNum = rand.nextInt((100000 - 1000) + 1) + 1000;
 		BigInteger serial = BigInteger.valueOf(randomNum);
 
-		X500Principal principal = new X500Principal(distinguisedName);
-		X509v3CertificateBuilder certBldr =
+		X500Principal principal = new X500Principal(distinguishedName);
+		X509v3CertificateBuilder certificateBuilder =
 				buildX509v3Certificate(principal, days, principal,
 				                       serial, pair.getPublic());
-		ContentSigner sigGen = null;
+		ContentSigner sigGen;
 		try {
 			// Creating a signature and self signing it by signing with it's own key.
 			sigGen =
-					new JcaContentSignerBuilder(Constants.ENCRIPTION)
+					new JcaContentSignerBuilder(Constants.ENCRYPTION)
 							.setProvider(Constants.PROVIDER)
 							.build(pair.getPrivate());
-			certBldr.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
+			certificateBuilder
+					.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
 			return new JcaX509CertificateConverter().setProvider(Constants.PROVIDER)
-			                                        .getCertificate(certBldr.build(sigGen));
+			                                        .getCertificate(
+					                                        certificateBuilder.build(sigGen));
 		} catch (OperatorCreationException e) {
 			String message = "Error creating ContentSigner with JcaContentSignerBuilder"
 			                 + " with the private key provided.";
 			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		} catch (CertIOException e) {
-			String message = "Error adding extension basic constraints";
+			String message = "Error adding extension basic constraints.";
 			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		} catch (CertificateException e) {
@@ -101,26 +104,26 @@ public class CertificateUtil {
 	/**
 	 * Build intermediate/end entity certificate using the root certificate.
 	 *
-	 * @param type             of the certificate that needs to be generated. This either RA
-	 *                         or SSL
-	 * @param publicKey        of the certificate that needs to be created
-	 * @param caPrivateKey     is the private key of the root certificate
-	 * @param caCert           is the CA certificate generated
-	 * @param distinguisedName is the parameters which is found in a CSR.
-	 * @param days             that the certificate is valid
-	 * @return An intermediate certificate signed by a root certificate
+	 * @param type              The name of certificate that needs to be generated. This either RA
+	 *                          or SSL.
+	 * @param publicKey         Public key of he certificate that needs to be created.
+	 * @param caPrivateKey      The private key of the root certificate.
+	 * @param caCert            The CA certificate generated previously.
+	 * @param distinguishedName The parameters which is found in a CSR(subject).
+	 * @param days              Number of days the certificate is valid.
+	 * @return An intermediate certificate signed by a root certificate.
 	 * @throws ApkGenerationException
 	 */
 	public static X509Certificate buildIntermediateCert(String type, PublicKey publicKey,
 	                                                    PrivateKey caPrivateKey,
 	                                                    X509Certificate caCert,
-	                                                    String distinguisedName, String days)
+	                                                    String distinguishedName, String days)
 			throws ApkGenerationException {
-		X509v3CertificateBuilder certBldr =
+		X509v3CertificateBuilder certificateBuilder =
 				buildX509v3Certificate(caCert.getSubjectX500Principal(),
 				                       days,
 				                       new X500Principal(
-						                       distinguisedName),
+						                       distinguishedName),
 				                       BigInteger.valueOf(1), publicKey
 				);
 
@@ -136,36 +139,39 @@ public class CertificateUtil {
 		}
 		try {
 			if (type.equalsIgnoreCase(Constants.REGISTRATION_AUTHORITY)) {
-				certBldr.addExtension(Extension.authorityKeyIdentifier, false,
-				                      extUtils.createAuthorityKeyIdentifier(caCert)).
-						        addExtension(Extension.subjectKeyIdentifier, false,
-						                     extUtils.createSubjectKeyIdentifier(publicKey)).
-						        addExtension(Extension.basicConstraints, true,
-						                     new BasicConstraints(0)).
-						        addExtension(Extension.keyUsage,
-						                     true,
-						                     new KeyUsage(KeyUsage.digitalSignature |
-						                                  KeyUsage.keyCertSign | KeyUsage.cRLSign |
-						                                  KeyUsage.dataEncipherment |
-						                                  KeyUsage.keyAgreement |
-						                                  KeyUsage.keyEncipherment)
-						        );
+				certificateBuilder.addExtension(Extension.authorityKeyIdentifier, false,
+				                                extUtils.createAuthorityKeyIdentifier(caCert)).
+						                  addExtension(Extension.subjectKeyIdentifier, false,
+						                               extUtils.createSubjectKeyIdentifier(
+								                               publicKey)).
+						                  addExtension(Extension.basicConstraints, true,
+						                               new BasicConstraints(0)).
+						                  addExtension(Extension.keyUsage,
+						                               true,
+						                               new KeyUsage(KeyUsage.digitalSignature |
+						                                            KeyUsage.keyCertSign |
+						                                            KeyUsage.cRLSign |
+						                                            KeyUsage.dataEncipherment |
+						                                            KeyUsage.keyAgreement |
+						                                            KeyUsage.keyEncipherment)
+						                  );
 			} else if (type.equalsIgnoreCase(Constants.SSL)) {
-				certBldr.addExtension(Extension.authorityKeyIdentifier, false,
-				                      extUtils.createAuthorityKeyIdentifier(caCert)).
-						        addExtension(Extension.subjectKeyIdentifier, false,
-						                     extUtils.createSubjectKeyIdentifier(publicKey)).
-						        // Mark it as an end certificate by setting constraint false
-								        addExtension(Extension.basicConstraints, true,
-								                     new BasicConstraints(false)).
-						        addExtension(Extension.keyUsage,
-						                     true,
-						                     new KeyUsage(KeyUsage.digitalSignature |
-						                                  KeyUsage.keyEncipherment)
-						        );
+				certificateBuilder.addExtension(Extension.authorityKeyIdentifier, false,
+				                                extUtils.createAuthorityKeyIdentifier(caCert)).
+						                  addExtension(Extension.subjectKeyIdentifier, false,
+						                               extUtils.createSubjectKeyIdentifier(
+								                               publicKey)).
+						                  // Mark it as an end certificate by setting constraint false
+								                  addExtension(Extension.basicConstraints, true,
+								                               new BasicConstraints(false)).
+						                  addExtension(Extension.keyUsage,
+						                               true,
+						                               new KeyUsage(KeyUsage.digitalSignature |
+						                                            KeyUsage.keyEncipherment)
+						                  );
 			}
 		} catch (CertificateEncodingException e) {
-			String message = "Certificate Encroding issue while adding extensions.";
+			String message = "Certificate Encoding issue while adding extensions.";
 			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		} catch (CertIOException e) {
@@ -176,11 +182,12 @@ public class CertificateUtil {
 
 		try {
 			signer =
-					new JcaContentSignerBuilder(Constants.ENCRIPTION)
+					new JcaContentSignerBuilder(Constants.ENCRYPTION)
 							.setProvider(Constants.PROVIDER)
 							.build(caPrivateKey);
 			return new JcaX509CertificateConverter().setProvider(Constants.PROVIDER)
-			                                        .getCertificate(certBldr.build(signer));
+			                                        .getCertificate(
+					                                        certificateBuilder.build(signer));
 		} catch (OperatorCreationException e) {
 			String message =
 					"Error creating ContentSigner with JcaContentSignerBuilder"
@@ -198,16 +205,16 @@ public class CertificateUtil {
 	 * Builds a generic {@link X509v3CertificateBuilder}, which can used to
 	 * generate a certificate.
 	 *
-	 * @param rootPrinciple is the {@link X500Principal} that contains the distinguished
+	 * @param rootPrinciple The {@link X500Principal} that contains the distinguished
 	 *                      name of the immediate upper certificate in the certificate
 	 *                      chain. In case of self-sign SLL or RA certificate, this is the
 	 *                      distinguished name of the CA certificate.
-	 * @param days          which the certificate is valid for.
-	 * @param principal     is the {@link X500Principal} that contains the distinguished
-	 *                      name of the certificate to be generated
-	 * @param serial        is a unique number for the self-sign CA
-	 * @param publicKey     of the certificate that needs to be created
-	 * @return A {@link X509v3CertificateBuilder} that can be used for certificate generation
+	 * @param days          Number of days the certificate is valid.
+	 * @param principal     The {@link X500Principal} that contains the distinguished
+	 *                      name of the certificate to be generated.
+	 * @param serial        A unique number for the certificate.
+	 * @param publicKey     Public key of he certificate that needs to be created.
+	 * @return A {@link X509v3CertificateBuilder} that can be used for certificate generation.
 	 */
 	private static X509v3CertificateBuilder buildX509v3Certificate(X500Principal rootPrinciple,
 	                                                               String days,

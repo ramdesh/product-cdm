@@ -40,14 +40,12 @@ public class ApkUtil {
 	private static final Log LOG = LogFactory.getLog(ApkUtil.class);
 
 	/**
-	 * Carry out the sequence of tasks necessary to generate the APK.
+	 * Carry out the sequence of tasks necessary to generate the apk.
 	 *
-	 * @param commonUtilPath is the path of Common utility class of Android agent source
-	 * @param serverIp       is the IP of the server, which the certificate will be used
-	 * @param password       of BKS store
-	 * @param zipFileName    is the name of the .zip output file.
-	 * @param zipPath        folder which holds all the temporary files and final zip
-	 * @return The output path
+	 * @param serverIp   The IP of the server, which the certificate will be used.
+	 * @param password   The password of BKS store.
+	 * @param zipPath    Folder and file which holds all the temporary files and final zip.
+	 * @param workingDir Directory where the temporary files are saved.
 	 * @throws ApkGenerationException
 	 */
 	public static void compileApk(String serverIp, String password, String zipPath,
@@ -75,9 +73,9 @@ public class ApkUtil {
 	 * Android agent code and inject IP address and password of the server which
 	 * should be contacted.
 	 *
-	 * @param commonUtilPath is the Android agent's CommonUtil class's file path.
-	 * @param hostName       of the server that the agent needs to communicate
-	 * @param password       of the BKS store
+	 * @param commonUtilPath The Android agent's CommonUtil class's file path.
+	 * @param hostName       The server that the agent needs to communicate.
+	 * @param password       The password of BKS store.
 	 * @throws ApkGenerationException
 	 */
 	public static void changeContent(String commonUtilPath, String hostName, String password)
@@ -107,19 +105,19 @@ public class ApkUtil {
 	 * Build the apk using maven. This is where the actual android source
 	 * compilation happens.
 	 *
-	 * @param workingDir
+	 * @param workingDir Directory where the temporary files are saved.
 	 * @throws ApkGenerationException
 	 */
 	public static void buildApk(String workingDir) throws ApkGenerationException {
 		try {
 			List<String> buildGoals = Arrays.asList(Constants.ACTION, Constants.GOAL);
 			InvocationRequest request = new DefaultInvocationRequest();
-			// provide POM file to invoker
+			// Provide POM file to invoker
 			request.setPomFile(new File(workingDir + Constants.FilePath.ANDROID_AGENT +
 			                            File.separator));
 			request.setGoals(buildGoals);
 			DefaultInvoker invoker = new DefaultInvoker();
-			// retrieve Maven home
+			// Retrieve Maven home
 			invoker.setMavenHome(new File(getMavenHome(Constants.ENVIRONMENT_VARIABLE)));
 			invoker.execute(request);
 		} catch (MavenInvocationException e) {
@@ -132,14 +130,14 @@ public class ApkUtil {
 	/**
 	 * Retrieve Maven home path.
 	 *
-	 * @param environmentVar is the environment variable that needs to be fetched
-	 * @return the path of the environment variable
+	 * @param environmentVar The environment variable that needs to be fetched.
+	 * @return The path of the environment variable.
 	 * @throws ApkGenerationException
 	 */
-	private static String getMavenHome(String environmentVar) throws ApkGenerationException {
+	public static String getMavenHome(String environmentVar) throws ApkGenerationException {
 		String path = System.getenv(Constants.ENVIRONMENT_VARIABLE);
 		File homePath = new File(path);
-		// handle symlinks
+		// Handle symlinks.
 		String filePath;
 		try {
 			filePath = homePath.getCanonicalPath();
@@ -153,7 +151,7 @@ public class ApkUtil {
 			LOG.error(message);
 			throw new IllegalStateException(message);
 		}
-		// maven invoker adds "bin/mvn" when setMavenHome is called. so if it is
+		// Maven invoker adds "bin/mvn" when setMavenHome is called. so if it is
 		// present in the MAVEN_HOME, it has to be removed
 		if (filePath.contains(Constants.FilePath.BIN_PATH)) {
 			filePath = filePath.substring(0, filePath.indexOf(Constants.FilePath.BIN_PATH));

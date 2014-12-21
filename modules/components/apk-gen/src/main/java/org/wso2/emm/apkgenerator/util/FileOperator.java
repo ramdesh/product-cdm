@@ -90,7 +90,7 @@ public class FileOperator {
 	/**
 	 * Creates a zip file from a list of files provided.
 	 *
-	 * @param zipFilePath the path of the final zip file to be created
+	 * @param zipFilePath the path of the final zip file to be created.
 	 * @param files       An array of file paths that needs to be added to the zip
 	 * @throws ApkGenerationException
 	 */
@@ -154,8 +154,8 @@ public class FileOperator {
 	/**
 	 * Get a file input stream when the file name is provided.
 	 *
-	 * @param sourceFile Name of the source file
-	 * @return the file input stream
+	 * @param sourceFile Name of the source file.
+	 * @return the file input stream.
 	 * @throws ApkGenerationException
 	 */
 	public static FileInputStream getFileInputStream(String sourceFile)
@@ -177,7 +177,12 @@ public class FileOperator {
 	 */
 	public static void makeFolder(String path) throws ApkGenerationException {
 		try {
-			new File(path).mkdirs();
+			File file=new File(path);
+			if(!file.mkdirs()){
+				String message = "Error when creating directory " + path;
+				LOG.error(message);
+				throw new ApkGenerationException(message);
+			}
 		} catch (SecurityException e) {
 			String message = "Error when creating directory " + path;
 			LOG.error(message, e);

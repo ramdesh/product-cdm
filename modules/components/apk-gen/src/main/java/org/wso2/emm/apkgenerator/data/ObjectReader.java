@@ -34,13 +34,13 @@ public class ObjectReader {
 	 * Create a JSON object that represent the JSON string passed as a
 	 * parameter.
 	 *
-	 * @param jsonPayload JSON string that needs to be converted to a JSON object
+	 * @param jsonPayload JSON string that needs to be converted to a JSON object.
 	 */
 	public ObjectReader(String jsonPayload) {
 		try {
 			json = new JSONObject(jsonPayload);
 		} catch (JSONException e) {
-			String message = "Error in converting String to JSONObject- object is:" + jsonPayload;
+			String message = "Error in converting String to JSONObject- the object is:" + jsonPayload;
 			LOG.error(message);
 			throw new IllegalArgumentException(message);
 		}
@@ -49,8 +49,8 @@ public class ObjectReader {
 	/**
 	 * Read a JSON object when the key is provided.
 	 *
-	 * @param key of the JSON
-	 * @return the value represented by the key
+	 * @param key The key of the JSON value that needs to be retrieved.
+	 * @return The value represented by the key.
 	 * @throws ApkGenerationException
 	 */
 	public String read(String key) throws ApkGenerationException {

@@ -50,14 +50,14 @@ public class Constants {
 
 	public static final String ALGORITHM = "RSA";
 	public static final String PROVIDER = "SC";
-	public static final String ENCRIPTION = "SHA1withRSA";
+	public static final String ENCRYPTION = "SHA1withRSA";
 	public static final String REGISTRATION_AUTHORITY = "RA";
 	public static final String BKS = "BKS";
 	public static final String BKS_ALIAS = "cert-alias";
 	public static final String JKS = "JKS";
 	public static final String SSL = "SSL";
 	public static final String ENVIRONMENT_VARIABLE = "MAVEN_HOME";
-	public static final String ARCHIEVE_TYPE = ".zip";
+	public static final String ARCHIVE_TYPE = ".zip";
 	public static final String ACTION = "clean";
 	public static final String GOAL = "package";
 	public static final String SERVER_IP_ANDROID = "String SERVER_IP = \"";

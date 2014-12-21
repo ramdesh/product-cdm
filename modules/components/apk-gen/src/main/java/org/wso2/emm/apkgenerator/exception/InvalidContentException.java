@@ -16,7 +16,7 @@
 package org.wso2.emm.apkgenerator.exception;
 
 /**
- * Errors related to file content reading are added here.
+ * Errors related to file content reading are handled here.
  */
 public class InvalidContentException extends RuntimeException {
 

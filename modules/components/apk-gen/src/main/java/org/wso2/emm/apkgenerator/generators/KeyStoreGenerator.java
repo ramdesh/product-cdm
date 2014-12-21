@@ -22,7 +22,10 @@ import org.wso2.emm.apkgenerator.exception.ApkGenerationException;
 import org.wso2.emm.apkgenerator.util.Constants;
 import org.wso2.emm.apkgenerator.util.FileOperator;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -38,16 +41,16 @@ public class KeyStoreGenerator {
 	/**
 	 * To inject certificates to correct key stores and to generate new key
 	 * stores, that is necessary for EMM to function properly are generated
-	 * here. manages the flow of certificate to key store conversion
+	 * here. Also manages the flow of certificate to key store conversion.
 	 *
-	 * @param keyPairCA      public and private key pair of CA certificate
-	 * @param keyPairRA      public and private key pair of RA certificate
-	 * @param keyPairSSL     public and private key pair of SSL certificate
-	 * @param caCert         CA certificate content
-	 * @param raCert         RA certificate content
-	 * @param sslCert        SSL certificate content
+	 * @param keyPairCA      Public and private key pair of CA certificate.
+	 * @param keyPairRA      Public and private key pair of RA certificate.
+	 * @param keyPairSSL     Public and private key pair of SSL certificate.
+	 * @param caCert         CA certificate content.
+	 * @param raCert         RA certificate content.
+	 * @param sslCert        SSL certificate content.
 	 * @param truststoreData Holds details that are relevant to keystores.
-	 * @param workingDir     path of the working directory
+	 * @param workingDir     Directory where the temporary files are saved.
 	 * @throws ApkGenerationException
 	 */
 	public static void convertCertsToKeyStore(KeyPair keyPairCA, KeyPair keyPairRA,
@@ -96,20 +99,21 @@ public class KeyStoreGenerator {
 	 * Create new JKS keystore or an exiting key store is opened and a
 	 * certificate chain can be added.
 	 *
-	 * @param key        is the private key of certificate to be inserted
-	 * @param cert       is an array of {@link X509Certificate} which needs to be
-	 *                   inserted
-	 * @param password   of the key store
-	 * @param outFile    name of the output file
-	 * @param alias      is the alias name
-	 * @param createJks  this means instead of creating a new store, use the existing
-	 *                   one mentioned @param outFile. Value is true if it is needed to
-	 *                   create a new store, false in order to use the same store.
-	 * @param storePass  is the password of the key store
-	 * @param workingDir path of the working directory
+	 * @param key          The private key of certificate to be inserted.
+	 * @param certificates An array of {@link X509Certificate} which needs to be
+	 *                     inserted
+	 * @param password     The password of the key store.
+	 * @param outFile      Name of the output file.
+	 * @param alias        The alias name of the certificate entry to be inserted.
+	 * @param createJks    This means instead of creating a new store, use the existing
+	 *                     one mentioned @param outFile. Value is true if it is needed to
+	 *                     create a new store, false in order to use the same store.
+	 * @param storePass    The password of the key store.
+	 * @param workingDir   Directory where the temporary files are saved.
 	 * @throws ApkGenerationException
 	 */
-	public static void generateEMMTruststore(Key key, X509Certificate[] cert, String password,
+	public static void generateEMMTruststore(Key key, X509Certificate[] certificates,
+	                                         String password,
 	                                         String outFile, String alias, boolean createJks,
 	                                         String storePass, String workingDir)
 			throws ApkGenerationException {
@@ -117,14 +121,14 @@ public class KeyStoreGenerator {
 		KeyStore keyStore = getKeyStore();
 		String resultFile = workingDir + outFile;
 		// Create a new store
-		if (createJks == false) {
+		if (!createJks) {
 			loadToStore(keyStore, storePass.toCharArray(), resultFile);
 		} else {
 			loadToStore(keyStore, null, null);
 		}
 
 		try {
-			keyStore.setKeyEntry(alias, key, password.toCharArray(), cert);
+			keyStore.setKeyEntry(alias, key, password.toCharArray(), certificates);
 		} catch (KeyStoreException e) {
 			String message = "Generic KeyStore error while creating new JKS.";
 			LOG.error(message, e);
@@ -137,15 +141,15 @@ public class KeyStoreGenerator {
 	/**
 	 * Write a provided key store to a physical file.
 	 *
-	 * @param resultFile name of the destination file to be created
-	 * @param keyStore   is the key store object that needs to be written to a file
-	 * @param storePass  password of the key store
+	 * @param resultFile Name of the destination file to be created.
+	 * @param keyStore   The key store object that needs to be written to a file.
+	 * @param storePass  Password of the key store.
 	 * @throws ApkGenerationException
 	 */
 	public static void writKeyStoreToFile(String resultFile, KeyStore keyStore, char[] storePass)
 			throws ApkGenerationException {
 		FileOutputStream fileOutputStream = null;
-		
+
 		try {
 			fileOutputStream = new FileOutputStream(resultFile);
 			keyStore.store(fileOutputStream, storePass);
@@ -166,32 +170,30 @@ public class KeyStoreGenerator {
 			String message = "File error while working with file, " + resultFile;
 			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
-		}
-		finally{
-			try{
-			if (fileOutputStream != null) {
-				fileOutputStream.close();
+		} finally {
+			try {
+				if (fileOutputStream != null) {
+					fileOutputStream.close();
+				}
+			} catch (IOException e) {
+				String message = "File error while closing the file, " + resultFile;
+				LOG.error(message, e);
 			}
-		} catch (IOException e) {
-			String message = "File error while closing the file, "+resultFile;
-			LOG.error(message, e);
-			throw new ApkGenerationException(message, e);
-		}
 		}
 	}
 
 	/**
 	 * Load/initiate a key store from a provided file.
 	 *
-	 * @param keyStore   is the destination key store which needs to be loaded.
-	 * @param storePass  password of the key store
-	 * @param resultFile the source key store file
+	 * @param keyStore   The destination key store which needs to be loaded.
+	 * @param storePass  Password of the key store.
+	 * @param resultFile The source key store file.
 	 * @throws ApkGenerationException
 	 */
 	public static void loadToStore(KeyStore keyStore, char[] storePass, String resultFile)
 			throws ApkGenerationException {
 		FileInputStream fileInputStream = null;
-		
+
 		try {
 			if (resultFile != null) {
 				fileInputStream = FileOperator.getFileInputStream(resultFile);
@@ -210,8 +212,7 @@ public class KeyStoreGenerator {
 			String message = "File error while working with file, " + resultFile;
 			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
-		}
-		finally{
+		} finally {
 			try {
 				if (fileInputStream != null) {
 					fileInputStream.close();
@@ -219,7 +220,6 @@ public class KeyStoreGenerator {
 			} catch (IOException e) {
 				String message = "File error while closing the file, " + resultFile;
 				LOG.error(message, e);
-				throw new ApkGenerationException(message, e);
 			}
 		}
 	}
@@ -228,21 +228,21 @@ public class KeyStoreGenerator {
 	 * Input certificate chains and individual certificate to carbon jks files
 	 * in the server.
 	 *
-	 * @param key                the private key of certificate to be inserted
-	 * @param cert               is an array of {@link X509Certificate} which needs to be
+	 * @param key                The private key of certificate to be inserted
+	 * @param certificates               An array of {@link X509Certificate} which needs to be
 	 *                           inserted
-	 * @param password           of the key store
-	 * @param outFile            name of the output file
-	 * @param alias              is the alias name
-	 * @param secondCert         any other certificate other than the main certificate chain
-	 * @param seconderyCertAlias alias name of the secondary certificate
-	 * @param workingDir         path of the working directory
+	 * @param password           The password of the key store.
+	 * @param outFile            Name of the output file.
+	 * @param alias              The alias name of the certificate entry to be inserted.
+	 * @param secondCert         Any other certificate other than the main certificate chain that needs to be added.
+	 * @param secondaryCertAlias Alias name of the secondary certificate.
+	 * @param workingDir         Directory where the temporary files are saved.
 	 * @throws ApkGenerationException
 	 */
-	public static void generateSecurityTruststore(Key key, X509Certificate[] cert, String password,
+	public static void generateSecurityTruststore(Key key, X509Certificate[] certificates, String password,
 	                                              String outFile, String alias,
 	                                              X509Certificate secondCert,
-	                                              String seconderyCertAlias, String workingDir)
+	                                              String secondaryCertAlias, String workingDir)
 			throws ApkGenerationException {
 
 		String resultFile = workingDir + outFile;
@@ -251,18 +251,18 @@ public class KeyStoreGenerator {
 
 		if (secondCert != null) {
 			try {
-				keyStore.setCertificateEntry(seconderyCertAlias, secondCert);
+				keyStore.setCertificateEntry(secondaryCertAlias, secondCert);
 			} catch (KeyStoreException e) {
 				String message = "KeyStore error while adding certificate with alias " +
-				                 seconderyCertAlias + "to key store.";
+				                 secondaryCertAlias + "to key store.";
 				LOG.error(message, e);
 				throw new ApkGenerationException(message, e);
 			}
 		}
 		try {
-			keyStore.setKeyEntry(alias, key, password.toCharArray(), cert);
+			keyStore.setKeyEntry(alias, key, password.toCharArray(), certificates);
 		} catch (KeyStoreException e) {
-			String message = "KeyStore error while adding certificate chanin with alias " + alias +
+			String message = "KeyStore error while adding certificate chain with alias " + alias +
 			                 "to key store.";
 			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
@@ -273,7 +273,7 @@ public class KeyStoreGenerator {
 	/**
 	 * Generates new JKS key stores.
 	 *
-	 * @return A new JKS key store
+	 * @return A new JKS key store.
 	 * @throws ApkGenerationException
 	 */
 	private static KeyStore getKeyStore() throws ApkGenerationException {

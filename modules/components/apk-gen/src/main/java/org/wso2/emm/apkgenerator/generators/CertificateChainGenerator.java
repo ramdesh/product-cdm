@@ -34,8 +34,8 @@ public class CertificateChainGenerator {
 	/**
 	 * Generate CA,RA and SSL certificates respectively.
 	 *
-	 * @param csrData data needed to create certificates.
-	 * @return Data related to certificates generated
+	 * @param csrData Data needed to create certificates.
+	 * @return Data related to certificates generated.
 	 * @throws ApkGenerationException
 	 */
 	public static CertificateData generate(CSRData csrData) throws ApkGenerationException {
@@ -68,10 +68,10 @@ public class CertificateChainGenerator {
 				KeyPairCreator.generateKeyPair(Constants.ALGORITHM, Constants.PROVIDER));
 		certificateData.setSslCert(
 				CertificateUtil.buildIntermediateCert(Constants.SSL,
-				                                      certificateData.getKeyPairSSL()
-				                                                     .getPublic(),
-				                                      certificateData.getKeyPairCA()
-				                                                     .getPrivate(),
+				                                      certificateData.getKeyPairSSL().
+						                                      getPublic(),
+				                                      certificateData.getKeyPairCA().
+						                                      getPrivate(),
 				                                      certificateData.getCaCert(),
 				                                      csrData.getSSLDistinguishedName(),
 				                                      csrData.getDaysSSL()

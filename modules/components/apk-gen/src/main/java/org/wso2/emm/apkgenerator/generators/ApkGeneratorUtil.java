@@ -35,15 +35,14 @@ import java.io.File;
  */
 public class ApkGeneratorUtil {
 
-	private static ObjectReader reader;
 	private static final Log LOG = LogFactory.getLog(ApkGeneratorUtil.class);
 
 	/**
 	 * This is used to perform the sequence of actions necessary to generate
 	 * certificates, key stores, and apk.
 	 *
-	 * @param jsonPayload is the JSON coming from the client.
-	 * @return the path of the final zip file
+	 * @param jsonPayload The JSON coming from the client.
+	 * @return The path of the final zip file.
 	 * @throws ApkGenerationException
 	 */
 	public static String generateApk(String jsonPayload)
@@ -52,15 +51,15 @@ public class ApkGeneratorUtil {
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Call to generate Certificates and APK.");
 		}
-		reader = new ObjectReader(jsonPayload);
+		ObjectReader reader = new ObjectReader(jsonPayload);
 		// Directory of the running Jaggery app needs to be sent from the
-		// Jaggery UI along with the trust store password to be used
+		// Jaggery UI along with the trust store password to be used.
 		String workingDir = reader.read(Constants.FilePath.WORKING_DIR);
 		String truststorePassword = reader.read(Constants.CSRDataKeys.PASSWORD);
-		// Construct a name for the zip file to store final output
+		// Construct a name for the zip file to store final output.
 		String zipFileName =
 				reader.read(Constants.CSRDataKeys.USERSNAME) + "_" +
-				reader.read(Constants.CSRDataKeys.COMPANY) + Constants.ARCHIEVE_TYPE;
+				reader.read(Constants.CSRDataKeys.COMPANY) + Constants.ARCHIVE_TYPE;
 		CSRData csrData = getCSRData(reader);
 		TruststoreData truststoreData = getTruststoerData(reader);
 		// Generate the certificates.
@@ -127,15 +126,15 @@ public class ApkGeneratorUtil {
 		truststoreData.setPasswordPK12RA(reader.read(Constants.TruststoreKeys.PASSWORD_PK12_RA));
 		truststoreData.setAliasPK12CA(reader.read(Constants.TruststoreKeys.ALIAS_PK12_CA));
 		truststoreData.setAliasPK12RA(reader.read(Constants.TruststoreKeys.ALIAS_PK12_RA));
-		truststoreData.
-				setPasswordWSO2EMMJKS(reader.read(Constants.TruststoreKeys.PASSWORD_WSO2_EMM_JKS));
+		truststoreData.setPasswordWSO2EMMJKS(
+				reader.read(Constants.TruststoreKeys.PASSWORD_WSO2_EMM_JKS));
 		truststoreData.setAliasClientTruststore(
 				reader.read(Constants.TruststoreKeys.ALIAS__CLIENT_TRUSTSTORE));
 		truststoreData.setPasswordClientTruststore(
 				reader.read(Constants.TruststoreKeys.PASSWORD_CLIENT_TRUSTSTORE));
 		truststoreData.setAliasWSO2Carbon(reader.read(Constants.TruststoreKeys.ALIAS_WSO2_CARBON));
-		truststoreData.
-				setPasswordWSO2Carbon(reader.read(Constants.TruststoreKeys.PASSWORD_WSO2_CARBON));
+		truststoreData.setPasswordWSO2Carbon(
+				reader.read(Constants.TruststoreKeys.PASSWORD_WSO2_CARBON));
 		return truststoreData;
 
 	}

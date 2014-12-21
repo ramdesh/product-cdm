@@ -37,7 +37,7 @@ public class BksUtil {
 	private static final Log LOG = LogFactory.getLog(BksUtil.class);
 
 	/**
-	 * @param cert the {@link X509Certificate} certificate that needs to be
+	 * @param cert The {@link X509Certificate} certificate that needs to be
 	 *             inserted.
 	 * @throws ApkGenerationException
 	 */
@@ -70,20 +70,18 @@ public class BksUtil {
 			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
 		} catch (IOException e) {
-			String message = "File error while working with files - " + bksFilePath;
+			String message = "Error while working with files - " + bksFilePath;
 			LOG.error(message, e);
 			throw new ApkGenerationException(message, e);
-		}
-		finally{
-			try{
-			if (fileOutputStream != null) {
-				fileOutputStream.close();
+		} finally {
+			try {
+				if (fileOutputStream != null) {
+					fileOutputStream.close();
+				}
+			} catch (IOException e) {
+				String message = "File error while closing the file.";
+				LOG.error(message, e);
 			}
-		} catch (IOException e) {
-			String message = "File error while closing the file.";
-			LOG.error(message, e);
-			throw new ApkGenerationException(message, e);
-		}
 		}
 
 	}

@@ -37,8 +37,8 @@ public class KeyPairCreator {
 	 */
 	/**
 	 * @param algorithm Algorithm to be used to get key pair.
-	 * @param provider  the name of the provider
-	 * @return a key pair of public and private key combination
+	 * @param provider  The name of the provider.
+	 * @return A key pair of public and private key combination.
 	 * @throws ApkGenerationException
 	 */
 	public static KeyPair generateKeyPair(String algorithm, String provider)

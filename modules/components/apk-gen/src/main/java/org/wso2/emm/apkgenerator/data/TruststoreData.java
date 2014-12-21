@@ -19,7 +19,7 @@ import java.io.Serializable;
 
 /**
  * Details related to truststore data that are useful when injecting certificates
- * to relevant stores.
+ * to relevant stores are stored here.
  */
 public class TruststoreData implements Serializable {
 
@@ -106,7 +106,4 @@ public class TruststoreData implements Serializable {
 		this.passwordWSO2Carbon = passwordWSO2Carbon;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
 }

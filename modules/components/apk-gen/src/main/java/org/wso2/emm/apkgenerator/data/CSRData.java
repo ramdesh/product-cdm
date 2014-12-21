@@ -18,8 +18,8 @@ package org.wso2.emm.apkgenerator.data;
 import java.io.Serializable;
 
 /**
- * Store data needed to create certificates. Using these data, distinguished
- * named for certificates can be created
+ * Store basic data needed to create certificates. Using these data, distinguished
+ * named for certificates can be created.
  */
 public class CSRData implements Serializable {
 
@@ -206,7 +206,10 @@ public class CSRData implements Serializable {
 	}
 
 	/**
-	 * @return distinguished name for CA certificate generated using CRS data
+	 * Generates a distinguished name using CSR data, that can be used to create,
+	 * a CA certificate
+	 *
+	 * @return Distinguished name.
 	 */
 	public String getCADistinguishedName() {
 		StringBuilder builder = new StringBuilder();
@@ -222,13 +225,14 @@ public class CSRData implements Serializable {
 		builder.append(getOrganizationUCA());
 		builder.append(COMMON_NAME_KEY);
 		builder.append(getCommonNameCA());
-		String distinguishedNameCA = builder.toString();
-		return distinguishedNameCA;
-
+		return builder.toString();
 	}
 
 	/**
-	 * @return distinguished name for RA certificate generated using CRS data
+	 * Generates a distinguished name using CSR data, that can be used to create,
+	 * a RA certificate.
+	 *
+	 * @return Distinguished name.
 	 */
 	public String getRADistinguishedName() {
 		StringBuilder builder = new StringBuilder();
@@ -244,12 +248,14 @@ public class CSRData implements Serializable {
 		builder.append(getOrganizationURA());
 		builder.append(COMMON_NAME_KEY);
 		builder.append(getCommonNameRA());
-		String distinguishedNameRA = builder.toString();
-		return distinguishedNameRA;
+		return builder.toString();
 	}
 
 	/**
-	 * @return distinguished name for SSL certificate generated using CRS data
+	 * Generates a distinguished name using CSR data, that can be used to create,
+	 * a SSL certificate.
+	 *
+	 * @return Distinguished name.
 	 */
 	public String getSSLDistinguishedName() {
 		StringBuilder builder = new StringBuilder();
@@ -265,8 +271,7 @@ public class CSRData implements Serializable {
 		builder.append(getOrganizationUSSL());
 		builder.append(COMMON_NAME_KEY);
 		builder.append(getCommonNameSSL());
-		String distinguishedNameSSL = builder.toString();
-		return distinguishedNameSSL;
+		return builder.toString();
 	}
 
 }
