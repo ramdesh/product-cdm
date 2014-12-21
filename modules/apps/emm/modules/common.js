@@ -56,7 +56,8 @@ var getTenantID = function () {
 var getSessionInfo = function () {
     if (!(typeof session === "undefined")) {
         var sessionInfo = session.get("emmConsoleUser");
-        if (sessionInfo && sessionInfo.tenantId != 0) {
+        if (sessionInfo && sessionInfo.tenantId !
+            = 0) {
             return sessionInfo;
         } else {
             return null;
@@ -66,8 +67,8 @@ var getSessionInfo = function () {
 var getTenantDomainSession = function() {
     if (!(typeof session === "undefined")) {
         var sessionInfo = session.get("emmConsoleUser");
-        if (sessionInfo && sessionInfo.tenantDomain ==null) {
-            return tenantDomain;
+        if (sessionInfo && sessionInfo.tenantDomain !=null) {
+            return sessionInfo.tenantDomain;
         } else {
             return null;
         }

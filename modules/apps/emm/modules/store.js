@@ -58,8 +58,6 @@ var store = (function() {
         }
         return configs(tenantId)[USER_MANAGER];
     }
-
-    
     var getAllDeviceCountForGroup = function(role, platform) {
         var um = userManager(common.getTenantID());
         if (role != constants.INTERNAL_EVERYONE) {
@@ -71,27 +69,21 @@ var store = (function() {
                     role = role.split('/')[1];
                     log.debug(role);
                 }
-                var resultDeviceCount = driver.query("SELECT COUNT(id) AS device_count FROM devices 
-                    WHERE user_id = ? AND tenant_id = ? and " + buildPlatformString(platform), 
-                    String(role), common.getTenantID());
+                var resultDeviceCount = driver.query("SELECT COUNT(id) AS device_count FROM devices WHERE user_id = ? AND tenant_id = ? and " + buildPlatformString(platform), String(role), common.getTenantID());
                 deviceCountAll += parseInt(resultDeviceCount[0].device_count);
             }
         } else {
-            deviceCountAll = driver.query("SELECT COUNT(id) AS device_count FROM devices WHERE 
-                tenant_id = ? and " + buildPlatformString(platform), common.getTenantID())[0].device_count;
+            deviceCountAll = driver.query("SELECT COUNT(id) AS device_count FROM devices WHERE tenant_id = ? and " + buildPlatformString(platform), common.getTenantID())[0].device_count;
             log.debug(deviceCountAll);
         }
         return deviceCountAll;
     }
     var getAllDeviceCountForUser = function(user, platform) {
         var deviceCountAll = 0;
-        var resultDeviceCount = driver.query("SELECT COUNT(id) AS device_count FROM devices 
-            WHERE user_id = ? AND tenant_id = ? and " + buildPlatformString(platform), String(user),
-             common.getTenantID());
+        var resultDeviceCount = driver.query("SELECT COUNT(id) AS device_count FROM devices WHERE user_id = ? AND tenant_id = ? and " + buildPlatformString(platform), String(user), common.getTenantID());
         deviceCountAll += parseInt(resultDeviceCount[0].device_count);
         return deviceCountAll;
     }
-    
     var buildPlatformString = function(platform) {
         var platform = platform.toUpperCase();
         if (platform == 'ANDROID') {
@@ -108,23 +100,9 @@ var store = (function() {
         var platform = buildPlatformString(platform);
         var query;
         if (type == 1) {
-            query = "select out_table.id, out_table.user_id, out_table.device_id,
-             out_table.received_data, devices.platform_id from notifications as out_table , devices
-              where out_table.`feature_code`='" + constants.GET_APP_FEATURE_CODE + "' and out_table.`status`='R'
-               and out_table.`tenant_id`=" + tenantId + " and out_table.`id` in (select 
-                MAX(inner_table.`id`) from notifications as inner_table where inner_table.`feature_code`= 
-                '" + constants.GET_APP_FEATURE_CODE + "' and inner_table.`status`='R' and out_table.device_id 
-                =inner_table.device_id)  and devices.id=out_table.device_id and " + platform + "  and 
-                 `received_data` like ?;";
+            query = "select out_table.id, out_table.user_id, out_table.device_id, out_table.received_data, devices.platform_id from notifications as out_table , devices where out_table.`feature_code`='" + constants.GET_APP_FEATURE_CODE + "' and out_table.`status`='R' and out_table.`tenant_id`=" + tenantId + " and out_table.`id` in (select MAX(inner_table.`id`) from notifications as inner_table where inner_table.`feature_code`='" + constants.GET_APP_FEATURE_CODE + "' and inner_table.`status`='R' and out_table.device_id =inner_table.device_id) and devices.id=out_table.device_id and " + platform + " and `received_data` like ?;";
         } else if (type == 2) {
-            query = "select out_table.id, out_table.user_id, out_table.device_id, 
-            out_table.received_data, devices.platform_id  from notifications as out_table , 
-            devices where out_table.`feature_code`= '" + constants.GET_APP_FEATURE_CODE + "' 
-            and out_table.`status`='R' and out_table.`tenant_id`=" + tenantId + " and out_table.`id` 
-            in (select MAX(inner_table.`id`) from notifications as inner_table where 
-                inner_table.`feature_code`= '" + constants.GET_APP_FEATURE_CODE + "' and inner_table.`status`='R' 
-                and out_table.device_id =inner_table.device_id)  and devices.id=out_table.device_id and " 
-            + platform + " and `received_data` not like ?;";
+            query = "select out_table.id, out_table.user_id, out_table.device_id, out_table.received_data, devices.platform_id from notifications as out_table , devices where out_table.`feature_code`= '" + constants.GET_APP_FEATURE_CODE + "' and out_table.`status`='R' and out_table.`tenant_id`=" + tenantId + " and out_table.`id` in (select MAX(inner_table.`id`) from notifications as inner_table where inner_table.`feature_code`= '" + constants.GET_APP_FEATURE_CODE + "' and inner_table.`status`='R' and out_table.device_id =inner_table.device_id) and devices.id=out_table.device_id and " + platform + " and `received_data` not like ?;";
         }
         return query;
     }
@@ -138,8 +116,7 @@ var store = (function() {
     var buildInstallParam = function(ctx) {
         var installParam = configsFile.mam.archieve_location_android + ctx.url;
         if (ctx.platform.toUpperCase() == 'IOS') {
-            installParam = configsFile.mam.archieve_location_ios + "/emm/api/apps/install/ios/" +
-             ctx.id + "?tenantDomain=" + common.getTenantDomainSession();
+            installParam = configsFile.mam.archieve_location_ios + "/emm/api/apps/install/ios/" + ctx.id + "?tenantDomain=" + common.getTenantDomainSession();
         }
         if (ctx.type == "Market" || ctx.type == "VPP") {
             if (ctx.platform.toUpperCase() == 'IOS') {
@@ -158,8 +135,8 @@ var store = (function() {
             var fApps = [];
             var page = 1;
             do {
-                var url = configsFile.mam.store_location + "/apis/assets/mobileapp" + "?domain="
-                 + common.getTenantDomainSession() + "&page=" + page;
+                log.info(common.getTenantDomainSession());
+                var url = configsFile.mam.store_location + "/apis/assets/mobileapp" + "?domain=" + common.getTenantDomainSession() + "&page=" + page;
                 log.debug("url: " + url);
                 var data = get(url, {});
                 data = parse(data.data);
@@ -201,8 +178,7 @@ var store = (function() {
             if (!tenantDomain) {
                 tenantDomain = common.getTenantDomainSession();
             }
-            var url = configsFile.mam.store_location + "/apis/asset/mobileapp?id=" + id +
-             "&domain=" + tenantDomain;
+            var url = configsFile.mam.store_location + "/apis/asset/mobileapp?id=" + id + "&domain=" + tenantDomain;
             var data = get(url, {});
             data = parse(data.data);
             return data;
@@ -430,10 +406,7 @@ var store = (function() {
         },
         getAllAppFromDevice: function(ctx) {
             var deviceId = ctx.deviceId;
-            var last_notification = driver.query("select * from notifications where `device_id`=? 
-                and `feature_code`= '" + constants.GET_APP_FEATURE_CODE + "' and `status`='R' and `id` = 
-                (select MAX(`id`) from notifications where `device_id`=? and `feature_code`= '" + 
-                    constants.GET_APP_FEATURE_CODE + "' and `status`='R')", deviceId, deviceId);
+            var last_notification = driver.query("select * from notifications where `device_id`=? and `feature_code`= '" + constants.GET_APP_FEATURE_CODE + "' and `status`='R' and `id` = (select MAX(`id`) from notifications where `device_id`=? and `feature_code`= '" + constants.GET_APP_FEATURE_CODE + "' and `status`='R')", deviceId, deviceId);
             last_notification[0].received_data = JSON.parse(unescape(last_notification[0].received_data));
             return last_notification[0];
         },
@@ -516,8 +489,7 @@ var store = (function() {
         },
         getAllAppFromDevice: function(ctx) {
             var deviceId = ctx.data.deviceId;
-            var last_notification = driver.query(sqlscripts.notifications.select12, deviceId, 
-                constants.GET_APP_FEATURE_CODE, deviceId, constants.GET_APP_FEATURE_CODE);
+            var last_notification = driver.query(sqlscripts.notifications.select12, deviceId, constants.GET_APP_FEATURE_CODE, deviceId, constants.GET_APP_FEATURE_CODE);
             last_notification[0].received_data = JSON.parse(unescape(last_notification[0].received_data));
             return last_notification[0];
         }
