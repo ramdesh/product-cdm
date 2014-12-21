@@ -34,8 +34,7 @@ public class EMMStreamFactory {
 	 * Can be used to generate a new stream object according to the stream name
 	 * provided.
 	 *
-	 * @param {@link String} streamType is the name of the stream that needs to
-	 *               be retrieved.
+	 * @param streamType The name of the stream that needs to be retrieved.
 	 * @return A stream object of type {@link EMMStream}
 	 * @throws PublisherException
 	 */

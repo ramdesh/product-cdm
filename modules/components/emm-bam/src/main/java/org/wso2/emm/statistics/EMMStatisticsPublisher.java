@@ -17,7 +17,7 @@ package org.wso2.emm.statistics;
 
 /**
  * This can be used to create a publisher, where stream types can be sent
- * along with payloads that can be published.
+ * along with payloads that needs to be published.
  */
 public interface EMMStatisticsPublisher {
 
@@ -25,8 +25,8 @@ public interface EMMStatisticsPublisher {
 	 * This can be called to publish data to BAM by providing the stream type
 	 * and a payload.
 	 *
-	 * @param streamType the name of stream to be published.
-	 * @param jsonValue  payload to be published.
+	 * @param streamType The name of stream to be published.
+	 * @param jsonValue  Payload to be published.
 	 * @throws PublisherException
 	 */
 	public void publish(StreamType streamType, String jsonValue) throws PublisherException;

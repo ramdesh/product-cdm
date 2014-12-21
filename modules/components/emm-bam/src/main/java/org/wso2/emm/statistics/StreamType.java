@@ -16,7 +16,7 @@
 package org.wso2.emm.statistics;
 
 /**
- * This defines the names of the streams which can be used to identify streams
+ * This defines the names of the streams which can be used to identify streams.
  */
 public enum StreamType {
 

@@ -28,6 +28,10 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.emm.statistics.PublisherException;
 
+/**
+ * Configuration values can be read, that are necessary 
+ * to publish data to BAM.
+ */
 @XmlRootElement(name = "EnterpriseMobilityManager")
 public class Configurations {
 
@@ -46,7 +50,7 @@ public class Configurations {
 	private static Configurations readXml() throws PublisherException {
 		File file =
 		            new File(CarbonUtils.getCarbonConfigDirPath() + File.separator + EMM_CONFIG_XML);
-		JAXBContext jaxbContext = null;
+		JAXBContext jaxbContext;
 		try {
 			jaxbContext = JAXBContext.newInstance(Configurations.class);
 			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();

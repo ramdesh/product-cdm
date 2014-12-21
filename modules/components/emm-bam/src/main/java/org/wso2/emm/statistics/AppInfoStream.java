@@ -41,7 +41,7 @@ class AppInfoStream implements EMMStream {
 							Constants.StreamVersion.APP_NOTIFICATIONS_STREAM_VERSION);
 			streamDefinition.addPayloadData(Constants.StreamKey.USERID, AttributeType.STRING);
 			streamDefinition.addPayloadData(Constants.StreamKey.STATUS, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.StreamKey.DEVICEID, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.DEVICE_ID, AttributeType.STRING);
 			streamDefinition.addPayloadData(Constants.StreamKey.SENT_DATE, AttributeType.STRING);
 			streamDefinition
 					.addPayloadData(Constants.StreamKey.RECEIVED_DATE, AttributeType.STRING);
@@ -63,7 +63,7 @@ class AppInfoStream implements EMMStream {
 	public Object[] getPayload(JSONReader jsonReader) throws PublisherException {
 		return new Object[] { jsonReader.read(Constants.StreamKey.USERID),
 		                      jsonReader.read(Constants.StreamKey.STATUS),
-		                      jsonReader.read(Constants.StreamKey.DEVICEID),
+		                      jsonReader.read(Constants.StreamKey.DEVICE_ID),
 		                      jsonReader.read(Constants.StreamKey.SENT_DATE),
 		                      jsonReader.read(Constants.StreamKey.RECEIVED_DATE),
 		                      jsonReader.read(Constants.StreamKey.FEATURE_CODE),

@@ -25,7 +25,7 @@ import org.wso2.emm.statistics.util.JSONReader;
 
 /**
  * Policy stream holds the device policy compliance details published by devices
- * time to time
+ * time to time.
  */
 class PolicyStream implements EMMStream {
 
@@ -39,17 +39,15 @@ class PolicyStream implements EMMStream {
 			                                        Constants.StreamVersion.POLICY_NOTIFICATIONS_STREAM_VERSION);
 			streamDefinition.addPayloadData(Constants.StreamKey.USERID, AttributeType.STRING);
 			streamDefinition.addPayloadData(Constants.StreamKey.STATUS, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.StreamKey.DEVICEID, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.DEVICE_ID, AttributeType.STRING);
 			streamDefinition.addPayloadData(Constants.StreamKey.SENT_DATE, AttributeType.STRING);
-			streamDefinition
-					.addPayloadData(Constants.StreamKey.RECEIVED_DATE, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.RECEIVED_DATE, AttributeType.STRING);
 			streamDefinition.addPayloadData(Constants.StreamKey.FEATURE_CODE, AttributeType.STRING);
 			streamDefinition.addPayloadData(Constants.StreamKey.TENANT, AttributeType.STRING);
 			streamDefinition.addPayloadData(Constants.StreamKey.MESSAGE_ID, AttributeType.STRING);
 			streamDefinition.addPayloadData(Constants.StreamKey.GROUP_ID, AttributeType.STRING);
 			streamDefinition.addPayloadData(Constants.StreamKey.CODE, AttributeType.STRING);
-			streamDefinition
-					.addPayloadData(Constants.StreamKey.POLICY_STATUS, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.POLICY_STATUS, AttributeType.STRING);
 
 		} catch (MalformedStreamDefinitionException e) {
 			String message = "Error getting stream definition for " + streamName + "  , Version-" +
@@ -62,7 +60,7 @@ class PolicyStream implements EMMStream {
 	public Object[] getPayload(JSONReader jsonReader) throws PublisherException {
 		return new Object[] { jsonReader.read(Constants.StreamKey.USERID),
 		                      jsonReader.read(Constants.StreamKey.STATUS),
-		                      jsonReader.read(Constants.StreamKey.DEVICEID),
+		                      jsonReader.read(Constants.StreamKey.DEVICE_ID),
 		                      jsonReader.read(Constants.StreamKey.SENT_DATE),
 		                      jsonReader.read(Constants.StreamKey.RECEIVED_DATE),
 		                      jsonReader.read(Constants.StreamKey.FEATURE_CODE),

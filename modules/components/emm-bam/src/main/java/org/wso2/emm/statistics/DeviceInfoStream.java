@@ -24,7 +24,7 @@ import org.wso2.emm.statistics.util.Constants;
 import org.wso2.emm.statistics.util.JSONReader;
 
 /**
- * Defines the stream definition and the pay load format when publishing Device
+ * Defines the stream definition and the payload format when publishing Device
  * related information such as its current GPS coordinates, memory, battery
  * level coming from devices to BAM.
  */
@@ -42,10 +42,9 @@ class DeviceInfoStream implements EMMStream {
 							Constants.StreamVersion.DEVICE_INFO_NOTIFICATIONS_STREAM_VERSION);
 			streamDefinition.addPayloadData(Constants.StreamKey.USERID, AttributeType.STRING);
 			streamDefinition.addPayloadData(Constants.StreamKey.STATUS, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.StreamKey.DEVICEID, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.DEVICE_ID, AttributeType.STRING);
 			streamDefinition.addPayloadData(Constants.StreamKey.SENT_DATE, AttributeType.STRING);
-			streamDefinition
-					.addPayloadData(Constants.StreamKey.RECEIVED_DATE, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.RECEIVED_DATE, AttributeType.STRING);
 			streamDefinition.addPayloadData(Constants.StreamKey.FEATURE_CODE, AttributeType.STRING);
 			streamDefinition.addPayloadData(Constants.StreamKey.TENANT, AttributeType.STRING);
 			streamDefinition.addPayloadData(Constants.StreamKey.MESSAGE_ID, AttributeType.STRING);
@@ -73,7 +72,7 @@ class DeviceInfoStream implements EMMStream {
 	public Object[] getPayload(JSONReader jsonReader) throws PublisherException {
 		return new Object[] { jsonReader.read(Constants.StreamKey.USERID),
 		                      jsonReader.read(Constants.StreamKey.STATUS),
-		                      jsonReader.read(Constants.StreamKey.DEVICEID),
+		                      jsonReader.read(Constants.StreamKey.DEVICE_ID),
 		                      jsonReader.read(Constants.StreamKey.SENT_DATE),
 		                      jsonReader.read(Constants.StreamKey.RECEIVED_DATE),
 		                      jsonReader.read(Constants.StreamKey.FEATURE_CODE),

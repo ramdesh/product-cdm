@@ -24,7 +24,7 @@ import org.wso2.emm.statistics.util.Constants;
 import org.wso2.emm.statistics.util.JSONReader;
 
 /**
- * Defines the stream definition and the pay load format when publishing Device
+ * Defines the stream definition and the payload format when publishing Device
  * enrollment information coming from devices to BAM.
  */
 class DeviceRegisterStream implements EMMStream {
@@ -47,7 +47,7 @@ class DeviceRegisterStream implements EMMStream {
 			streamDefinition.addPayloadData(Constants.StreamKey.BYOD, AttributeType.STRING);
 			streamDefinition.addPayloadData(Constants.StreamKey.VENDOR, AttributeType.STRING);
 			streamDefinition.addPayloadData(Constants.StreamKey.MAC, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.StreamKey.DEVICEID, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.DEVICE_ID, AttributeType.STRING);
 
 		} catch (MalformedStreamDefinitionException e) {
 			String message = "Error getting stream definition for " + streamName + "  , Version-" +
@@ -68,7 +68,7 @@ class DeviceRegisterStream implements EMMStream {
 		                      jsonReader.read(Constants.StreamKey.BYOD),
 		                      jsonReader.read(Constants.StreamKey.VENDOR),
 		                      jsonReader.read(Constants.StreamKey.MAC),
-		                      jsonReader.read(Constants.StreamKey.DEVICEID) };
+		                      jsonReader.read(Constants.StreamKey.DEVICE_ID) };
 	}
 
 	public StreamDefinition getStreamDefinition() {

@@ -23,7 +23,7 @@ import org.wso2.emm.statistics.PublisherException;
 
 /**
  * This class accepts the data coming as a JSON string and translate them to
- * java JSON objects
+ * java JSON objects.
  */
 public class JSONReader {
 	private JSONObject json;
@@ -33,7 +33,7 @@ public class JSONReader {
 	 * Create a JSON object the represent the JSON string coming as a parameter.
 	 * 
 	 * @param jsonStr
-	 *            JSON string that needs to be converted to a JSON object
+	 *            JSON string that needs to be converted to a JSON object.
 	 */
 	public JSONReader(String jsonStr) {
 		try {
@@ -49,9 +49,8 @@ public class JSONReader {
 	/**
 	 * Read a JSON object when the key is provided.
 	 * 
-	 * @param key
-	 *            of the JSON
-	 * @return the value represented by the key
+	 * @param key The key of the JSON value that needs to be retrieved.
+	 * @return the value represented by the key.
 	 * @throws PublisherException
 	 */
 	public String read(String key) throws PublisherException {

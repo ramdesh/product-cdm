@@ -52,7 +52,6 @@ public final class Constants {
 		public static final String EXTERNAL_MEMORY_AVAILABLE = "externalMemoryAvailable";
 		public static final String OPERATOR = "operator";
 		public static final String BATTERY = "battery";
-		public static final String POLICY_ID = "policyId";
 		public static final String CODE = "code";
 		public static final String POLICY_STATUS = "policyStatus";
 		public static final String PACKAGE_NAME = "packageName";
@@ -60,11 +59,11 @@ public final class Constants {
 		public static final String APP_NAME = "appName";
 		public static final String USERID = "userId";
 		public static final String STATUS = "status";
-		public static final String DEVICEID = "deviceId";
+		public static final String DEVICE_ID = "deviceId";
 		public static final String SENT_DATE = "sentDate";
-		public static final String RECEIVED_DATE = "recievedDate";
+		public static final String RECEIVED_DATE = "relievedDate";
 		public static final String FEATURE_CODE = "featureCode";
-		public static final String TENANT = "tenent";
+		public static final String TENANT = "tenant";
 		public static final String MESSAGE_ID = "messageId";
 		public static final String GROUP_ID = "groupId";
 		public static final String PLATFORM = "platform";

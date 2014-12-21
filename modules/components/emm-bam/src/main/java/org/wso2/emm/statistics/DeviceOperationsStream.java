@@ -24,7 +24,7 @@ import org.wso2.emm.statistics.util.Constants;
 import org.wso2.emm.statistics.util.JSONReader;
 
 /**
- * Defines the stream definition and the pay load format when publishing
+ * Defines the stream definition and the payload format when publishing
  * operations performed on a device, such as mute, lock, set password, etc.
  */
 class DeviceOperationsStream implements EMMStream {
@@ -40,9 +40,8 @@ class DeviceOperationsStream implements EMMStream {
 							streamName,
 							Constants.StreamVersion.DEVICE_OPERATIONS_STREAM_VERSION);
 			streamDefinition.addPayloadData(Constants.StreamKey.USERID, AttributeType.STRING);
-			streamDefinition.addPayloadData(Constants.StreamKey.DEVICEID, AttributeType.STRING);
-			streamDefinition
-					.addPayloadData(Constants.StreamKey.RECEIVED_DATE, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.DEVICE_ID, AttributeType.STRING);
+			streamDefinition.addPayloadData(Constants.StreamKey.RECEIVED_DATE, AttributeType.STRING);
 			streamDefinition.addPayloadData(Constants.StreamKey.CODE, AttributeType.STRING);
 			streamDefinition.addPayloadData(Constants.StreamKey.DATA, AttributeType.STRING);
 		} catch (MalformedStreamDefinitionException e) {
@@ -55,7 +54,7 @@ class DeviceOperationsStream implements EMMStream {
 
 	public Object[] getPayload(JSONReader jsonReader) throws PublisherException {
 		return new Object[] { jsonReader.read(Constants.StreamKey.USERID),
-		                      jsonReader.read(Constants.StreamKey.DEVICEID),
+		                      jsonReader.read(Constants.StreamKey.DEVICE_ID),
 		                      jsonReader.read(Constants.StreamKey.RECEIVED_DATE),
 		                      jsonReader.read(Constants.StreamKey.CODE),
 		                      jsonReader.read(Constants.StreamKey.DATA) };

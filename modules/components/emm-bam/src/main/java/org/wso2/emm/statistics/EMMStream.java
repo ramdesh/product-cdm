@@ -26,18 +26,18 @@ public interface EMMStream {
 
 	/**
 	 * Retrieve the stream definition format related to the stream which
-	 * implements the interface
+	 * implements the interface.
 	 *
-	 * @return org.wso2.carbon.databridge.commons.StreamDefinition
+	 * @return Stream definition of the stream to be published.
 	 */
 	public StreamDefinition getStreamDefinition();
 
 	/**
-	 * When the pay load is passed as JSON String, it is converted a pay load
-	 * based on the implementation
+	 * When the payload is passed in JSON form, it is converted to a payload
+	 * necessary based on the implementation.
 	 *
-	 * @param JSONReader
-	 * @return Object[]
+	 * @param jsReader JSON object representing the payload.
+	 * @return Object[] Payload that can be passed for publishing.
 	 * @throws PublisherException
 	 */
 	public Object[] getPayload(JSONReader jsReader) throws PublisherException;

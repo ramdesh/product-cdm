@@ -24,7 +24,7 @@ import org.wso2.emm.statistics.util.Constants;
 import org.wso2.emm.statistics.util.JSONReader;
 
 /**
- * Defines the stream definition and the pay load format when publishing
+ * Defines the stream definition and the payload format when publishing
  * BlackListed Application related data to BAM.
  */
 class BlacklistedAppStream implements EMMStream {
