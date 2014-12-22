@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-# Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-  -->
+~ Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+~
+~ WSO2 Inc. licenses this file to you under the Apache License,
+~ Version 2.0 (the "License"); you may not use this file except
+~ in compliance with the License.
+~ You may obtain a copy of the License at
+~
+~ http://www.apache.org/licenses/LICENSE-2.0
+~
+~ Unless required by applicable law or agreed to in writing,
+~ software distributed under the License is distributed on an
+~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+~ KIND, either express or implied. See the License for the
+~ specific language governing permissions and limitations
+~ under the License.
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<parent>
@@ -25,7 +27,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>org.wso2.emm.apkgenerator</artifactId>
-	<packaging>bundle</packaging>
+	<packaging>jar</packaging>
 	<name>WSO2 Enterprise Mobility Manager (EMM) - Apk Generator</name>
 	<url>http://maven.apache.org</url>
 	<repositories>
@@ -53,43 +55,18 @@
 	<properties>
 		<maven-bundle-plugin.version>2.3.5</maven-bundle-plugin.version>
 		<maven-scr-plugin.version>1.7.2</maven-scr-plugin.version>
-		<bcprov.wso2.version>1.49.wso2v1</bcprov.wso2.version>
-		<bcpkix.wso2.version>1.49.wso2v1</bcpkix.wso2.version>
-		<bcprov.ext.wso2.version>1.49.wso2v1</bcprov.ext.wso2.version>
-		<bcprov.wso2.version.range>[1.40.wso2v1, 1.50.0)</bcprov.wso2.version.range>
-		<bcmail.wso2.version>1.49.wso2v1</bcmail.wso2.version>
+		<spongycastle.core.version>1.51.0.0</spongycastle.core.version>
+		<spongycastle.pkix.version>1.51.0.0</spongycastle.pkix.version>
+		<spongycastle.prov.version>1.51.0.0</spongycastle.prov.version>
 		<maven.invoker.wso2.version>2.0.11.wso2v1</maven.invoker.wso2.version>
+		<org.json.version>20140107</org.json.version>
 	</properties>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<version>${maven-bundle-plugin.version}</version>
-				<extensions>true</extensions>
-				<configuration>
-					<instructions>
-						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-						<Bundle-Name>${project.artifactId}</Bundle-Name>
-						<Import-Package>
-							org.osgi.framework,
-							*;resolution:=optional
-						</Import-Package>
-						<EXPORT-PACKAGE>
-							org.wso2.emm.apkgenerator.generators.*
-						</EXPORT-PACKAGE>
-					</instructions>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
+			<version>4.4</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -100,32 +77,22 @@
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
-			<version>20140107</version>
+			<version>${org.json.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.bouncycastle.wso2</groupId>
-			<artifactId>bcprov-jdk15on</artifactId>
-			<version>${bcprov.wso2.version}</version>
+			<groupId>com.madgag.spongycastle</groupId>
+			<artifactId>pkix</artifactId>
+			<version>${spongycastle.pkix.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.bouncycastle.wso2</groupId>
-			<artifactId>bcpkix-jdk15on</artifactId>
-			<version>${bcpkix.wso2.version}</version>
+			<groupId>com.madgag.spongycastle</groupId>
+			<artifactId>prov</artifactId>
+			<version>${spongycastle.prov.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.bouncycastle.wso2</groupId>
-			<artifactId>bcmail-jdk15on</artifactId>
-			<version>${bcmail.wso2.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.osgi</groupId>
-			<artifactId>org.eclipse.osgi</artifactId>
-			<version>${version.equinox.osgi}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.osgi</groupId>
-			<artifactId>org.eclipse.osgi.services</artifactId>
-			<version>${version.equinox.osgi.services}</version>
+			<groupId>com.madgag.spongycastle</groupId>
+			<artifactId>core</artifactId>
+			<version>${spongycastle.core.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>maven-invoker.wso2</groupId>
