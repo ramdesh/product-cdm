@@ -63,7 +63,7 @@ public final class Constants {
 		public static final String STATUS = "status";
 		public static final String DEVICE_ID = "deviceId";
 		public static final String SENT_DATE = "sentDate";
-		public static final String RECEIVED_DATE = "relievedDate";
+		public static final String RECEIVED_DATE = "receivedDate";
 		public static final String FEATURE_CODE = "featureCode";
 		public static final String TENANT = "tenant";
 		public static final String MESSAGE_ID = "messageId";
